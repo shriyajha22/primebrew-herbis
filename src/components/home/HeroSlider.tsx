@@ -115,7 +115,7 @@ export default function HeroSlider() {
               <div className="pt-4 flex flex-wrap items-center gap-4">
                 <Link
                   href={slides[currentIndex].ctaLink}
-                  className="bg-brand-gold hover:bg-white text-brand-darkGreen font-bold text-sm px-7 py-3.5 rounded-button shadow-gold flex items-center gap-2 transition-all duration-300 hover:scale-105"
+                  className="bg-brand-gold hover:bg-white active:scale-95 text-brand-darkGreen font-bold text-sm px-7 py-3.5 rounded-button shadow-gold hover:shadow-xl flex items-center gap-2 transition-all duration-200 hover:scale-105"
                 >
                   <span>{slides[currentIndex].ctaText}</span>
                   <ArrowRight className="w-4 h-4" />
@@ -123,7 +123,7 @@ export default function HeroSlider() {
 
                 <Link
                   href="/shop"
-                  className="bg-white/10 hover:bg-white/20 text-white font-semibold text-sm px-6 py-3.5 rounded-button border border-white/20 backdrop-blur-md transition-colors"
+                  className="bg-white/10 hover:bg-white/20 active:scale-95 text-white font-semibold text-sm px-6 py-3.5 rounded-button border border-white/20 backdrop-blur-md transition-all duration-200 hover:scale-105"
                 >
                   Browse Full Catalog
                 </Link>

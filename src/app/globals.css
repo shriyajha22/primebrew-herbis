@@ -19,6 +19,10 @@
   --color-charcoal: #2F2F2F;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   font-family: var(--font-inter);
   background-color: #FFFDF8;
@@ -28,6 +32,34 @@ body {
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-poppins);
+}
+
+/* Global Micro-Interactions & Tactile Button / Link Feedback */
+button, 
+a, 
+input[type="button"], 
+input[type="submit"] {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+button:active, 
+a:active, 
+.btn-press:active {
+  transform: scale(0.96) translateY(1px) !important;
+  opacity: 0.92;
+}
+
+/* Focused Ring Styling for Accessibility & High Contrast Feedback */
+button:focus-visible, 
+a:focus-visible, 
+input:focus-visible, 
+select:focus-visible, 
+textarea:focus-visible {
+  outline: 2px solid #2E7D32;
+  outline-offset: 3px;
+  box-shadow: 0 0 0 4px rgba(46, 125, 50, 0.15);
 }
 
 /* Custom Scrollbar */
@@ -76,6 +108,15 @@ h1, h2, h3, h4, h5, h6 {
   background: linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+/* Interactive Card Elevate & Ripple Effect */
+.interactive-card {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.interactive-card:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 12px 30px -8px rgba(27, 94, 32, 0.15);
 }
 
 /* Pulse animation for live badge */

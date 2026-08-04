@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Leaf, ShieldCheck, Lock, Mail, Eye, EyeOff, ArrowRight } from 'lucide-react';
+import { Leaf, ShieldCheck, Lock, Mail, Eye, EyeOff, ArrowRight, KeyRound, Sparkles, CheckCircle2 } from 'lucide-react';
 import { useStore } from '@/lib/storeContext';
 
 export default function AdminLoginPage() {
@@ -34,7 +34,7 @@ export default function AdminLoginPage() {
         showToast('Welcome back, Admin! Access Granted.', 'success');
         router.push('/admin');
       } else {
-        setErrorMsg(data.message || 'Invalid admin credentials');
+        setErrorMsg(data.message || 'Invalid admin email or password');
         showToast(data.message || 'Access Denied', 'error');
       }
     } catch (err) {
@@ -46,95 +46,127 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-brand-beige/50 to-white">
-      <div className="max-w-md w-full space-y-8 bg-white p-8 sm:p-10 rounded-2xl shadow-card border border-brand-mint/40">
+    <div className="min-h-[85vh] relative flex items-center justify-center py-16 px-4 sm:px-6 lg:px-8 overflow-hidden bg-gradient-to-br from-brand-beige via-white to-brand-mint/20">
+      {/* Decorative Organic Background Gradients & Glow Circles */}
+      <div className="absolute top-10 left-10 w-72 h-72 bg-brand-green/10 rounded-full blur-3xl pointer-events-none animate-pulse" />
+      <div className="absolute bottom-10 right-10 w-96 h-96 bg-brand-gold/15 rounded-full blur-3xl pointer-events-none" />
+
+      {/* Main Glassmorphism Card Container */}
+      <div className="relative w-full max-w-md bg-white/90 backdrop-blur-xl p-8 sm:p-10 rounded-3xl shadow-card border border-brand-mint/50 space-y-8 z-10 transition-all duration-300 hover:shadow-2xl">
+        
+        {/* Header Badge & Title */}
         <div className="text-center space-y-3">
-          <div className="mx-auto w-16 h-16 rounded-2xl bg-brand-darkGreen text-brand-gold flex items-center justify-center shadow-soft">
-            <ShieldCheck className="w-9 h-9" />
+          <div className="relative inline-block">
+            <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-brand-darkGreen to-brand-green text-brand-gold flex items-center justify-center mx-auto shadow-lg shadow-brand-darkGreen/20 ring-4 ring-white">
+              <ShieldCheck className="w-10 h-10 text-brand-gold" />
+            </div>
+            <span className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-brand-gold text-brand-darkGreen flex items-center justify-center shadow-md">
+              <Sparkles className="w-3.5 h-3.5 fill-brand-darkGreen" />
+            </span>
           </div>
-          <h2 className="font-heading font-bold text-2xl sm:text-3xl text-brand-darkGreen tracking-tight">
-            Admin Portal Access
-          </h2>
-          <p className="text-xs text-brand-brown font-medium">
-            Authorized Personnel Security Portal • PrimeBrew Herbis
-          </p>
+
+          <div className="space-y-1">
+            <h2 className="font-heading font-extrabold text-2xl sm:text-3xl text-brand-darkGreen tracking-tight">
+              Admin Portal
+            </h2>
+            <p className="text-xs text-brand-brown font-semibold tracking-wide uppercase">
+              PrimeBrew Herbis • Security Control
+            </p>
+          </div>
         </div>
 
+        {/* Error Alert Pill */}
         {errorMsg && (
-          <div className="bg-red-50 border border-red-200 text-red-700 text-xs rounded-xl p-3.5 flex items-center gap-2">
+          <div className="bg-red-50/90 border border-red-200 text-red-700 text-xs rounded-2xl p-4 flex items-center gap-3 animate-in fade-in slide-in-from-top-2">
             <Lock className="w-4 h-4 text-red-500 shrink-0" />
-            <span>{errorMsg}</span>
+            <span className="font-medium">{errorMsg}</span>
           </div>
         )}
 
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-xs font-bold text-brand-darkGreen uppercase tracking-wider mb-1.5">
-                Admin Email Address
-              </label>
-              <div className="relative">
-                <Mail className="w-5 h-5 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-                <input
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="admin@primebrewherbis.com"
-                  className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 focus:border-brand-green focus:ring-2 focus:ring-brand-green/20 outline-none text-sm transition-all"
-                />
+        {/* Form Controls */}
+        <form className="space-y-5" onSubmit={handleSubmit}>
+          {/* Email Field */}
+          <div className="space-y-1.5">
+            <label className="block text-xs font-bold text-brand-darkGreen uppercase tracking-wider">
+              Admin Email Address
+            </label>
+            <div className="relative group">
+              <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-brand-green transition-colors">
+                <Mail className="w-5 h-5" />
               </div>
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold text-brand-darkGreen uppercase tracking-wider mb-1.5">
-                Admin Security Password
-              </label>
-              <div className="relative">
-                <Lock className="w-5 h-5 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••••••"
-                  className="w-full pl-11 pr-11 py-3 rounded-xl border border-gray-200 focus:border-brand-green focus:ring-2 focus:ring-brand-green/20 outline-none text-sm transition-all"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-brand-darkGreen"
-                >
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                </button>
-              </div>
+              <input
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="admin@primebrewherbis.com"
+                className="w-full pl-12 pr-4 py-3.5 rounded-2xl bg-brand-cream/40 border border-brand-mint/40 focus:bg-white focus:border-brand-green focus:ring-4 focus:ring-brand-green/10 outline-none text-sm font-medium text-brand-darkGreen placeholder-gray-400 transition-all shadow-inner"
+              />
             </div>
           </div>
 
+          {/* Password Field */}
+          <div className="space-y-1.5">
+            <label className="block text-xs font-bold text-brand-darkGreen uppercase tracking-wider">
+              Admin Security Password
+            </label>
+            <div className="relative group">
+              <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-brand-green transition-colors">
+                <KeyRound className="w-5 h-5" />
+              </div>
+              <input
+                type={showPassword ? 'text' : 'password'}
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••••••"
+                className="w-full pl-12 pr-12 py-3.5 rounded-2xl bg-brand-cream/40 border border-brand-mint/40 focus:bg-white focus:border-brand-green focus:ring-4 focus:ring-brand-green/10 outline-none text-sm font-medium text-brand-darkGreen placeholder-gray-400 transition-all shadow-inner"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-brand-darkGreen transition-colors p-1"
+                aria-label="Toggle password visibility"
+              >
+                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+              </button>
+            </div>
+          </div>
+
+          {/* Submit Button */}
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3.5 px-4 bg-brand-darkGreen hover:bg-brand-green text-brand-beige font-bold text-sm rounded-xl shadow-soft hover:shadow-hover transition-all duration-300 flex items-center justify-center gap-2 group disabled:opacity-50"
+            className="w-full py-4 px-6 bg-gradient-to-r from-brand-darkGreen to-brand-green hover:from-brand-green hover:to-brand-darkGreen text-white font-bold text-sm rounded-2xl shadow-lg shadow-brand-green/20 hover:shadow-xl hover:shadow-brand-green/30 transition-all duration-300 flex items-center justify-center gap-2 group disabled:opacity-50 mt-2"
           >
             {loading ? (
-              <span>Verifying Admin Credentials...</span>
+              <span className="flex items-center gap-2">
+                <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                Authenticating Credentials...
+              </span>
             ) : (
               <>
-                <span>Log In to Admin Dashboard</span>
+                <span>Log In to Admin Control Panel</span>
                 <ArrowRight className="w-4 h-4 text-brand-gold group-hover:translate-x-1 transition-transform" />
               </>
             )}
           </button>
-
-          <div className="pt-4 border-t border-gray-100 text-center">
-            <Link
-              href="/"
-              className="text-xs text-brand-brown hover:text-brand-green font-medium inline-flex items-center gap-1 transition-colors"
-            >
-              ← Return to Main Storefront
-            </Link>
-          </div>
         </form>
+
+        {/* Footer Hint Box */}
+        <div className="pt-4 border-t border-brand-mint/30 flex flex-col items-center gap-3 text-center">
+          <div className="flex items-center gap-1.5 text-[11px] text-brand-brown/80 font-medium bg-brand-beige/60 px-3 py-1.5 rounded-full border border-brand-mint/30">
+            <CheckCircle2 className="w-3.5 h-3.5 text-brand-green" />
+            <span>Default: admin@primebrewherbis.com • Admin@12345</span>
+          </div>
+
+          <Link
+            href="/"
+            className="text-xs text-brand-brown hover:text-brand-green font-semibold flex items-center gap-1 transition-colors mt-1"
+          >
+            ← Return to Main Storefront
+          </Link>
+        </div>
       </div>
     </div>
   );

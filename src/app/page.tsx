@@ -1,0 +1,287 @@
+'use client';
+
+import React, { useState } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import HeroSlider from '@/components/home/HeroSlider';
+import FarmToCupStory from '@/components/home/FarmToCupStory';
+import BenefitsSection from '@/components/home/BenefitsSection';
+import ProductCard from '@/components/shop/ProductCard';
+import { initialCategories, initialProducts, initialBlogs, initialReviews } from '@/lib/seedData';
+import { ArrowRight, Star, Quote, Sparkles, CheckCircle2, Instagram, Heart, Coffee, Shield } from 'lucide-react';
+
+export default function HomePage() {
+  const [activeTab, setActiveTab] = useState<'bestsellers' | 'new' | 'immunity'>('bestsellers');
+
+  const displayedProducts = initialProducts.filter((p) => {
+    if (activeTab === 'bestsellers') return p.isBestSeller;
+    if (activeTab === 'new') return p.isNewArrival || p.isFeatured;
+    if (activeTab === 'immunity') return p.category === 'immunity-tea' || p.category === 'detox-tea';
+    return true;
+  });
+
+  return (
+    <div className="space-y-0">
+      {/* Hero Section */}
+      <HeroSlider />
+
+      {/* Categories Showcase Grid */}
+      <section className="py-16 bg-white border-b border-brand-mint/30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between mb-10 gap-4">
+            <div>
+              <span className="text-xs font-bold uppercase tracking-widest text-brand-green bg-brand-mint/30 px-3 py-1 rounded-badge">
+                Curated Herbal Collections
+              </span>
+              <h2 className="font-heading font-extrabold text-2xl sm:text-3xl text-brand-darkGreen mt-2">
+                Shop by Wellness Goal
+              </h2>
+            </div>
+            <Link
+              href="/shop"
+              className="text-xs font-bold text-brand-green hover:text-brand-darkGreen flex items-center gap-1 uppercase tracking-wider"
+            >
+              <span>View All 12 Categories</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            {initialCategories.slice(0, 6).map((cat) => (
+              <Link
+                key={cat._id}
+                href={`/shop?category=${cat.slug}`}
+                className="group bg-brand-beige rounded-card p-4 text-center border border-brand-mint/30 shadow-card hover:shadow-premium hover:border-brand-green transition-all duration-300 flex flex-col items-center justify-between"
+              >
+                <div className="w-16 h-16 rounded-full overflow-hidden relative mb-3 border-2 border-white shadow-soft group-hover:scale-110 transition-transform">
+                  <Image
+                    src={cat.image}
+                    alt={cat.name}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+                <h3 className="font-heading font-bold text-xs text-brand-darkGreen group-hover:text-brand-green transition-colors">
+                  {cat.name}
+                </h3>
+                <span className="text-[10px] text-gray-400 mt-1 block">
+                  {cat.itemCount} Teas Available
+                </span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Featured Products Tabbed Section */}
+      <section className="py-20 bg-brand-cream">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto space-y-3 mb-10">
+            <span className="text-xs font-bold uppercase tracking-widest text-brand-green bg-brand-mint/30 px-3.5 py-1.5 rounded-badge">
+              Farm Fresh Selection
+            </span>
+            <h2 className="font-heading font-extrabold text-3xl sm:text-4xl text-brand-darkGreen">
+              Featured Herbal Teas
+            </h2>
+            <p className="text-xs sm:text-sm text-gray-600">
+              Hand-blended with 100% organic botanicals, high-altitude green teas, and ancient Ayurvedic remedies.
+            </p>
+
+            {/* Filter Tabs */}
+            <div className="flex justify-center gap-2 pt-4">
+              <button
+                onClick={() => setActiveTab('bestsellers')}
+                className={`text-xs font-bold px-5 py-2.5 rounded-button transition-all ${
+                  activeTab === 'bestsellers'
+                    ? 'bg-brand-green text-white shadow-soft'
+                    : 'bg-white text-brand-charcoal hover:bg-brand-beige border border-gray-200'
+                }`}
+              >
+                🔥 Best Sellers
+              </button>
+              <button
+                onClick={() => setActiveTab('new')}
+                className={`text-xs font-bold px-5 py-2.5 rounded-button transition-all ${
+                  activeTab === 'new'
+                    ? 'bg-brand-green text-white shadow-soft'
+                    : 'bg-white text-brand-charcoal hover:bg-brand-beige border border-gray-200'
+                }`}
+              >
+                ✨ New Harvest
+              </button>
+              <button
+                onClick={() => setActiveTab('immunity')}
+                className={`text-xs font-bold px-5 py-2.5 rounded-button transition-all ${
+                  activeTab === 'immunity'
+                    ? 'bg-brand-green text-white shadow-soft'
+                    : 'bg-white text-brand-charcoal hover:bg-brand-beige border border-gray-200'
+                }`}
+              >
+                🛡️ Immunity & Detox
+              </button>
+            </div>
+          </div>
+
+          {/* Product Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {displayedProducts.map((product) => (
+              <ProductCard key={product._id} product={product} />
+            ))}
+          </div>
+
+          <div className="text-center mt-12">
+            <Link
+              href="/shop"
+              className="inline-flex items-center gap-2 bg-brand-darkGreen hover:bg-brand-green text-white font-bold text-xs px-8 py-4 rounded-button shadow-premium transition-all duration-300 hover:scale-105"
+            >
+              <span>Explore All Herbal Blends & Accessories</span>
+              <ArrowRight className="w-4 h-4 text-brand-gold" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Farm to Cup Story */}
+      <FarmToCupStory />
+
+      {/* Benefits Grid */}
+      <BenefitsSection />
+
+      {/* Customer Testimonials Carousel Section */}
+      <section className="py-20 bg-white border-y border-brand-mint/30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto space-y-3 mb-14">
+            <span className="text-xs font-bold uppercase tracking-widest text-brand-green bg-brand-mint/30 px-3.5 py-1.5 rounded-badge">
+              Verified Customer Feedback
+            </span>
+            <h2 className="font-heading font-extrabold text-3xl sm:text-4xl text-brand-darkGreen">
+              Loved by 25,000+ Wellness Enthusiasts
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {initialReviews.map((rev) => (
+              <div
+                key={rev._id}
+                className="bg-brand-beige p-6 rounded-card border border-brand-mint/30 shadow-card flex flex-col justify-between space-y-4 relative"
+              >
+                <Quote className="w-8 h-8 text-brand-mint absolute top-4 right-4" />
+                <div className="space-y-3">
+                  <div className="flex items-center gap-1 text-amber-400">
+                    {[...Array(rev.rating)].map((_, i) => (
+                      <Star key={i} className="w-4 h-4 fill-amber-400" />
+                    ))}
+                  </div>
+                  <h4 className="font-heading font-bold text-sm text-brand-darkGreen">{rev.title}</h4>
+                  <p className="text-xs text-gray-600 leading-relaxed font-light">"{rev.comment}"</p>
+                </div>
+
+                <div className="flex items-center gap-3 pt-3 border-t border-brand-mint/20">
+                  <div className="w-10 h-10 rounded-full overflow-hidden relative bg-gray-200">
+                    <Image src={rev.userAvatar || ''} alt={rev.userName} fill className="object-cover" />
+                  </div>
+                  <div>
+                    <h5 className="font-bold text-xs text-brand-darkGreen">{rev.userName}</h5>
+                    <span className="text-[10px] text-emerald-700 font-semibold flex items-center gap-1">
+                      <CheckCircle2 className="w-3 h-3" /> Verified Buyer
+                    </span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Featured Blogs */}
+      <section className="py-20 bg-brand-cream">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between mb-12 gap-4">
+            <div>
+              <span className="text-xs font-bold uppercase tracking-widest text-brand-green bg-brand-mint/30 px-3.5 py-1.5 rounded-badge">
+                Tea Wisdom & Recipes
+              </span>
+              <h2 className="font-heading font-extrabold text-3xl text-brand-darkGreen mt-2">
+                Knowledge & Recipes
+              </h2>
+            </div>
+            <Link href="/blogs" className="text-xs font-bold text-brand-green hover:underline flex items-center gap-1">
+              Read All Articles →
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {initialBlogs.map((blog) => (
+              <Link
+                key={blog._id}
+                href={`/blogs/${blog.slug}`}
+                className="group bg-white rounded-card overflow-hidden border border-brand-mint/30 shadow-card hover:shadow-premium transition-all duration-300 flex flex-col justify-between"
+              >
+                <div>
+                  <div className="relative aspect-video overflow-hidden bg-brand-beige">
+                    <Image src={blog.coverImage} alt={blog.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                    <span className="absolute top-3 left-3 bg-brand-darkGreen text-brand-gold text-[10px] font-bold px-2.5 py-1 rounded-badge">
+                      {blog.category}
+                    </span>
+                  </div>
+                  <div className="p-5 space-y-2">
+                    <div className="flex items-center gap-2 text-[11px] text-gray-400">
+                      <span>{blog.publishDate}</span>
+                      <span>•</span>
+                      <span>{blog.readTime}</span>
+                    </div>
+                    <h3 className="font-heading font-bold text-sm text-brand-darkGreen group-hover:text-brand-green transition-colors line-clamp-2">
+                      {blog.title}
+                    </h3>
+                    <p className="text-xs text-gray-500 line-clamp-2 font-light">
+                      {blog.excerpt}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="p-5 pt-0 text-xs font-bold text-brand-green flex items-center gap-1 group-hover:gap-2 transition-all">
+                  <span>Read Article</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Instagram Grid Showcase */}
+      <section className="py-16 bg-white border-t border-brand-mint/30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4">
+          <div className="flex items-center justify-center gap-2 text-brand-green">
+            <Instagram className="w-5 h-5" />
+            <span className="text-xs font-bold uppercase tracking-wider">Follow @PrimeBrewHerbis</span>
+          </div>
+          <h2 className="font-heading font-bold text-2xl text-brand-darkGreen">
+            Join Our Instagram Tea Community
+          </h2>
+          <p className="text-xs text-gray-500 max-w-md mx-auto">
+            Tag #PrimeBrewHerbis in your morning tea rituals for a chance to be featured!
+          </p>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3 pt-4">
+            {[
+              "https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=400&q=80",
+              "https://images.unsplash.com/photo-1514733670139-4d87a1941d55?auto=format&fit=crop&w=400&q=80",
+              "https://images.unsplash.com/photo-1544787219-7f47ccb76574?auto=format&fit=crop&w=400&q=80",
+              "https://images.unsplash.com/photo-1597481499750-3e6b22637e12?auto=format&fit=crop&w=400&q=80",
+              "https://images.unsplash.com/photo-1563822249510-04678c7870a4?auto=format&fit=crop&w=400&q=80",
+              "https://images.unsplash.com/photo-1513201099705-a9746e1e201f?auto=format&fit=crop&w=400&q=80",
+            ].map((img, i) => (
+              <div key={i} className="relative aspect-square rounded-card overflow-hidden group cursor-pointer">
+                <Image src={img} alt="Instagram Tea Post" fill className="object-cover group-hover:scale-110 transition-transform duration-500" />
+                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
+                  <Heart className="w-6 h-6 fill-white" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}

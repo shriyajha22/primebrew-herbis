@@ -1,0 +1,102 @@
+'use client';
+
+import React from 'react';
+import Image from 'next/image';
+import { Mountain, Sun, Sparkles, Box, HeartHandshake } from 'lucide-react';
+
+const steps = [
+  {
+    icon: Mountain,
+    step: "01",
+    title: "High-Altitude Himalayan Bio-Farms",
+    desc: "Sourced from high-elevation estates in Darjeeling, Meghalaya, and Himachal Pradesh where mountain mist and mineral soil naturally enrich botanical nutrients.",
+    img: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    icon: Sun,
+    step: "02",
+    title: "Selective Dawn Harvesting",
+    desc: "Experienced local farmers hand-pick whole leaves, flower buds, and roots at morning dew when volatile aromatic essential oils are at their highest concentration.",
+    img: "https://images.unsplash.com/photo-1544787219-7f47ccb76574?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    icon: Sparkles,
+    step: "03",
+    title: "Gentle Solar & Shadow Drying",
+    desc: "Herbs are slowly air-dried under natural shade to preserve delicate antioxidants, natural flavonoids, and pristine green leaf colors.",
+    img: "https://images.unsplash.com/photo-1597481499750-3e6b22637e12?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    icon: HeartHandshake,
+    step: "04",
+    title: "Ayurvedic Master Blending",
+    desc: "Formulated by certified Ayurvedic herbalists to ensure precise synergistic ratios for maximum absorption and biological harmony.",
+    img: "https://images.unsplash.com/photo-1563822249510-04678c7870a4?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    icon: Box,
+    step: "05",
+    title: "Airtight Eco Packaging",
+    desc: "Sealed in 100% recyclable tin canisters and bio-pyramid tea bags to protect freshness directly from our farm warehouse to your teacup.",
+    img: "https://images.unsplash.com/photo-1513201099705-a9746e1e201f?auto=format&fit=crop&w=600&q=80"
+  }
+];
+
+export default function FarmToCupStory() {
+  return (
+    <section className="py-20 bg-brand-cream relative overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Section Header */}
+        <div className="text-center max-w-3xl mx-auto space-y-3 mb-16">
+          <span className="text-xs font-bold uppercase tracking-widest text-brand-green bg-brand-mint/30 px-3.5 py-1.5 rounded-badge">
+            Transparency & Origin
+          </span>
+          <h2 className="font-heading font-extrabold text-3xl sm:text-4xl text-brand-darkGreen">
+            Our Farm to Cup Journey
+          </h2>
+          <p className="text-sm text-brand-brown leading-relaxed font-light">
+            We eliminate middleman traders to support local Himalayan farming communities while guaranteeing you receive the freshest, most potent herbal teas available anywhere.
+          </p>
+        </div>
+
+        {/* Timeline Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
+          {steps.map((item) => {
+            const Icon = item.icon;
+            return (
+              <div
+                key={item.step}
+                className="bg-white rounded-card p-5 border border-brand-mint/30 shadow-card hover:shadow-premium transition-all duration-300 flex flex-col justify-between group"
+              >
+                <div>
+                  <div className="relative aspect-video rounded-image overflow-hidden mb-4 bg-brand-beige">
+                    <Image
+                      src={item.img}
+                      alt={item.title}
+                      fill
+                      className="object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <span className="absolute top-2 left-2 bg-brand-darkGreen text-brand-gold font-bold text-xs px-2.5 py-1 rounded-badge shadow-soft">
+                      {item.step}
+                    </span>
+                  </div>
+
+                  <div className="w-10 h-10 rounded-button bg-brand-mint/30 text-brand-green flex items-center justify-center mb-3 group-hover:bg-brand-green group-hover:text-white transition-colors">
+                    <Icon className="w-5 h-5" />
+                  </div>
+
+                  <h3 className="font-heading font-bold text-sm text-brand-darkGreen mb-2">
+                    {item.title}
+                  </h3>
+                  <p className="text-xs text-gray-500 leading-relaxed font-light">
+                    {item.desc}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}

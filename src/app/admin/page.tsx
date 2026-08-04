@@ -24,13 +24,24 @@ export default function AdminDashboardPage() {
 
   if (!currentUser || currentUser.role !== 'admin') {
     return (
-      <div className="py-20 text-center space-y-4">
-        <Shield className="w-16 h-16 text-amber-500 mx-auto" />
-        <h2 className="font-heading font-bold text-2xl text-brand-darkGreen">Admin Access Restricted</h2>
-        <p className="text-xs text-gray-500">You must be logged in as an Admin to view this control panel.</p>
-        <Link href="/" className="inline-block bg-brand-green text-white font-bold text-xs px-6 py-3 rounded-button">
-          Return to Home Page
-        </Link>
+      <div className="py-20 text-center space-y-5 max-w-md mx-auto px-4">
+        <div className="w-16 h-16 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center mx-auto border border-amber-200">
+          <Shield className="w-9 h-9" />
+        </div>
+        <div className="space-y-2">
+          <h2 className="font-heading font-bold text-2xl text-brand-darkGreen">Admin Access Restricted</h2>
+          <p className="text-xs text-gray-500">
+            This security control panel requires authenticated administrator privileges. Please log in with your security credentials.
+          </p>
+        </div>
+        <div className="pt-2 flex flex-col sm:flex-row gap-3 justify-center">
+          <Link href="/admin/login" className="inline-block bg-brand-darkGreen hover:bg-brand-green text-white font-bold text-xs px-6 py-3 rounded-xl transition-colors">
+            Log In as Admin
+          </Link>
+          <Link href="/" className="inline-block bg-brand-beige hover:bg-brand-mint/40 text-brand-darkGreen font-semibold text-xs px-6 py-3 rounded-xl transition-colors">
+            Return to Home Page
+          </Link>
+        </div>
       </div>
     );
   }

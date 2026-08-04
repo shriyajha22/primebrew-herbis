@@ -162,26 +162,21 @@ export default function Navbar() {
                         </button>
                       </div>
                     ) : (
-                      <div className="p-3 space-y-2">
-                        <p className="text-xs text-gray-500 font-medium px-1">Quick Demo Login:</p>
-                        <button
-                          onClick={() => {
-                            loginAsDemoCustomer();
-                            setUserDropdownOpen(false);
-                          }}
-                          className="w-full text-left px-3 py-2 text-xs font-semibold text-brand-darkGreen bg-brand-beige hover:bg-brand-mint/30 rounded-button flex items-center gap-2"
+                      <div className="p-2 space-y-1">
+                        <Link
+                          href="/dashboard"
+                          onClick={() => setUserDropdownOpen(false)}
+                          className="block px-3 py-2 text-xs font-semibold text-brand-darkGreen bg-brand-beige hover:bg-brand-mint/30 rounded-button text-center transition-colors"
                         >
-                          <CheckCircle2 className="w-4 h-4 text-brand-green" /> Login as Customer
-                        </button>
-                        <button
-                          onClick={() => {
-                            loginAsDemoAdmin();
-                            setUserDropdownOpen(false);
-                          }}
-                          className="w-full text-left px-3 py-2 text-xs font-semibold text-brand-gold bg-brand-darkGreen hover:bg-black text-white rounded-button flex items-center gap-2"
+                          Customer Account / Sign In
+                        </Link>
+                        <Link
+                          href="/admin/login"
+                          onClick={() => setUserDropdownOpen(false)}
+                          className="block px-3 py-2 text-xs font-semibold text-brand-brown hover:text-brand-darkGreen hover:bg-gray-50 rounded-button text-center transition-colors border border-gray-100"
                         >
-                          <Shield className="w-4 h-4 text-brand-gold" /> Login as Admin
-                        </button>
+                          🔒 Admin Portal Login
+                        </Link>
                       </div>
                     )}
                   </div>

@@ -29,12 +29,6 @@ export default function Navbar() {
 
   return (
     <>
-      {/* Top Banner Announcement */}
-      <div className="bg-brand-darkGreen text-brand-beige text-xs py-2 px-4 text-center font-medium flex items-center justify-center gap-2">
-        <span className="inline-block w-2 h-2 rounded-full bg-brand-gold animate-pulse"></span>
-        <span>🌿 Farm Fresh Harvest Season: Use code <strong className="text-brand-gold">HERBAL15</strong> for 15% OFF + Free Express Shipping above ₹799</span>
-      </div>
-
       {/* Main Sticky Navbar */}
       <header className="sticky top-0 z-40 glass-navbar shadow-soft">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

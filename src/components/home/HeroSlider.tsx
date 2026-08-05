@@ -79,10 +79,10 @@ export default function HeroSlider() {
             alt={slides[currentIndex].title}
             fill
             priority
-            className="object-cover object-center opacity-35"
+            className="object-cover object-center opacity-70"
           />
-          {/* Subtle Green & Dark Vignette Gradient */}
-          <div className="absolute inset-0 bg-gradient-to-r from-brand-darkGreen via-brand-darkGreen/85 to-transparent" />
+          {/* Lightened Soft Vignette Gradient */}
+          <div className="absolute inset-0 bg-gradient-to-r from-brand-darkGreen/65 via-brand-darkGreen/40 to-black/20" />
         </motion.div>
       </AnimatePresence>
 

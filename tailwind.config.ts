@@ -16,10 +16,10 @@ const config: Config = {
           softGreen: "#8BCB75",     // Secondary soft sage green
           accentGreen: "#A8D89C",   // Light herbal green accent
           mint: "#A8D89C",          // Light green border / badge
-          bgBeige: "#F8F4EC",       // Warm beige primary background
-          bgSoft: "#F5F1E8",        // Soft natural shade
-          cardBeige: "#FFFDF9",     // Off-white / warm beige cards
-          cardWhite: "#FFFDF9",     // Warm card background
+          bgBeige: "#F8F3E8",       // Warm soft beige primary background
+          bgSoft: "#F5EFE2",        // Soft natural cream shade
+          cardBeige: "#FAF6EE",     // Warm off-white card background
+          cardWhite: "#FAF6EE",     // Warm off-white card background
           darkGrey: "#2C352B",      // Dark natural charcoal text
           mediumGrey: "#556054",    // Medium sage grey text
           actionIncrease: "#6FAF5A",// Green +
@@ -27,7 +27,7 @@ const config: Config = {
           actionRemove: "rgb(215, 65, 65)", // Muted Red remove
           gold: "#D4AF37",
           charcoal: "#2C352B",
-          lightGray: "#F3EEE4",
+          lightGray: "#F3ECE0",
           darkBg: "#1F291E",
           darkCard: "#2B372A",
         },

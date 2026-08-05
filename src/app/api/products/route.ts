@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { inMemoryStore, connectToDatabase } from '@/lib/db';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: Request) {
   await connectToDatabase();
   const { searchParams } = new URL(request.url);

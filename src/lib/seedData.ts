@@ -17,7 +17,7 @@ export const initialCategories: Category[] = [
     slug: "wellness-tea",
     description: "Targeted Ayurvedic formulas for blood sugar balance and holistic bodily health.",
     iconName: "HeartPulse",
-    image: "https://images.unsplash.com/photo-1563822249510-04678c7870a4?auto=format&fit=crop&w=800&q=80",
+    image: "https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?auto=format&fit=crop&w=800&q=80",
     itemCount: 1,
     featured: true,
   },
@@ -27,7 +27,7 @@ export const initialCategories: Category[] = [
     slug: "ayurvedic-tea",
     description: "Tridosha balancing infusions infused with adaptogenic Ashwagandha & Sacred Tulsi.",
     iconName: "ShieldCheck",
-    image: "https://images.unsplash.com/photo-1594631252845-29fc4cc86de5?auto=format&fit=crop&w=800&q=80",
+    image: "https://images.unsplash.com/photo-1597481499750-3e6b22637e12?auto=format&fit=crop&w=800&q=80",
     itemCount: 1,
     featured: true,
   },
@@ -240,7 +240,7 @@ export const initialProducts: Product[] = [
     isBestSeller: true,
     isNewArrival: false,
     images: [
-      "https://images.unsplash.com/photo-1563822249510-04678c7870a4?auto=format&fit=crop&w=1000&q=80",
+      "https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?auto=format&fit=crop&w=1000&q=80",
       "https://images.unsplash.com/photo-1571934811356-5cc561d6821f?auto=format&fit=crop&w=1000&q=80"
     ],
     weightVariants: [
@@ -306,7 +306,7 @@ export const initialProducts: Product[] = [
     isBestSeller: true,
     isNewArrival: false,
     images: [
-      "https://images.unsplash.com/photo-1594631252845-29fc4cc86de5?auto=format&fit=crop&w=1000&q=80",
+      "https://images.unsplash.com/photo-1597481499750-3e6b22637e12?auto=format&fit=crop&w=1000&q=80",
       "https://images.unsplash.com/photo-1544787219-7f47ccb76574?auto=format&fit=crop&w=1000&q=80"
     ],
     weightVariants: [
@@ -412,7 +412,7 @@ Managing blood sugar spikes post-meal is essential for sustained daily energy an
     authorImage: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80",
     readTime: "5 min read",
     publishDate: "July 28, 2026",
-    coverImage: "https://images.unsplash.com/photo-1563822249510-04678c7870a4?auto=format&fit=crop&w=1200&q=80",
+    coverImage: "https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?auto=format&fit=crop&w=1200&q=80",
     tags: ["Pre-Diabetic Tea", "Ayurveda", "Glucose Control", "Wellness"],
     featured: true
   },

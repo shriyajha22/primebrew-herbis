@@ -273,8 +273,8 @@ export default function HomePage() {
               "https://images.unsplash.com/photo-1514733670139-4d87a1941d55?auto=format&fit=crop&w=400&q=80",
               "https://images.unsplash.com/photo-1544787219-7f47ccb76574?auto=format&fit=crop&w=400&q=80",
               "https://images.unsplash.com/photo-1597481499750-3e6b22637e12?auto=format&fit=crop&w=400&q=80",
-              "https://images.unsplash.com/photo-1563822249510-04678c7870a4?auto=format&fit=crop&w=400&q=80",
-              "https://images.unsplash.com/photo-1594631252845-29fc4cc86de5?auto=format&fit=crop&w=400&q=80",
+              "https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?auto=format&fit=crop&w=400&q=80",
+              "https://images.unsplash.com/photo-1597481499750-3e6b22637e12?auto=format&fit=crop&w=400&q=80",
             ].map((img, i) => (
               <div key={i} className="relative aspect-square rounded-card overflow-hidden group cursor-pointer">
                 <Image src={img} alt="Instagram Tea Post" fill className="object-cover group-hover:scale-110 transition-transform duration-500" />

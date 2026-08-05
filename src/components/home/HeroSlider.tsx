@@ -34,7 +34,7 @@ const slides = [
     subtitle: "Formulated with Gurmar (Sugar Destroyer), Jamun Seed, Methi & Ceylon Cinnamon to regulate glucose levels naturally.",
     ctaText: "Shop Pre-Diabetic Tea",
     ctaLink: "/product/pre-diabetic-tea",
-    image: "https://images.unsplash.com/photo-1563822249510-04678c7870a4?auto=format&fit=crop&w=1600&q=85",
+    image: "https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?auto=format&fit=crop&w=1600&q=85",
     tag: "30 Tea Bags • ₹425",
   },
   {
@@ -44,7 +44,7 @@ const slides = [
     subtitle: "Sacred Krishna Tulsi, adaptogenic Ashwagandha & Giloy to build core immunity and harmonize body vitality.",
     ctaText: "Discover Ayur Tea",
     ctaLink: "/product/ayur-tea",
-    image: "https://images.unsplash.com/photo-1594631252845-29fc4cc86de5?auto=format&fit=crop&w=1600&q=85",
+    image: "https://images.unsplash.com/photo-1597481499750-3e6b22637e12?auto=format&fit=crop&w=1600&q=85",
     tag: "30 Tea Bags • ₹380",
   },
 ];

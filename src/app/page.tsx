@@ -8,15 +8,14 @@ import FarmToCupStory from '@/components/home/FarmToCupStory';
 import BenefitsSection from '@/components/home/BenefitsSection';
 import ProductCard from '@/components/shop/ProductCard';
 import { initialCategories, initialProducts, initialBlogs, initialReviews } from '@/lib/seedData';
-import { ArrowRight, Star, Quote, Sparkles, CheckCircle2, Instagram, Heart, Coffee, Shield } from 'lucide-react';
+import { ArrowRight, Star, Quote, CheckCircle2, Instagram, Heart } from 'lucide-react';
 
 export default function HomePage() {
-  const [activeTab, setActiveTab] = useState<'bestsellers' | 'new' | 'immunity'>('bestsellers');
+  const [activeTab, setActiveTab] = useState<'all' | 'blue' | 'wellness'>('all');
 
   const displayedProducts = initialProducts.filter((p) => {
-    if (activeTab === 'bestsellers') return p.isBestSeller;
-    if (activeTab === 'new') return p.isNewArrival || p.isFeatured;
-    if (activeTab === 'immunity') return p.category === 'immunity-tea' || p.category === 'detox-tea';
+    if (activeTab === 'blue') return p.category === 'blue-tea';
+    if (activeTab === 'wellness') return p.category === 'wellness-tea' || p.category === 'ayurvedic-tea';
     return true;
   });
 
@@ -26,14 +25,14 @@ export default function HomePage() {
       <HeroSlider />
 
       {/* Categories Showcase Grid */}
-      <section className="py-16 bg-white border-b border-brand-mint/30">
+      <section className="py-14 bg-white border-b border-brand-mint/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between mb-10 gap-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between mb-8 gap-4">
             <div>
               <span className="text-xs font-bold uppercase tracking-widest text-brand-green bg-brand-mint/30 px-3 py-1 rounded-badge">
                 Curated Herbal Collections
               </span>
-              <h2 className="font-heading font-extrabold text-2xl sm:text-3xl text-brand-darkGreen mt-2">
+              <h2 className="font-heading font-bold text-2xl sm:text-3xl text-brand-darkGreen mt-2">
                 Shop by Wellness Goal
               </h2>
             </div>
@@ -41,19 +40,19 @@ export default function HomePage() {
               href="/shop"
               className="text-xs font-bold text-brand-green hover:text-brand-darkGreen flex items-center gap-1 uppercase tracking-wider"
             >
-              <span>View All 12 Categories</span>
+              <span>View All 3 Categories</span>
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {initialCategories.slice(0, 6).map((cat) => (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {initialCategories.map((cat) => (
               <Link
                 key={cat._id}
                 href={`/shop?category=${cat.slug}`}
-                className="group bg-brand-beige rounded-card p-4 text-center border border-brand-mint/30 shadow-card hover:shadow-premium hover:border-brand-green transition-all duration-300 flex flex-col items-center justify-between"
+                className="group bg-white rounded-card p-6 border border-brand-mint/30 shadow-card hover:shadow-premium hover:border-brand-green transition-all duration-300 flex items-center gap-5"
               >
-                <div className="w-16 h-16 rounded-full overflow-hidden relative mb-3 border-2 border-white shadow-soft group-hover:scale-110 transition-transform">
+                <div className="w-20 h-20 rounded-full overflow-hidden relative flex-shrink-0 border-2 border-brand-bgLight shadow-soft group-hover:scale-105 transition-transform">
                   <Image
                     src={cat.image}
                     alt={cat.name}
@@ -61,12 +60,17 @@ export default function HomePage() {
                     className="object-cover"
                   />
                 </div>
-                <h3 className="font-heading font-bold text-xs text-brand-darkGreen group-hover:text-brand-green transition-colors">
-                  {cat.name}
-                </h3>
-                <span className="text-[10px] text-gray-400 mt-1 block">
-                  {cat.itemCount} Teas Available
-                </span>
+                <div>
+                  <h3 className="font-heading font-bold text-base text-brand-darkGreen group-hover:text-brand-green transition-colors">
+                    {cat.name}
+                  </h3>
+                  <p className="text-xs text-gray-500 mt-1 line-clamp-2 leading-relaxed">
+                    {cat.description}
+                  </p>
+                  <span className="text-[11px] font-bold text-brand-green mt-2 block">
+                    {cat.itemCount} Teas Available →
+                  </span>
+                </div>
               </Link>
             ))}
           </div>
@@ -74,56 +78,56 @@ export default function HomePage() {
       </section>
 
       {/* Featured Products Tabbed Section */}
-      <section className="py-20 bg-brand-cream">
+      <section className="py-16 bg-brand-bgSoft">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto space-y-3 mb-10">
             <span className="text-xs font-bold uppercase tracking-widest text-brand-green bg-brand-mint/30 px-3.5 py-1.5 rounded-badge">
               Farm Fresh Selection
             </span>
-            <h2 className="font-heading font-extrabold text-3xl sm:text-4xl text-brand-darkGreen">
-              Featured Herbal Teas
+            <h2 className="font-heading font-bold text-2xl sm:text-3xl lg:text-[34px] text-brand-darkGreen">
+              Our 5 Bestselling Herbal Teas
             </h2>
-            <p className="text-xs sm:text-sm text-gray-600">
-              Hand-blended with 100% organic botanicals, high-altitude green teas, and ancient Ayurvedic remedies.
+            <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
+              Every box contains exactly 30 Tea Bags of 100% organic botanicals, high-altitude green teas, and ancient Ayurvedic remedies.
             </p>
 
             {/* Filter Tabs */}
             <div className="flex justify-center gap-2 pt-4">
               <button
-                onClick={() => setActiveTab('bestsellers')}
+                onClick={() => setActiveTab('all')}
                 className={`text-xs font-bold px-5 py-2.5 rounded-button transition-all ${
-                  activeTab === 'bestsellers'
-                    ? 'bg-brand-green text-white shadow-soft'
-                    : 'bg-white text-brand-charcoal hover:bg-brand-beige border border-gray-200'
+                  activeTab === 'all'
+                    ? 'btn-primary-gradient shadow-soft'
+                    : 'bg-white text-brand-darkGrey hover:bg-brand-bgLight border border-gray-200'
                 }`}
               >
-                🔥 Best Sellers
+                🌿 All Teas (5)
               </button>
               <button
-                onClick={() => setActiveTab('new')}
+                onClick={() => setActiveTab('blue')}
                 className={`text-xs font-bold px-5 py-2.5 rounded-button transition-all ${
-                  activeTab === 'new'
-                    ? 'bg-brand-green text-white shadow-soft'
-                    : 'bg-white text-brand-charcoal hover:bg-brand-beige border border-gray-200'
+                  activeTab === 'blue'
+                    ? 'btn-primary-gradient shadow-soft'
+                    : 'bg-white text-brand-darkGrey hover:bg-brand-bgLight border border-gray-200'
                 }`}
               >
-                ✨ New Harvest
+                🍵 Blue Teas (3)
               </button>
               <button
-                onClick={() => setActiveTab('immunity')}
+                onClick={() => setActiveTab('wellness')}
                 className={`text-xs font-bold px-5 py-2.5 rounded-button transition-all ${
-                  activeTab === 'immunity'
-                    ? 'bg-brand-green text-white shadow-soft'
-                    : 'bg-white text-brand-charcoal hover:bg-brand-beige border border-gray-200'
+                  activeTab === 'wellness'
+                    ? 'btn-primary-gradient shadow-soft'
+                    : 'bg-white text-brand-darkGrey hover:bg-brand-bgLight border border-gray-200'
                 }`}
               >
-                🛡️ Immunity & Detox
+                ✨ Wellness & Ayur (2)
               </button>
             </div>
           </div>
 
           {/* Product Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {displayedProducts.map((product) => (
               <ProductCard key={product._id} product={product} />
             ))}
@@ -134,7 +138,7 @@ export default function HomePage() {
               href="/shop"
               className="inline-flex items-center gap-2 bg-brand-darkGreen hover:bg-brand-green text-white font-bold text-xs px-8 py-4 rounded-button shadow-premium transition-all duration-300 hover:scale-105"
             >
-              <span>Explore All Herbal Blends & Accessories</span>
+              <span>Explore All 5 Herbal Teas</span>
               <ArrowRight className="w-4 h-4 text-brand-gold" />
             </Link>
           </div>
@@ -148,13 +152,13 @@ export default function HomePage() {
       <BenefitsSection />
 
       {/* Customer Testimonials Carousel Section */}
-      <section className="py-20 bg-white border-y border-brand-mint/30">
+      <section className="py-16 bg-white border-y border-brand-mint/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto space-y-3 mb-14">
+          <div className="text-center max-w-2xl mx-auto space-y-3 mb-12">
             <span className="text-xs font-bold uppercase tracking-widest text-brand-green bg-brand-mint/30 px-3.5 py-1.5 rounded-badge">
               Verified Customer Feedback
             </span>
-            <h2 className="font-heading font-extrabold text-3xl sm:text-4xl text-brand-darkGreen">
+            <h2 className="font-heading font-bold text-2xl sm:text-3xl text-brand-darkGreen">
               Loved by 25,000+ Wellness Enthusiasts
             </h2>
           </div>
@@ -173,7 +177,7 @@ export default function HomePage() {
                     ))}
                   </div>
                   <h4 className="font-heading font-bold text-sm text-brand-darkGreen">{rev.title}</h4>
-                  <p className="text-xs text-gray-600 leading-relaxed font-light">"{rev.comment}"</p>
+                  <p className="text-xs text-gray-600 leading-relaxed font-light">&quot;{rev.comment}&quot;</p>
                 </div>
 
                 <div className="flex items-center gap-3 pt-3 border-t border-brand-mint/20">
@@ -194,14 +198,14 @@ export default function HomePage() {
       </section>
 
       {/* Featured Blogs */}
-      <section className="py-20 bg-brand-cream">
+      <section className="py-16 bg-brand-cream">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between mb-12 gap-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between mb-10 gap-4">
             <div>
               <span className="text-xs font-bold uppercase tracking-widest text-brand-green bg-brand-mint/30 px-3.5 py-1.5 rounded-badge">
-                Tea Wisdom & Recipes
+                Tea Wisdom & Articles
               </span>
-              <h2 className="font-heading font-extrabold text-3xl text-brand-darkGreen mt-2">
+              <h2 className="font-heading font-bold text-2xl sm:text-3xl text-brand-darkGreen mt-2">
                 Knowledge & Recipes
               </h2>
             </div>
@@ -233,7 +237,7 @@ export default function HomePage() {
                     <h3 className="font-heading font-bold text-sm text-brand-darkGreen group-hover:text-brand-green transition-colors line-clamp-2">
                       {blog.title}
                     </h3>
-                    <p className="text-xs text-gray-500 line-clamp-2 font-light">
+                    <p className="text-xs text-gray-500 line-clamp-2 font-light leading-relaxed">
                       {blog.excerpt}
                     </p>
                   </div>
@@ -250,7 +254,7 @@ export default function HomePage() {
       </section>
 
       {/* Instagram Grid Showcase */}
-      <section className="py-16 bg-white border-t border-brand-mint/30">
+      <section className="py-14 bg-white border-t border-brand-mint/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4">
           <div className="flex items-center justify-center gap-2 text-brand-green">
             <Instagram className="w-5 h-5" />
@@ -260,7 +264,7 @@ export default function HomePage() {
             Join Our Instagram Tea Community
           </h2>
           <p className="text-xs text-gray-500 max-w-md mx-auto">
-            Tag #PrimeBrewHerbis in your morning tea rituals for a chance to be featured!
+            Tag #PrimeBrewHerbis in your daily tea rituals for a chance to be featured!
           </p>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3 pt-4">
@@ -270,7 +274,7 @@ export default function HomePage() {
               "https://images.unsplash.com/photo-1544787219-7f47ccb76574?auto=format&fit=crop&w=400&q=80",
               "https://images.unsplash.com/photo-1597481499750-3e6b22637e12?auto=format&fit=crop&w=400&q=80",
               "https://images.unsplash.com/photo-1563822249510-04678c7870a4?auto=format&fit=crop&w=400&q=80",
-              "https://images.unsplash.com/photo-1513201099705-a9746e1e201f?auto=format&fit=crop&w=400&q=80",
+              "https://images.unsplash.com/photo-1594631252845-29fc4cc86de5?auto=format&fit=crop&w=400&q=80",
             ].map((img, i) => (
               <div key={i} className="relative aspect-square rounded-card overflow-hidden group cursor-pointer">
                 <Image src={img} alt="Instagram Tea Post" fill className="object-cover group-hover:scale-110 transition-transform duration-500" />

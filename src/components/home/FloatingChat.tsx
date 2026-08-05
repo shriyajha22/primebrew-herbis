@@ -21,11 +21,13 @@ export default function FloatingChat() {
     setMessage('');
 
     setTimeout(() => {
-      let botReply = "Thank you for reaching out! Our tea expert will assist you shortly. In the meantime, try our Himalayan Sunrise Detox for morning energy or Midnight Serenity for sleep!";
-      if (userText.toLowerCase().includes('sleep')) {
-        botReply = "For sleep, we strongly recommend our 'Midnight Serenity Sleep Elixir' with Egyptian Chamomile and Lavender!";
-      } else if (userText.toLowerCase().includes('detox') || userText.toLowerCase().includes('weight')) {
-        botReply = "For detox & metabolism, check out our 'Himalayan Sunrise' or 'SlimFit Oolong' blends!";
+      let botReply = "Thank you for reaching out! In the meantime, try our signature 'Blue Tea' for skin glow & stress relief, or 'Ayur Tea' for holistic immunity!";
+      if (userText.toLowerCase().includes('sugar') || userText.toLowerCase().includes('diabetic')) {
+        botReply = "For blood sugar balance & glucose support, we strongly recommend our 'Pre-Diabetic Tea' with Gurmar & Jamun!";
+      } else if (userText.toLowerCase().includes('digest') || userText.toLowerCase().includes('elaichi')) {
+        botReply = "For digestive comfort, check out our 'Blue Tea with Elaichi' or 'Blue Tea with Ginger + Cinnamon'!";
+      } else if (userText.toLowerCase().includes('ayurved') || userText.toLowerCase().includes('stress')) {
+        botReply = "For stress relief and core immunity, try our adaptogenic 'Ayur Tea'!";
       }
       setMessages((prev) => [...prev, { sender: 'bot', text: botReply }]);
     }, 1000);

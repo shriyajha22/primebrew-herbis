@@ -44,7 +44,7 @@ const steps = [
 
 export default function FarmToCupStory() {
   return (
-    <section className="py-20 bg-brand-cream relative overflow-hidden">
+    <section className="py-20 bg-brand-bgSoft relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto space-y-3 mb-16">
@@ -54,7 +54,7 @@ export default function FarmToCupStory() {
           <h2 className="font-heading font-extrabold text-3xl sm:text-4xl text-brand-darkGreen">
             Our Farm to Cup Journey
           </h2>
-          <p className="text-sm text-brand-brown leading-relaxed font-light">
+          <p className="text-sm text-brand-mediumGrey leading-relaxed font-light">
             We eliminate middleman traders to support local Himalayan farming communities while guaranteeing you receive the freshest, most potent herbal teas available anywhere.
           </p>
         </div>
@@ -66,7 +66,7 @@ export default function FarmToCupStory() {
             return (
               <div
                 key={item.step}
-                className="bg-white rounded-card p-5 border border-brand-mint/30 shadow-card hover:shadow-premium transition-all duration-300 flex flex-col justify-between group"
+                className="bg-brand-cardWhite rounded-card p-5 border border-brand-mint/30 shadow-card hover:shadow-premium transition-all duration-300 flex flex-col justify-between group"
               >
                 <div>
                   <div className="relative aspect-video rounded-image overflow-hidden mb-4 bg-brand-beige">

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Leaf, Search, ShoppingBag, Heart, User, Menu, X, Shield, ChevronDown, CheckCircle2 } from 'lucide-react';
 import { useStore } from '@/lib/storeContext';
+import SearchModal from './SearchModal';
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -35,7 +36,7 @@ export default function Navbar() {
       </div>
 
       {/* Main Sticky Navbar */}
-      <header className="sticky top-0 z-40 bg-brand-cream/90 backdrop-blur-md border-b border-brand-mint/30 shadow-soft">
+      <header className="sticky top-0 z-40 glass-navbar shadow-soft">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
             {/* Logo */}
@@ -212,45 +213,8 @@ export default function Navbar() {
         )}
       </header>
 
-      {/* Global Search Overlay Modal */}
-      {showSearchModal && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-start justify-center pt-20 px-4">
-          <div className="bg-white rounded-modal shadow-premium w-full max-w-2xl overflow-hidden animate-in fade-in zoom-in-95">
-            <div className="p-4 border-b border-gray-100 flex items-center gap-3">
-              <Search className="w-5 h-5 text-brand-green" />
-              <input
-                type="text"
-                placeholder="Search herbal teas, ingredients (e.g., Chamomile, Detox, Sleep)..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                autoFocus
-                className="w-full text-base focus:outline-none placeholder-gray-400"
-              />
-              <button
-                onClick={() => setShowSearchModal(false)}
-                className="p-1 rounded-full hover:bg-gray-100 text-gray-500"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <div className="p-6 bg-brand-beige/50">
-              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Popular Searches</p>
-              <div className="flex flex-wrap gap-2">
-                {['Himalayan Detox', 'Chamomile Sleep', 'Turmeric Immunity', 'Ashwagandha', 'Oolong Weight Loss', 'Gift Box'].map((term) => (
-                  <Link
-                    key={term}
-                    href={`/shop?q=${encodeURIComponent(term)}`}
-                    onClick={() => setShowSearchModal(false)}
-                    className="text-xs bg-white text-brand-darkGreen border border-brand-mint/40 hover:bg-brand-green hover:text-white px-3 py-1.5 rounded-badge transition-colors"
-                  >
-                    {term}
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Interactive Production-Ready Search Modal */}
+      <SearchModal isOpen={showSearchModal} onClose={() => setShowSearchModal(false)} />
     </>
   );
 }

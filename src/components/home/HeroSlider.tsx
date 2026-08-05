@@ -9,33 +9,43 @@ import { Leaf, ArrowRight, ShieldCheck, Sparkles, ChevronLeft, ChevronRight } fr
 const slides = [
   {
     id: 1,
-    badge: "100% Direct Farm Harvest",
-    title: "Pure Himalayan Sunrise Detox",
-    subtitle: "High-altitude organic green tea infused with wild dandelion root & fresh lemongrass. Gentle daily liver renewal.",
-    ctaText: "Discover Detox Blend",
-    ctaLink: "/product/himalayan-sunrise-detox-blend",
+    badge: "100% Pure Butterfly Pea",
+    title: "Vivid Sapphire Blue Tea",
+    subtitle: "Organic Clitoria Ternatea flowers rich in anthocyanin antioxidants. Experience the magical purple citrus transformation.",
+    ctaText: "Discover Blue Tea",
+    ctaLink: "/product/blue-tea",
     image: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=1600&q=85",
-    tag: "Best Seller • 4.9★",
+    tag: "30 Tea Bags • ₹249",
   },
   {
     id: 2,
-    badge: "Bedtime Restorative Ritual",
-    title: "Midnight Serenity Sleep Elixir",
-    subtitle: "Artisanal Egyptian chamomile whole flowers, French lavender, & grounding valerian root for deep REM sleep.",
-    ctaText: "Explore Sleep Teas",
-    ctaLink: "/product/midnight-serenity-sleep-elixir",
-    image: "https://images.unsplash.com/photo-1514733670139-4d87a1941d55?auto=format&fit=crop&w=1600&q=85",
-    tag: "Zero Caffeine • Organic",
+    badge: "Aromatic Cardamom Infusion",
+    title: "Blue Tea with Elaichi",
+    subtitle: "Vibrant Butterfly Pea flowers with freshly crushed Tellicherry green cardamom. Digestive comfort & soothing warmth.",
+    ctaText: "Explore Elaichi Blue Tea",
+    ctaLink: "/product/blue-tea-with-elaichi",
+    image: "https://images.unsplash.com/photo-1544787219-7f47ccb76574?auto=format&fit=crop&w=1600&q=85",
+    tag: "30 Tea Bags • ₹299",
   },
   {
     id: 3,
-    badge: "Curated Luxury Gift Sets",
-    title: "Royale Wooden Teabox Sampler",
-    subtitle: "Hand-carved mahogany casket containing 6 signature organic teas with custom golden foil greeting cards.",
-    ctaText: "Shop Luxury Gifts",
-    ctaLink: "/product/royale-wooden-teabox-gift-sampler",
-    image: "https://images.unsplash.com/photo-1513201099705-a9746e1e201f?auto=format&fit=crop&w=1600&q=85",
-    tag: "Perfect Gift • Free Shipping",
+    badge: "Ayurvedic Blood Sugar Support",
+    title: "Pre-Diabetic Herbal Tea",
+    subtitle: "Formulated with Gurmar (Sugar Destroyer), Jamun Seed, Methi & Ceylon Cinnamon to regulate glucose levels naturally.",
+    ctaText: "Shop Pre-Diabetic Tea",
+    ctaLink: "/product/pre-diabetic-tea",
+    image: "https://images.unsplash.com/photo-1563822249510-04678c7870a4?auto=format&fit=crop&w=1600&q=85",
+    tag: "30 Tea Bags • ₹425",
+  },
+  {
+    id: 4,
+    badge: "Tridosha Balancing Remedy",
+    title: "Holistic Ayur Tea",
+    subtitle: "Sacred Krishna Tulsi, adaptogenic Ashwagandha & Giloy to build core immunity and harmonize body vitality.",
+    ctaText: "Discover Ayur Tea",
+    ctaLink: "/product/ayur-tea",
+    image: "https://images.unsplash.com/photo-1594631252845-29fc4cc86de5?auto=format&fit=crop&w=1600&q=85",
+    tag: "30 Tea Bags • ₹380",
   },
 ];
 
@@ -53,7 +63,7 @@ export default function HeroSlider() {
   const prevSlide = () => setCurrentIndex((prev) => (prev - 1 + slides.length) % slides.length);
 
   return (
-    <section className="relative w-full min-h-[560px] md:min-h-[640px] bg-brand-darkGreen overflow-hidden flex items-center">
+    <section className="relative w-full min-h-[540px] md:min-h-[600px] bg-brand-darkGreen overflow-hidden flex items-center">
       {/* Background Image Slide with Fade */}
       <AnimatePresence mode="wait">
         <motion.div
@@ -98,16 +108,16 @@ export default function HeroSlider() {
                 <Sparkles className="w-3.5 h-3.5 text-brand-gold" />
                 <span>{slides[currentIndex].badge}</span>
                 <span className="w-1.5 h-1.5 rounded-full bg-brand-gold ml-1"></span>
-                <span className="text-white/80 font-normal">{slides[currentIndex].tag}</span>
+                <span className="text-white/90 font-semibold">{slides[currentIndex].tag}</span>
               </div>
 
-              {/* Title */}
-              <h1 className="font-heading font-extrabold text-3xl sm:text-5xl lg:text-6xl text-white leading-tight tracking-tight">
+              {/* Title: 40-48px on large screens */}
+              <h1 className="font-heading font-extrabold text-3xl sm:text-4xl lg:text-[44px] text-white leading-tight tracking-tight">
                 {slides[currentIndex].title}
               </h1>
 
-              {/* Subtitle */}
-              <p className="text-sm sm:text-base text-brand-beige/90 leading-relaxed font-light max-w-xl">
+              {/* Subtitle: 16-18px */}
+              <p className="text-base sm:text-lg text-brand-beige/90 leading-relaxed font-light max-w-xl">
                 {slides[currentIndex].subtitle}
               </p>
 
@@ -115,7 +125,7 @@ export default function HeroSlider() {
               <div className="pt-4 flex flex-wrap items-center gap-4">
                 <Link
                   href={slides[currentIndex].ctaLink}
-                  className="bg-brand-gold hover:bg-white active:scale-95 text-brand-darkGreen font-bold text-sm px-7 py-3.5 rounded-button shadow-gold hover:shadow-xl flex items-center gap-2 transition-all duration-200 hover:scale-105"
+                  className="btn-primary-gradient text-sm px-7 py-3.5 rounded-button shadow-soft hover:shadow-xl flex items-center gap-2 transition-all duration-200"
                 >
                   <span>{slides[currentIndex].ctaText}</span>
                   <ArrowRight className="w-4 h-4" />
@@ -125,7 +135,7 @@ export default function HeroSlider() {
                   href="/shop"
                   className="bg-white/10 hover:bg-white/20 active:scale-95 text-white font-semibold text-sm px-6 py-3.5 rounded-button border border-white/20 backdrop-blur-md transition-all duration-200 hover:scale-105"
                 >
-                  Browse Full Catalog
+                  Browse All 5 Teas
                 </Link>
               </div>
             </motion.div>
@@ -135,15 +145,15 @@ export default function HeroSlider() {
           <div className="pt-8 border-t border-white/15 grid grid-cols-3 gap-4 text-xs text-brand-beige/80">
             <div className="flex items-center gap-2">
               <ShieldCheck className="w-4 h-4 text-brand-gold" />
-              <span>100% Organically Grown</span>
+              <span>30 Tea Bags per Box</span>
             </div>
             <div className="flex items-center gap-2">
               <Leaf className="w-4 h-4 text-brand-gold" />
-              <span>Single Origin Micro-Farms</span>
+              <span>100% Organic Botanicals</span>
             </div>
             <div className="flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-brand-gold" />
-              <span>No Artificial Flavors</span>
+              <span>Zero Artificial Additives</span>
             </div>
           </div>
         </div>

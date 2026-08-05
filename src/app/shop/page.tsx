@@ -16,7 +16,7 @@ function ShopContent() {
   const [selectedCategory, setSelectedCategory] = useState(initialCategoryQuery);
   const [selectedCaffeine, setSelectedCaffeine] = useState('');
   const [selectedBenefit, setSelectedBenefit] = useState('');
-  const [maxPrice, setMaxPrice] = useState(2500);
+  const [maxPrice, setMaxPrice] = useState(600);
   const [sortOption, setSortOption] = useState('featured');
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
 
@@ -62,7 +62,7 @@ function ShopContent() {
     setSelectedCategory('');
     setSelectedCaffeine('');
     setSelectedBenefit('');
-    setMaxPrice(2500);
+    setMaxPrice(600);
     setSortOption('featured');
   };
 
@@ -195,7 +195,7 @@ function ShopContent() {
             <div className="space-y-2 pt-3 border-t border-gray-100">
               <h4 className="text-xs font-bold uppercase tracking-wider text-brand-darkGreen">Health Benefit</h4>
               <div className="flex flex-wrap gap-1.5 text-[11px]">
-                {['Detox', 'Sleep', 'Immunity', 'Stress', 'Bloating', 'Weight'].map((ben) => (
+                {['Antioxidant', 'Digestion', 'Immunity', 'Blood Sugar', 'Stress', 'Skin Glow'].map((ben) => (
                   <button
                     key={ben}
                     onClick={() => setSelectedBenefit(selectedBenefit === ben ? '' : ben)}
@@ -216,9 +216,9 @@ function ShopContent() {
               </div>
               <input
                 type="range"
-                min="400"
-                max="2500"
-                step="50"
+                min="100"
+                max="600"
+                step="25"
                 value={maxPrice}
                 onChange={(e) => setMaxPrice(Number(e.target.value))}
                 className="w-full accent-brand-green cursor-pointer"

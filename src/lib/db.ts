@@ -50,11 +50,11 @@ class InMemoryStore {
       items: [
         {
           productId: "prod-1",
-          productName: "Himalayan Sunrise Detox Blend",
+          productName: "Blue Tea",
           image: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=1000&q=80",
-          weight: "100g Loose Leaf",
+          weight: "30 Tea Bags",
           quantity: 2,
-          price: 499
+          price: 249
         }
       ],
       shippingAddress: {
@@ -72,11 +72,11 @@ class InMemoryStore {
       orderStatus: "Shipped",
       trackingNumber: "SR-884920194",
       courierName: "Shiprocket Express",
-      subtotal: 998,
-      discount: 100,
+      subtotal: 498,
+      discount: 50,
       shippingFee: 0,
-      tax: 44.9,
-      total: 942.9,
+      tax: 22.4,
+      total: 470.4,
       estimatedDelivery: "August 6, 2026"
     }
   ];

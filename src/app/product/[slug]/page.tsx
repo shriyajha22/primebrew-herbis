@@ -13,14 +13,9 @@ import { Star, Heart, ShoppingBag, Timer, ShieldCheck, Truck, RefreshCw, CheckCi
 export default function ProductDetailPage({ params }: { params: { slug: string } }) {
   const { slug } = params;
   const product = initialProducts.find((p) => p.slug === slug || p._id === slug);
-
-  if (!product) {
-    return notFound();
-  }
-
   const { addToCart, toggleWishlist, isInWishlist, showToast } = useStore();
   const [selectedImage, setSelectedImage] = useState(0);
-  const [selectedWeight, setSelectedWeight] = useState(product.weightVariants?.[0]?.weight || "Standard");
+  const [selectedWeight, setSelectedWeight] = useState(product?.weightVariants?.[0]?.weight || "30 Tea Bags");
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState<'ingredients' | 'benefits' | 'brewing' | 'nutrition' | 'reviews'>('ingredients');
   const [showBrewingGuide, setShowBrewingGuide] = useState(false);
@@ -30,7 +25,11 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
   const [reviewTitle, setReviewTitle] = useState('');
   const [reviewComment, setReviewComment] = useState('');
   const [reviewRating, setReviewRating] = useState(5);
-  const [reviewsList, setReviewsList] = useState(initialReviews.filter((r) => r.productId === product._id || true));
+  const [reviewsList, setReviewsList] = useState(initialReviews.filter((r) => r.productId === product?._id || true));
+
+  if (!product) {
+    return notFound();
+  }
 
   const selectedVariant = product.weightVariants?.find((v) => v.weight === selectedWeight);
   const currentPrice = selectedVariant ? selectedVariant.price : product.price;
@@ -157,6 +156,30 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
                 </span>
               </div>
 
+              {/* Key Highlights: Net Quantity, Flavor & Storage */}
+              <div className="grid grid-cols-2 gap-3 p-3 bg-brand-beige/80 rounded-card border border-brand-mint/30 text-xs">
+                <div>
+                  <span className="text-[10px] text-gray-500 font-bold uppercase block">Net Quantity</span>
+                  <span className="font-bold text-brand-darkGreen">30 Tea Bags</span>
+                </div>
+                <div>
+                  <span className="text-[10px] text-gray-500 font-bold uppercase block">Caffeine Level</span>
+                  <span className="font-bold text-brand-darkGreen">{product.caffeineLevel}</span>
+                </div>
+                {product.flavorProfile && (
+                  <div className="col-span-2 border-t border-brand-mint/20 pt-2">
+                    <span className="text-[10px] text-gray-500 font-bold uppercase block">Flavor Profile</span>
+                    <span className="text-gray-700 font-medium">{product.flavorProfile}</span>
+                  </div>
+                )}
+                {product.storageInstructions && (
+                  <div className="col-span-2 border-t border-brand-mint/20 pt-2">
+                    <span className="text-[10px] text-gray-500 font-bold uppercase block">Storage Instructions</span>
+                    <span className="text-gray-700">{product.storageInstructions}</span>
+                  </div>
+                )}
+              </div>
+
               {/* Price & Savings */}
               <div className="bg-brand-beige/60 p-4 rounded-card border border-brand-mint/30 flex items-baseline gap-3">
                 <span className="font-heading font-extrabold text-3xl text-brand-green">
@@ -198,17 +221,19 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
               {/* Quantity Selector */}
               <div className="flex items-center gap-4">
                 <span className="text-xs font-bold text-brand-darkGreen uppercase tracking-wider">Quantity:</span>
-                <div className="flex items-center border border-gray-300 rounded-button bg-brand-beige">
+                <div className="flex items-center gap-2">
                   <button
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="px-3 py-1.5 text-xs text-brand-darkGreen font-bold"
+                    className="w-8 h-8 rounded-full btn-action-decrease flex items-center justify-center font-bold text-sm shadow-soft"
+                    title="Decrease Quantity"
                   >
                     -
                   </button>
-                  <span className="px-3 text-xs font-bold text-brand-darkGreen">{quantity}</span>
+                  <span className="w-8 text-center text-sm font-bold text-brand-darkGreen">{quantity}</span>
                   <button
                     onClick={() => setQuantity(quantity + 1)}
-                    className="px-3 py-1.5 text-xs text-brand-darkGreen font-bold"
+                    className="w-8 h-8 rounded-full btn-action-increase flex items-center justify-center font-bold text-sm shadow-soft"
+                    title="Increase Quantity"
                   >
                     +
                   </button>
@@ -221,9 +246,9 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
               <div className="flex gap-3">
                 <button
                   onClick={() => addToCart(product, selectedWeight, quantity)}
-                  className="flex-1 bg-brand-green hover:bg-brand-darkGreen text-white font-bold text-sm py-4 rounded-button shadow-soft flex items-center justify-center gap-2 transition-all hover:scale-102"
+                  className="flex-1 btn-primary-gradient text-sm py-4 rounded-button shadow-soft flex items-center justify-center gap-2 transition-all hover:scale-102"
                 >
-                  <ShoppingBag className="w-5 h-5 text-brand-gold" />
+                  <ShoppingBag className="w-5 h-5 text-white" />
                   Add to Cart • ₹{currentPrice * quantity}
                 </button>
 

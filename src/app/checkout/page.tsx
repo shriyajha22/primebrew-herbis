@@ -389,7 +389,7 @@ export default function CheckoutPage() {
             <button
               type="submit"
               disabled={isProcessing || cart.length === 0}
-              className="w-full bg-brand-green hover:bg-brand-darkGreen text-white font-bold text-sm py-4 rounded-button shadow-soft flex items-center justify-center gap-2 transition-all disabled:opacity-50"
+              className="w-full btn-primary-gradient text-sm py-4 rounded-button shadow-soft flex items-center justify-center gap-2 transition-all disabled:opacity-50"
             >
               {isProcessing ? (
                 <span className="animate-pulse">Processing Payment...</span>

@@ -34,6 +34,10 @@ export interface Product {
     fat: string;
     antioxidants: string;
   };
+  flavorProfile?: string;
+  storageInstructions?: string;
+  netQuantity?: string;
+  keyHerbs?: string[];
   certifications: string[]; // e.g., ["100% Organic", "USDA Certified", "Non-GMO", "Direct Farm Sourced"]
   sku: string;
   origin: string; // e.g., "Darjeeling High Altitude Farms"

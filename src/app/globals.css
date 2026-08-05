@@ -9,14 +9,27 @@
   --font-inter: 'Inter', sans-serif;
   --font-jetbrains: 'JetBrains Mono', monospace;
 
-  --color-primary: #2E7D32;
-  --color-dark-green: #1B5E20;
-  --color-mint: #A5D6A7;
-  --color-beige: #F8F5F0;
-  --color-cream: #FFFDF8;
-  --color-brown: #6D4C41;
+  /* Herbal Green Palette */
+  --color-primary: #6FAF5A;        /* Soft herbal green */
+  --color-secondary: #8BCB75;      /* Soft sage green */
+  --color-accent: #A8D89C;         /* Light herbal green */
+  --color-dark-green: #3B5B30;     /* Deep herbal green */
+
+  /* Warm Beige Backgrounds */
+  --color-bg-beige: #F8F4EC;       /* Main warm beige */
+  --color-bg-soft: #F5F1E8;        /* Soft natural shade */
+  --color-card-beige: #FFFDF9;     /* Warm off-white card */
+
+  /* Text Colors */
+  --color-dark-grey: #2C352B;      /* Dark natural charcoal */
+  --color-medium-grey: #556054;    /* Medium sage grey */
+
+  /* Action Buttons */
+  --color-increase: #6FAF5A;       /* Herbal green */
+  --color-decrease: #E69C45;       /* Warm orange */
+  --color-remove: rgb(215, 65, 65);/* Muted red */
+
   --color-gold: #D4AF37;
-  --color-charcoal: #2F2F2F;
 }
 
 html {
@@ -25,13 +38,17 @@ html {
 
 body {
   font-family: var(--font-inter);
-  background-color: #FFFDF8;
-  color: #2F2F2F;
+  background-color: #F8F4EC;
+  color: #2C352B;
+  font-size: 1rem; /* 16px default body */
+  line-height: 1.65; /* Balanced whitespace */
   overflow-x: hidden;
 }
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-poppins);
+  color: #2C352B;
+  letter-spacing: -0.015em;
 }
 
 /* Global Micro-Interactions & Tactile Button / Link Feedback */
@@ -51,15 +68,15 @@ a:active,
   opacity: 0.92;
 }
 
-/* Focused Ring Styling for Accessibility & High Contrast Feedback */
+/* Focused Ring Styling for Accessibility */
 button:focus-visible, 
 a:focus-visible, 
 input:focus-visible, 
 select:focus-visible, 
 textarea:focus-visible {
-  outline: 2px solid #2E7D32;
+  outline: 2px solid #6FAF5A;
   outline-offset: 3px;
-  box-shadow: 0 0 0 4px rgba(46, 125, 50, 0.15);
+  box-shadow: 0 0 0 4px rgba(111, 175, 90, 0.2);
 }
 
 /* Custom Scrollbar */
@@ -68,29 +85,86 @@ textarea:focus-visible {
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #F8F5F0;
+  background: #F8F4EC;
 }
 ::-webkit-scrollbar-thumb {
-  background: #A5D6A7;
+  background: #A8D89C;
   border-radius: 999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #2E7D32;
+  background: #6FAF5A;
 }
 
-/* Custom Glassmorphism */
+/* Glassmorphism Navbar (Warm Beige blur + transparent) */
+.glass-navbar {
+  background: rgba(248, 244, 236, 0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(168, 216, 156, 0.35);
+}
+
 .glass-panel {
-  background: rgba(255, 253, 248, 0.85);
+  background: rgba(255, 253, 249, 0.94);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(165, 214, 167, 0.25);
+  border: 1px solid rgba(168, 216, 156, 0.3);
 }
 
 .glass-dark {
-  background: rgba(18, 18, 18, 0.85);
+  background: rgba(43, 68, 34, 0.94);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* Button Gradients */
+.btn-primary-gradient {
+  background: linear-gradient(270deg, #A8D89C, #8BCB75, #6FAF5A);
+  color: #FFFFFF;
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 15px rgba(111, 175, 90, 0.25);
+}
+
+.btn-primary-gradient:hover {
+  background: linear-gradient(270deg, #8BCB75, #6FAF5A, #589745);
+  box-shadow: 0 6px 20px rgba(88, 151, 69, 0.3);
+  transform: translateY(-2px);
+}
+
+/* Action Buttons */
+.btn-action-increase {
+  background-color: #6FAF5A;
+  color: #FFFFFF;
+  transition: all 0.2s ease;
+}
+.btn-action-increase:hover {
+  background-color: #589745;
+  transform: scale(1.08);
+}
+
+.btn-action-decrease {
+  background-color: #E69C45;
+  color: #FFFFFF;
+  transition: all 0.2s ease;
+}
+.btn-action-decrease:hover {
+  background-color: #D4872D;
+  transform: scale(1.08);
+}
+
+.btn-action-remove {
+  color: rgb(215, 65, 65);
+  transition: all 0.2s ease;
+}
+.btn-action-remove:hover {
+  background-color: rgba(215, 65, 65, 0.1);
+  color: rgb(185, 45, 45);
+}
+
+/* Soft Shadows */
+.soft-card-shadow {
+  box-shadow: 0 6px 24px -4px rgba(60, 90, 50, 0.08), 0 2px 8px -2px rgba(0, 0, 0, 0.03);
 }
 
 /* Gold Accent Gradient */
@@ -101,28 +175,28 @@ textarea:focus-visible {
 }
 
 .green-gradient {
-  background: linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%);
+  background: linear-gradient(270deg, #A8D89C 0%, #8BCB75 50%, #6FAF5A 100%);
 }
 
 .green-gradient-text {
-  background: linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%);
+  background: linear-gradient(270deg, #8BCB75 0%, #6FAF5A 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-/* Interactive Card Elevate & Ripple Effect */
+/* Interactive Card Elevate */
 .interactive-card {
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .interactive-card:hover {
-  transform: translateY(-4px) scale(1.01);
-  box-shadow: 0 12px 30px -8px rgba(27, 94, 32, 0.15);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px -8px rgba(111, 175, 90, 0.2);
 }
 
 /* Pulse animation for live badge */
 @keyframes softPulse {
   0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.7; transform: scale(1.05); }
+  50% { opacity: 0.75; transform: scale(1.04); }
 }
 
 .animate-soft-pulse {

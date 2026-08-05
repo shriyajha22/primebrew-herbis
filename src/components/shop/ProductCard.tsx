@@ -107,14 +107,14 @@ export default function ProductCard({ product }: { product: Product }) {
                   <span className="text-xs text-gray-400 line-through">₹{product.mrp}</span>
                 )}
               </div>
-              <span className="text-[10px] text-gray-400 block">{product.caffeineLevel}</span>
+              <span className="text-[11px] text-brand-darkGreen font-semibold block mt-0.5">30 Tea Bags • {product.caffeineLevel}</span>
             </div>
 
             <button
               onClick={() => addToCart(product)}
-              className="bg-brand-green hover:bg-brand-darkGreen active:scale-95 text-white text-xs font-semibold px-3.5 py-2 rounded-button shadow-soft hover:shadow-md flex items-center gap-1.5 transition-all duration-200 hover:scale-105"
+              className="btn-primary-gradient text-xs font-semibold px-4 py-2 rounded-button shadow-soft flex items-center gap-1.5 transition-all duration-200"
             >
-              <ShoppingBag className="w-3.5 h-3.5 text-brand-gold" />
+              <ShoppingBag className="w-3.5 h-3.5 text-white" />
               <span>Add</span>
             </button>
           </div>

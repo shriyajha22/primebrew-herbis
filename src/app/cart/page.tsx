@@ -69,7 +69,7 @@ export default function CartPage() {
                           <span className="text-[11px] text-gray-500 block">{item.selectedWeight}</span>
                           <button
                             onClick={() => removeFromCart(item.product._id, item.selectedWeight)}
-                            className="text-[11px] text-red-600 hover:underline flex items-center gap-1 mt-1"
+                            className="text-[11px] btn-action-remove font-semibold flex items-center gap-1 mt-1 px-1.5 py-0.5 rounded hover:bg-red-50"
                           >
                             <Trash2 className="w-3 h-3" /> Remove
                           </button>
@@ -81,19 +81,21 @@ export default function CartPage() {
                       </div>
 
                       <div className="col-span-2 flex justify-center">
-                        <div className="flex items-center border border-gray-200 rounded-button bg-brand-beige">
+                        <div className="flex items-center gap-1.5">
                           <button
                             onClick={() => updateQuantity(item.product._id, item.selectedWeight, item.quantity - 1)}
-                            className="px-2 py-1 text-xs text-gray-600 hover:text-brand-green"
+                            className="w-6 h-6 rounded-full btn-action-decrease flex items-center justify-center shadow-soft"
+                            title="Decrease Quantity"
                           >
-                            <Minus className="w-3 h-3" />
+                            <Minus className="w-3 h-3 text-white" />
                           </button>
-                          <span className="px-2 font-bold text-brand-darkGreen">{item.quantity}</span>
+                          <span className="w-6 text-center font-bold text-brand-darkGreen">{item.quantity}</span>
                           <button
                             onClick={() => updateQuantity(item.product._id, item.selectedWeight, item.quantity + 1)}
-                            className="px-2 py-1 text-xs text-gray-600 hover:text-brand-green"
+                            className="w-6 h-6 rounded-full btn-action-increase flex items-center justify-center shadow-soft"
+                            title="Increase Quantity"
                           >
-                            <Plus className="w-3 h-3" />
+                            <Plus className="w-3 h-3 text-white" />
                           </button>
                         </div>
                       </div>
@@ -142,7 +144,7 @@ export default function CartPage() {
 
               <Link
                 href="/checkout"
-                className="w-full bg-brand-green hover:bg-brand-darkGreen text-white font-bold text-sm py-3.5 rounded-button shadow-soft flex items-center justify-center gap-2 transition-all"
+                className="w-full btn-primary-gradient py-3.5 rounded-button shadow-soft flex items-center justify-center gap-2 transition-all"
               >
                 <span>Proceed to Checkout</span>
                 <ArrowRight className="w-4 h-4" />

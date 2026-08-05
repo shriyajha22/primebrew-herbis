@@ -11,26 +11,34 @@ const config: Config = {
     extend: {
       colors: {
         brand: {
-          green: "#2E7D32",
-          darkGreen: "#1B5E20",
-          mint: "#A5D6A7",
-          beige: "#F8F5F0",
-          cream: "#FFFDF8",
-          brown: "#6D4C41",
+          green: "#6FAF5A",         // Soft herbal primary green
+          darkGreen: "#3B5B30",     // Deep herbal green
+          softGreen: "#8BCB75",     // Secondary soft sage green
+          accentGreen: "#A8D89C",   // Light herbal green accent
+          mint: "#A8D89C",          // Light green border / badge
+          bgBeige: "#F8F4EC",       // Warm beige primary background
+          bgSoft: "#F5F1E8",        // Soft natural shade
+          cardBeige: "#FFFDF9",     // Off-white / warm beige cards
+          cardWhite: "#FFFDF9",     // Warm card background
+          darkGrey: "#2C352B",      // Dark natural charcoal text
+          mediumGrey: "#556054",    // Medium sage grey text
+          actionIncrease: "#6FAF5A",// Green +
+          actionDecrease: "#E69C45",// Warm Orange -
+          actionRemove: "rgb(215, 65, 65)", // Muted Red remove
           gold: "#D4AF37",
-          charcoal: "#2F2F2F",
-          lightGray: "#F3F4F6",
-          darkBg: "#121212",
-          darkCard: "#1E1E1E",
+          charcoal: "#2C352B",
+          lightGray: "#F3EEE4",
+          darkBg: "#1F291E",
+          darkCard: "#2B372A",
         },
       },
       borderRadius: {
         badge: "999px",
-        input: "10px",
+        input: "12px",
         button: "12px",
-        card: "16px",
-        modal: "18px",
-        image: "20px",
+        card: "14px",
+        modal: "16px",
+        image: "14px",
       },
       fontFamily: {
         heading: ["var(--font-poppins)", "sans-serif"],
@@ -38,10 +46,10 @@ const config: Config = {
         mono: ["var(--font-jetbrains)", "monospace"],
       },
       boxShadow: {
-        soft: "0 4px 20px -2px rgba(46, 125, 50, 0.08)",
-        card: "0 10px 30px -5px rgba(0, 0, 0, 0.05)",
-        premium: "0 20px 40px -15px rgba(27, 94, 32, 0.15)",
-        gold: "0 4px 15px rgba(212, 175, 55, 0.25)",
+        soft: "0 4px 20px -2px rgba(111, 175, 90, 0.12)",
+        card: "0 6px 24px -4px rgba(60, 90, 50, 0.08), 0 2px 8px -2px rgba(0, 0, 0, 0.03)",
+        premium: "0 14px 35px -10px rgba(59, 91, 48, 0.15)",
+        gold: "0 4px 15px rgba(212, 175, 55, 0.2)",
       },
     },
   },

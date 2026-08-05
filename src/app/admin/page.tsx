@@ -16,9 +16,9 @@ export default function AdminDashboardPage() {
 
   // New product form
   const [newProdName, setNewProdName] = useState('');
-  const [newProdCategory, setNewProdCategory] = useState('detox-tea');
-  const [newProdPrice, setNewProdPrice] = useState(499);
-  const [newProdMrp, setNewProdMrp] = useState(699);
+  const [newProdCategory, setNewProdCategory] = useState('blue-tea');
+  const [newProdPrice, setNewProdPrice] = useState(299);
+  const [newProdMrp, setNewProdMrp] = useState(399);
   const [newProdStock, setNewProdStock] = useState(50);
   const [newProdDesc, setNewProdDesc] = useState('');
 
@@ -54,7 +54,7 @@ export default function AdminDashboardPage() {
       _id: `prod-${Date.now()}`,
       name: newProdName,
       slug: newProdName.toLowerCase().replace(/ /g, '-'),
-      subtitle: 'Artisanal Organic Herbal Blend',
+      subtitle: 'Artisanal Organic Herbal Blend (30 Tea Bags)',
       description: newProdDesc || 'Farm-fresh botanical tea crafted with care.',
       category: newProdCategory,
       categoryName: newProdCategory.replace('-', ' ').toUpperCase(),
@@ -66,7 +66,7 @@ export default function AdminDashboardPage() {
       stock: newProdStock,
       inStock: newProdStock > 0,
       images: ['https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=1000&q=80'],
-      weightVariants: [{ weight: '100g Loose Leaf', price: newProdPrice, mrp: newProdMrp }],
+      weightVariants: [{ weight: '30 Tea Bags', price: newProdPrice, mrp: newProdMrp }],
       ingredients: [{ name: 'Organic Botanicals', description: 'Hand-picked herbs' }],
       benefits: ['Promotes natural vitality', 'Rich in antioxidants'],
       caffeineLevel: 'Zero Caffeine',
@@ -143,7 +143,7 @@ export default function AdminDashboardPage() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="bg-white p-5 rounded-card border border-brand-mint/30 shadow-card">
                 <div className="flex items-center justify-between text-xs text-gray-500 mb-1">
-                  <span>Today's Sales</span>
+                  <span>Today&apos;s Sales</span>
                   <DollarSign className="w-4 h-4 text-brand-green" />
                 </div>
                 <span className="font-heading font-extrabold text-2xl text-brand-darkGreen">₹3,490</span>

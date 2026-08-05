@@ -101,7 +101,7 @@ export default function Footer() {
               <li><Link href="/shop?category=immunity-tea" className="hover:text-brand-gold transition-colors">Immunity Boosters</Link></li>
               <li><Link href="/shop?category=weight-loss-tea" className="hover:text-brand-gold transition-colors">Weight Loss & Oolong</Link></li>
               <li><Link href="/shop?category=stress-relief-tea" className="hover:text-brand-gold transition-colors">Stress Relief & Adaptogens</Link></li>
-              <li><Link href="/shop?category=womens-wellness-tea" className="hover:text-brand-gold transition-colors">Women's Wellness</Link></li>
+              <li><Link href="/shop?category=womens-wellness-tea" className="hover:text-brand-gold transition-colors">Women&apos;s Wellness</Link></li>
               <li><Link href="/shop?category=gift-boxes" className="hover:text-brand-gold transition-colors">Luxury Gift Boxes</Link></li>
               <li><Link href="/shop?category=accessories" className="hover:text-brand-gold transition-colors">Teapots & Infusers</Link></li>
             </ul>

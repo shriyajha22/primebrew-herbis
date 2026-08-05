@@ -16,7 +16,7 @@ export default function QuickViewModal({
 }) {
   const { addToCart, toggleWishlist, isInWishlist } = useStore();
   const [selectedWeight, setSelectedWeight] = useState(
-    product.weightVariants?.[0]?.weight || "100g Loose Leaf"
+    product.weightVariants?.[0]?.weight || "30 Tea Bags"
   );
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState<'ingredients' | 'benefits' | 'nutrition'>('ingredients');
@@ -58,6 +58,8 @@ export default function QuickViewModal({
             <div className="flex items-center gap-2 text-xs text-brand-green font-semibold">
               <Leaf className="w-3.5 h-3.5" />
               <span>{product.categoryName}</span>
+              <span className="text-gray-300">•</span>
+              <span className="bg-brand-mint/40 text-brand-darkGreen font-bold px-2 py-0.5 rounded">30 Tea Bags</span>
               <span className="text-gray-300">•</span>
               <span className="text-gray-500">{product.caffeineLevel}</span>
             </div>
@@ -173,9 +175,9 @@ export default function QuickViewModal({
                   addToCart(product, selectedWeight, quantity);
                   onClose();
                 }}
-                className="flex-1 bg-brand-green hover:bg-brand-darkGreen text-white font-bold text-xs py-3 rounded-button shadow-soft flex items-center justify-center gap-2 transition-colors"
+                className="flex-1 btn-primary-gradient text-xs py-3 rounded-button shadow-soft flex items-center justify-center gap-2 transition-all"
               >
-                <ShoppingBag className="w-4 h-4 text-brand-gold" />
+                <ShoppingBag className="w-4 h-4 text-white" />
                 Add to Cart • ₹{currentPrice * quantity}
               </button>
               <button

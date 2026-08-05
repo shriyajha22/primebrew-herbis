@@ -102,7 +102,7 @@ function DashboardContent() {
                       <h3 className="font-heading font-bold text-base text-brand-darkGreen mt-1">
                         Order #PBH-2026-9812
                       </h3>
-                      <p className="text-xs text-gray-500">Placed on August 3, 2026 • Total: ₹942.90</p>
+                      <p className="text-xs text-gray-500">Placed on August 3, 2026 • Total: ₹470.40</p>
                     </div>
                     <Link
                       href="/track-order?orderNumber=PBH-2026-9812"
@@ -132,8 +132,8 @@ function DashboardContent() {
                       <Image src="https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=200&q=80" alt="" fill className="object-cover" />
                     </div>
                     <div className="text-xs">
-                      <h4 className="font-bold text-brand-darkGreen">Himalayan Sunrise Detox Blend</h4>
-                      <p className="text-gray-500">Quantity: 2 x 100g Loose Leaf</p>
+                      <h4 className="font-bold text-brand-darkGreen">Blue Tea</h4>
+                      <p className="text-gray-500">Quantity: 2 x 30 Tea Bags</p>
                     </div>
                   </div>
                 </div>

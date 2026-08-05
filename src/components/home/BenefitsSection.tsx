@@ -57,7 +57,7 @@ const benefits = [
 
 export default function BenefitsSection() {
   return (
-    <section className="py-20 bg-brand-beige relative">
+    <section className="py-20 bg-brand-bgBeige relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
@@ -68,13 +68,13 @@ export default function BenefitsSection() {
             <h2 className="font-heading font-extrabold text-3xl sm:text-4xl text-brand-darkGreen">
               Why Drink Herbal Teas?
             </h2>
-            <p className="text-sm text-gray-600 leading-relaxed font-light">
+            <p className="text-sm text-brand-mediumGrey leading-relaxed font-light">
               Unlike caffeinated beverages that cause energy crashes, pure plant botanicals deliver bio-available vitamins, antioxidants, and adaptogenic support for sustained long-term health.
             </p>
           </div>
           <Link
             href="/tea-benefits"
-            className="inline-flex items-center gap-2 text-xs font-bold text-brand-green hover:text-brand-darkGreen transition-colors uppercase tracking-wider bg-white px-5 py-3 rounded-button border border-brand-mint/40 shadow-soft"
+            className="inline-flex items-center gap-2 text-xs font-bold text-brand-green hover:text-brand-darkGreen transition-colors uppercase tracking-wider bg-brand-cardWhite px-5 py-3 rounded-button border border-brand-mint/40 shadow-soft"
           >
             <span>Explore Science & Benefits Guide</span>
             <ArrowUpRight className="w-4 h-4" />

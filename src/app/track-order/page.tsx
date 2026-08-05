@@ -116,7 +116,7 @@ function TrackOrderContent() {
               </div>
             ) : (
               <div className="bg-white p-8 rounded-card border border-brand-mint/30 shadow-card text-center text-xs space-y-2">
-                <p className="font-bold text-red-600">No order found matching "{orderNumber}"</p>
+                <p className="font-bold text-red-600">No order found matching &quot;{orderNumber}&quot;</p>
                 <p className="text-gray-500">Please check your confirmation email for your PBH order number or contact customer care.</p>
               </div>
             )}

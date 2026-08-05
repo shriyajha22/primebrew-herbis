@@ -27,7 +27,7 @@ export const initialCategories: Category[] = [
     slug: "ayurvedic-tea",
     description: "Tridosha balancing infusions infused with adaptogenic Ashwagandha & Sacred Tulsi.",
     iconName: "ShieldCheck",
-    image: "https://images.unsplash.com/photo-1597481499750-3e6b22637e12?auto=format&fit=crop&w=800&q=80",
+    image: "https://images.unsplash.com/photo-1571934811356-5cc561d6821f?auto=format&fit=crop&w=800&q=80",
     itemCount: 1,
     featured: true,
   },
@@ -306,7 +306,7 @@ export const initialProducts: Product[] = [
     isBestSeller: true,
     isNewArrival: false,
     images: [
-      "https://images.unsplash.com/photo-1597481499750-3e6b22637e12?auto=format&fit=crop&w=1000&q=80",
+      "https://images.unsplash.com/photo-1571934811356-5cc561d6821f?auto=format&fit=crop&w=1000&q=80",
       "https://images.unsplash.com/photo-1544787219-7f47ccb76574?auto=format&fit=crop&w=1000&q=80"
     ],
     weightVariants: [

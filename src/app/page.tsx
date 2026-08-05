@@ -7,8 +7,8 @@ import HeroSlider from '@/components/home/HeroSlider';
 import FarmToCupStory from '@/components/home/FarmToCupStory';
 import BenefitsSection from '@/components/home/BenefitsSection';
 import ProductCard from '@/components/shop/ProductCard';
-import { initialCategories, initialProducts, initialBlogs, initialReviews } from '@/lib/seedData';
-import { ArrowRight, Star, Quote, CheckCircle2, Instagram, Heart } from 'lucide-react';
+import { initialCategories, initialProducts, initialBlogs } from '@/lib/seedData';
+import { ArrowRight, Star, ShieldCheck, Package, Truck, Leaf, Sparkles, Heart, Instagram } from 'lucide-react';
 
 export default function HomePage() {
   const [activeTab, setActiveTab] = useState<'all' | 'blue' | 'wellness'>('all');
@@ -151,48 +151,82 @@ export default function HomePage() {
       {/* Benefits Grid */}
       <BenefitsSection />
 
-      {/* Customer Testimonials Carousel Section */}
-      <section className="py-16 bg-white border-y border-brand-mint/30">
+      {/* Why Choose PrimeBrew Herbis & Our Commitment */}
+      <section className="py-16 bg-brand-cardWhite border-y border-brand-mint/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto space-y-3 mb-12">
             <span className="text-xs font-bold uppercase tracking-widest text-brand-green bg-brand-mint/30 px-3.5 py-1.5 rounded-badge">
-              Verified Customer Feedback
+              Why Choose PrimeBrew Herbis
             </span>
             <h2 className="font-heading font-bold text-2xl sm:text-3xl text-brand-darkGreen">
-              Loved by 25,000+ Wellness Enthusiasts
+              Our Commitment to Pure Herbal Quality
             </h2>
+            <p className="text-xs sm:text-sm text-brand-mediumGrey leading-relaxed font-light">
+              We partner directly with high-altitude Himalayan micro-farms to bring you 100% natural, additive-free botanical infusions.
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {initialReviews.map((rev) => (
-              <div
-                key={rev._id}
-                className="bg-brand-beige p-6 rounded-card border border-brand-mint/30 shadow-card flex flex-col justify-between space-y-4 relative"
-              >
-                <Quote className="w-8 h-8 text-brand-mint absolute top-4 right-4" />
-                <div className="space-y-3">
-                  <div className="flex items-center gap-1 text-amber-400">
-                    {[...Array(rev.rating)].map((_, i) => (
-                      <Star key={i} className="w-4 h-4 fill-amber-400" />
-                    ))}
-                  </div>
-                  <h4 className="font-heading font-bold text-sm text-brand-darkGreen">{rev.title}</h4>
-                  <p className="text-xs text-gray-600 leading-relaxed font-light">&quot;{rev.comment}&quot;</p>
-                </div>
-
-                <div className="flex items-center gap-3 pt-3 border-t border-brand-mint/20">
-                  <div className="w-10 h-10 rounded-full overflow-hidden relative bg-gray-200">
-                    <Image src={rev.userAvatar || ''} alt={rev.userName} fill className="object-cover" />
-                  </div>
-                  <div>
-                    <h5 className="font-bold text-xs text-brand-darkGreen">{rev.userName}</h5>
-                    <span className="text-[10px] text-emerald-700 font-semibold flex items-center gap-1">
-                      <CheckCircle2 className="w-3 h-3" /> Verified Buyer
-                    </span>
-                  </div>
-                </div>
+          {/* 4 Feature Cards Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            <div className="bg-brand-bgBeige p-6 rounded-card border border-brand-mint/30 shadow-soft text-center space-y-3">
+              <div className="w-12 h-12 rounded-full bg-brand-green/10 text-brand-green flex items-center justify-center mx-auto">
+                <Leaf className="w-6 h-6" />
               </div>
-            ))}
+              <h3 className="font-heading font-bold text-sm text-brand-darkGreen">100% Natural Botanicals</h3>
+              <p className="text-xs text-brand-mediumGrey font-light leading-relaxed">
+                Zero artificial flavors, synthetic colors, or preservatives. Only pure dried flowers, roots & spices.
+              </p>
+            </div>
+
+            <div className="bg-brand-bgBeige p-6 rounded-card border border-brand-mint/30 shadow-soft text-center space-y-3">
+              <div className="w-12 h-12 rounded-full bg-brand-green/10 text-brand-green flex items-center justify-center mx-auto">
+                <ShieldCheck className="w-6 h-6" />
+              </div>
+              <h3 className="font-heading font-bold text-sm text-brand-darkGreen">Lab Checked Quality</h3>
+              <p className="text-xs text-brand-mediumGrey font-light leading-relaxed">
+                Every micro-batch is tested for heavy metals, pesticides, and essential oil aroma purity.
+              </p>
+            </div>
+
+            <div className="bg-brand-bgBeige p-6 rounded-card border border-brand-mint/30 shadow-soft text-center space-y-3">
+              <div className="w-12 h-12 rounded-full bg-brand-green/10 text-brand-green flex items-center justify-center mx-auto">
+                <Package className="w-6 h-6" />
+              </div>
+              <h3 className="font-heading font-bold text-sm text-brand-darkGreen">Small-Batch Packaging</h3>
+              <p className="text-xs text-brand-mediumGrey font-light leading-relaxed">
+                Hand-packed in airtight, eco-friendly tin canisters to preserve fragile volatile oils.
+              </p>
+            </div>
+
+            <div className="bg-brand-bgBeige p-6 rounded-card border border-brand-mint/30 shadow-soft text-center space-y-3">
+              <div className="w-12 h-12 rounded-full bg-brand-green/10 text-brand-green flex items-center justify-center mx-auto">
+                <Truck className="w-6 h-6" />
+              </div>
+              <h3 className="font-heading font-bold text-sm text-brand-darkGreen">Fast Pan-India Shipping</h3>
+              <p className="text-xs text-brand-mediumGrey font-light leading-relaxed">
+                Free express courier shipping across India on orders above ₹799 with real-time tracking.
+              </p>
+            </div>
+          </div>
+
+          {/* Modest Realistic Startup Metrics Bar */}
+          <div className="bg-brand-darkGreen text-white rounded-card p-6 sm:p-8 shadow-premium grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+            <div>
+              <span className="font-heading font-extrabold text-2xl sm:text-3xl text-brand-gold block">10+</span>
+              <span className="text-xs text-brand-mint/90 font-medium">Curated Herbal Blends</span>
+            </div>
+            <div>
+              <span className="font-heading font-extrabold text-2xl sm:text-3xl text-brand-gold block">500+</span>
+              <span className="text-xs text-brand-mint/90 font-medium">Orders Fulfilled</span>
+            </div>
+            <div>
+              <span className="font-heading font-extrabold text-2xl sm:text-3xl text-brand-gold block">100+</span>
+              <span className="text-xs text-brand-mint/90 font-medium">Happy Customers</span>
+            </div>
+            <div>
+              <span className="font-heading font-extrabold text-2xl sm:text-3xl text-brand-gold block">100%</span>
+              <span className="text-xs text-brand-mint/90 font-medium">Single-Estate Sourced</span>
+            </div>
           </div>
         </div>
       </section>

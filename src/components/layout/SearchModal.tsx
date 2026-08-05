@@ -115,12 +115,11 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
   if (!isOpen) return null;
 
   const popularTags = [
-    'Blue Tea',
-    'Elaichi Blue Tea',
-    'Ginger Cinnamon',
-    'Pre-Diabetic Tea',
-    'Ayur Tea',
-    'Butterfly Pea',
+    { label: 'Blue Tea', slug: 'blue-tea' },
+    { label: 'Elaichi Blue Tea', slug: 'blue-tea-with-elaichi' },
+    { label: 'Ginger + Cinnamon Tea', slug: 'blue-tea-with-ginger-cinnamon' },
+    { label: 'Ayurvedic Herbal Tea', slug: 'ayur-tea' },
+    { label: 'Pre-Diabetic Tea', slug: 'pre-diabetic-tea' },
   ];
 
   return (
@@ -289,14 +288,14 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                   <Tag className="w-3.5 h-3.5 text-brand-green" /> Popular Searches
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  {popularTags.map((term) => (
+                  {popularTags.map((tag) => (
                     <button
-                      key={term}
+                      key={tag.slug}
                       type="button"
-                      onClick={() => executeSearch(term)}
-                      className="text-xs bg-white text-brand-darkGrey border border-brand-mint/40 hover:border-brand-green hover:bg-brand-bgBeige hover:text-brand-green px-3 py-1.5 rounded-badge transition-colors shadow-soft"
+                      onClick={() => navigateToProduct(tag.slug)}
+                      className="text-xs bg-white text-brand-darkGrey border border-brand-mint/40 hover:border-brand-green hover:bg-brand-bgBeige hover:text-brand-green px-3.5 py-1.5 rounded-badge transition-all duration-200 shadow-soft hover:scale-105 active:scale-95"
                     >
-                      {term}
+                      {tag.label}
                     </button>
                   ))}
                 </div>

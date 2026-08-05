@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useStore } from '@/lib/storeContext';
-import { Mail, Phone, MapPin, Clock, MessageSquare, Send, ChevronDown } from 'lucide-react';
+import { Mail, Phone, MapPin, Clock, MessageSquare, Send, ChevronDown, Instagram } from 'lucide-react';
 
 export default function ContactPage() {
   const { showToast } = useStore();
@@ -92,15 +92,25 @@ export default function ContactPage() {
               </div>
             </div>
 
-            {/* Direct WhatsApp Action */}
-            <a
-              href="https://wa.me/919876543210"
-              target="_blank"
-              rel="noreferrer"
-              className="bg-brand-gold text-brand-darkGreen font-bold text-xs py-3 px-4 rounded-button shadow-gold flex items-center justify-center gap-2 hover:bg-white transition-colors"
-            >
-              <MessageSquare className="w-4 h-4" /> Chat on WhatsApp Instant Support
-            </a>
+            {/* Direct Social & Chat Actions */}
+            <div className="space-y-2.5 pt-4 border-t border-white/10">
+              <a
+                href="https://wa.me/919876543210"
+                target="_blank"
+                rel="noreferrer"
+                className="bg-brand-gold text-brand-darkGreen font-bold text-xs py-3 px-4 rounded-button shadow-gold flex items-center justify-center gap-2 hover:bg-white transition-colors"
+              >
+                <MessageSquare className="w-4 h-4" /> Chat on WhatsApp Instant Support
+              </a>
+              <a
+                href={process.env.NEXT_PUBLIC_INSTAGRAM_URL || "https://instagram.com/primebrew.herbis"}
+                target="_blank"
+                rel="noreferrer"
+                className="bg-white/10 border border-white/20 text-white hover:bg-white hover:text-brand-darkGreen font-bold text-xs py-3 px-4 rounded-button flex items-center justify-center gap-2 transition-all"
+              >
+                <Instagram className="w-4 h-4 text-brand-gold" /> Follow & DM us @primebrew.herbis
+              </a>
+            </div>
           </div>
 
           {/* Contact Form */}

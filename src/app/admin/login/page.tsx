@@ -99,7 +99,7 @@ export default function AdminLoginPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@primebrewherbis.com"
+                placeholder="Contact.primebrew@gmail.com"
                 className="w-full pl-12 pr-4 py-3.5 rounded-2xl bg-brand-cream/40 border border-brand-mint/40 focus:bg-white focus:border-brand-green focus:ring-4 focus:ring-brand-green/10 outline-none text-sm font-medium text-brand-darkGreen placeholder-gray-400 transition-all shadow-inner"
               />
             </div>
@@ -157,7 +157,7 @@ export default function AdminLoginPage() {
         <div className="pt-4 border-t border-brand-mint/30 flex flex-col items-center gap-3 text-center">
           <div className="flex items-center gap-1.5 text-[11px] text-brand-brown/80 font-medium bg-brand-beige/60 px-3 py-1.5 rounded-full border border-brand-mint/30">
             <CheckCircle2 className="w-3.5 h-3.5 text-brand-green" />
-            <span>Default: admin@primebrewherbis.com • Admin@12345</span>
+            <span>Default: Contact.primebrew@gmail.com • Admin@12345</span>
           </div>
 
           <Link

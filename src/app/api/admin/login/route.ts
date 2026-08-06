@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
 
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@primebrewherbis.com';
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'Contact.primebrew@gmail.com';
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'Admin@12345';
 
 export async function POST(request: Request) {

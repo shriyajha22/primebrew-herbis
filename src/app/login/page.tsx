@@ -138,17 +138,11 @@ export default function CustomerLoginPage() {
         </form>
 
         {/* Footer */}
-        <div className="pt-4 border-t border-brand-mint/30 text-center text-xs space-y-2">
+        <div className="pt-4 border-t border-brand-mint/30 text-center text-xs">
           <p className="text-gray-500">
             Don&apos;t have an account yet?{' '}
             <Link href="/register" className="text-brand-green font-bold hover:underline">
               Create Account
-            </Link>
-          </p>
-          <p className="text-[11px] text-gray-400">
-            Are you an administrator?{' '}
-            <Link href="/admin/login" className="text-brand-brown font-semibold hover:underline">
-              Admin Login Portal
             </Link>
           </p>
         </div>

@@ -292,7 +292,7 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4">
           <div className="flex items-center justify-center gap-2 text-brand-green">
             <Instagram className="w-5 h-5" />
-            <span className="text-xs font-bold uppercase tracking-wider">Follow @PrimeBrewHerbis</span>
+            <span className="text-xs font-bold uppercase tracking-wider">Follow @primebrew_herbis</span>
           </div>
           <h2 className="font-heading font-bold text-2xl text-brand-darkGreen">
             Join Our Instagram Tea Community

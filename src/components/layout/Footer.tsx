@@ -59,13 +59,13 @@ export default function Footer() {
             </p>
 
             <a
-              href={process.env.NEXT_PUBLIC_INSTAGRAM_URL || "https://instagram.com/primebrew.herbis"}
+              href={process.env.NEXT_PUBLIC_INSTAGRAM_URL || "https://instagram.com/primebrew_herbis"}
               target="_blank"
               rel="noreferrer"
               className="inline-flex items-center gap-2 bg-white/10 border border-brand-gold/40 hover:bg-brand-gold hover:text-brand-darkGreen text-white text-xs font-semibold px-3.5 py-2 rounded-badge transition-all"
             >
               <Instagram className="w-4 h-4 text-brand-gold group-hover:text-brand-darkGreen" />
-              <span>Follow & Chat @primebrew.herbis on Instagram</span>
+              <span>Follow & Chat @primebrew_herbis on Instagram</span>
             </a>
             <div className="pt-2">
               <p className="text-xs font-semibold text-white mb-2 uppercase tracking-wider">Join Our Tea Circle & Get 15% OFF</p>

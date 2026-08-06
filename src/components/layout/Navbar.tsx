@@ -138,15 +138,6 @@ export default function Navbar() {
                         >
                           Customer Dashboard
                         </Link>
-                        {currentUser.role === 'admin' && (
-                          <Link
-                            href="/admin"
-                            onClick={() => setUserDropdownOpen(false)}
-                            className="block px-4 py-2 text-sm text-brand-green font-semibold hover:bg-brand-beige"
-                          >
-                            ⚡ Admin Control Panel
-                          </Link>
-                        )}
                         <button
                           onClick={() => {
                             logout();
@@ -172,13 +163,6 @@ export default function Navbar() {
                           className="block px-3 py-2 text-xs font-semibold text-brand-darkGreen bg-brand-beige hover:bg-brand-mint/30 rounded-button text-center transition-colors border border-brand-mint/30"
                         >
                           Create New Account
-                        </Link>
-                        <Link
-                          href="/admin/login"
-                          onClick={() => setUserDropdownOpen(false)}
-                          className="block px-3 py-2 text-xs font-semibold text-brand-brown hover:text-brand-darkGreen hover:bg-gray-50 rounded-button text-center transition-colors border border-gray-100 mt-1"
-                        >
-                          🔒 Admin Portal Login
                         </Link>
                       </div>
                     )}

@@ -62,7 +62,9 @@ export default function ContactPage() {
                   <Mail className="w-5 h-5 text-brand-gold flex-shrink-0" />
                   <div>
                     <strong className="block text-white">Email Inquiries:</strong>
-                    care@primebrewherbis.com
+                    <a href="mailto:Contact.primebrew@gmail.com" className="hover:text-brand-gold transition-colors">
+                      Contact.primebrew@gmail.com
+                    </a>
                   </div>
                 </div>
 
@@ -79,12 +81,12 @@ export default function ContactPage() {
             {/* Direct Social Actions */}
             <div className="pt-4 border-t border-white/10">
               <a
-                href={process.env.NEXT_PUBLIC_INSTAGRAM_URL || "https://instagram.com/primebrew.herbis"}
+                href={process.env.NEXT_PUBLIC_INSTAGRAM_URL || "https://instagram.com/primebrew_herbis"}
                 target="_blank"
                 rel="noreferrer"
                 className="bg-brand-gold text-brand-darkGreen font-bold text-xs py-3 px-4 rounded-button shadow-gold flex items-center justify-center gap-2 hover:bg-white transition-colors"
               >
-                <Instagram className="w-4 h-4 text-brand-darkGreen" /> Follow & DM us @primebrew.herbis
+                <Instagram className="w-4 h-4 text-brand-darkGreen" /> Follow & DM us @primebrew_herbis
               </a>
             </div>
           </div>

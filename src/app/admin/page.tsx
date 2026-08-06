@@ -31,7 +31,7 @@ export default function AdminDashboardPage() {
         <div className="space-y-2">
           <h2 className="font-heading font-extrabold text-2xl text-brand-darkGreen">Admin Access Restricted</h2>
           <p className="text-xs text-gray-500 leading-relaxed">
-            This security control panel requires administrator credentials (<code className="bg-gray-100 px-1.5 py-0.5 rounded font-mono">admin@primebrewherbis.com</code>). Please log in or use quick demo admin access.
+            This security control panel requires administrator credentials (<code className="bg-gray-100 px-1.5 py-0.5 rounded font-mono">Contact.primebrew@gmail.com</code>). Please log in or use quick demo admin access.
           </p>
         </div>
         <div className="pt-2 flex flex-col gap-2.5 justify-center">

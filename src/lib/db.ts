@@ -15,7 +15,7 @@ class InMemoryStore {
     {
       _id: "usr-admin",
       name: "PrimeBrew Admin",
-      email: "admin@primebrewherbis.com",
+      email: "Contact.primebrew@gmail.com",
       role: "admin",
       addresses: [],
       wishlist: ["prod-1", "prod-2"],

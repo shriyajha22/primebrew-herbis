@@ -69,14 +69,6 @@ function DashboardContent() {
               <span className="text-[10px] text-brand-gold uppercase tracking-wider block font-bold">Tea Wallet</span>
               <span className="font-bold text-sm text-white">₹{currentUser?.walletBalance || 250}</span>
             </div>
-            {currentUser?.role === 'admin' && (
-              <Link
-                href="/admin"
-                className="bg-brand-gold text-brand-darkGreen text-xs font-bold px-4 py-3 rounded-button shadow-gold hover:bg-white transition-colors"
-              >
-                Go to Admin Dashboard
-              </Link>
-            )}
           </div>
         </div>
 

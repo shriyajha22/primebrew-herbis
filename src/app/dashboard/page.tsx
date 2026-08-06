@@ -231,8 +231,8 @@ function DashboardContent() {
                     Default Address
                   </span>
                   <h4 className="font-bold text-brand-darkGreen">Ananya Sharma</h4>
-                  <p className="text-gray-600">42 Tea Plantation Road, Green Valley, Bengaluru, Karnataka - 560001</p>
-                  <p className="text-gray-500">Phone: +91 9876543210</p>
+                  <p className="text-gray-600">MG Road, Indiranagar, Bengaluru, Karnataka - 560038</p>
+                  <p className="text-gray-500">Status: Verified Primary Shipping Address</p>
                 </div>
               </div>
             )}

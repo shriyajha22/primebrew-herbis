@@ -11,7 +11,7 @@ export default function PrivacyPolicyPage() {
 
         <h2 className="font-heading font-bold text-base text-brand-darkGreen pt-2">1. Data Collection</h2>
         <p>
-          At PrimeBrew Herbis, we respect your privacy. We collect personal information such as name, email address, delivery address, phone number, and GSTIN when you place an order or subscribe to our newsletter.
+          At PrimeBrew Herbis, we respect your privacy. We collect personal information such as name, email address, and delivery address when you place an order or subscribe to our newsletter.
         </p>
 
         <h2 className="font-heading font-bold text-base text-brand-darkGreen pt-2">2. Payment Security</h2>

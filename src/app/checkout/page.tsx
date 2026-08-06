@@ -100,7 +100,7 @@ export default function CheckoutPage() {
               <div className="flex justify-between items-center border-b border-gray-200 pb-3">
                 <div>
                   <h3 className="font-bold text-brand-darkGreen">PrimeBrew Herbis Invoice</h3>
-                  <p className="text-[11px] text-gray-500">GSTIN: 29AAAAA0000A1Z5 | FSSAI: 10020042001234</p>
+                  <p className="text-[11px] text-gray-500">Official Tax Invoice</p>
                 </div>
                 <button
                   onClick={handlePrintInvoice}

@@ -106,7 +106,7 @@ export default function CustomerRegisterPage() {
                 type="tel"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                placeholder="+91 9876543210"
+                placeholder="Enter 10-digit mobile number"
                 className="w-full pl-11 pr-4 py-3 rounded-2xl bg-brand-cream/40 border border-brand-mint/30 focus:bg-white focus:border-brand-green outline-none font-medium"
               />
             </div>

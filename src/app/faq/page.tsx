@@ -142,12 +142,12 @@ export default function FAQPage() {
               <MessageSquare className="w-4 h-4" /> Contact Customer Support
             </Link>
             <a
-              href="https://wa.me/919876543210"
+              href={process.env.NEXT_PUBLIC_INSTAGRAM_URL || "https://instagram.com/primebrew.herbis"}
               target="_blank"
               rel="noreferrer"
               className="bg-white/10 text-white font-bold text-xs px-6 py-3 rounded-button border border-white/20 hover:bg-white/20 transition-colors flex items-center gap-2"
             >
-              <Phone className="w-4 h-4 text-brand-gold" /> WhatsApp Helpline
+              <Mail className="w-4 h-4 text-brand-gold" /> Email Care Team
             </a>
           </div>
         </div>

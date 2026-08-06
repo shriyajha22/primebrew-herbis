@@ -55,25 +55,9 @@ export default function ContactPage() {
           {/* Contact Details */}
           <div className="bg-brand-darkGreen text-white p-8 rounded-card shadow-premium space-y-6 flex flex-col justify-between">
             <div className="space-y-6">
-              <h2 className="font-heading font-bold text-xl text-white">Contact Information</h2>
+              <h2 className="font-heading font-bold text-xl text-white">Get In Touch</h2>
 
               <div className="space-y-4 text-xs text-brand-beige">
-                <div className="flex items-start gap-3">
-                  <MapPin className="w-5 h-5 text-brand-gold flex-shrink-0" />
-                  <div>
-                    <strong className="block text-white">Head Office & Tasting Lounge:</strong>
-                    42 Tea Plantation Road, Green Valley, Bengaluru, Karnataka - 560001
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <Phone className="w-5 h-5 text-brand-gold flex-shrink-0" />
-                  <div>
-                    <strong className="block text-white">Customer Support Hotline:</strong>
-                    +91 98765 43210 / +91 80 2345 6789
-                  </div>
-                </div>
-
                 <div className="flex items-center gap-3">
                   <Mail className="w-5 h-5 text-brand-gold flex-shrink-0" />
                   <div>
@@ -92,23 +76,15 @@ export default function ContactPage() {
               </div>
             </div>
 
-            {/* Direct Social & Chat Actions */}
-            <div className="space-y-2.5 pt-4 border-t border-white/10">
-              <a
-                href="https://wa.me/919876543210"
-                target="_blank"
-                rel="noreferrer"
-                className="bg-brand-gold text-brand-darkGreen font-bold text-xs py-3 px-4 rounded-button shadow-gold flex items-center justify-center gap-2 hover:bg-white transition-colors"
-              >
-                <MessageSquare className="w-4 h-4" /> Chat on WhatsApp Instant Support
-              </a>
+            {/* Direct Social Actions */}
+            <div className="pt-4 border-t border-white/10">
               <a
                 href={process.env.NEXT_PUBLIC_INSTAGRAM_URL || "https://instagram.com/primebrew.herbis"}
                 target="_blank"
                 rel="noreferrer"
-                className="bg-white/10 border border-white/20 text-white hover:bg-white hover:text-brand-darkGreen font-bold text-xs py-3 px-4 rounded-button flex items-center justify-center gap-2 transition-all"
+                className="bg-brand-gold text-brand-darkGreen font-bold text-xs py-3 px-4 rounded-button shadow-gold flex items-center justify-center gap-2 hover:bg-white transition-colors"
               >
-                <Instagram className="w-4 h-4 text-brand-gold" /> Follow & DM us @primebrew.herbis
+                <Instagram className="w-4 h-4 text-brand-darkGreen" /> Follow & DM us @primebrew.herbis
               </a>
             </div>
           </div>
@@ -141,28 +117,16 @@ export default function ContactPage() {
                   />
                 </div>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="font-semibold text-gray-600 block mb-1">Phone Number</label>
-                  <input
-                    type="text"
-                    placeholder="+91 98765 43210"
-                    value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full p-3 rounded-input border border-gray-300 focus:border-brand-green"
-                  />
-                </div>
-                <div>
-                  <label className="font-semibold text-gray-600 block mb-1">Subject</label>
-                  <input
-                    type="text"
-                    placeholder="Order Inquiry / Custom Gift Set"
-                    value={formData.subject}
-                    onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                    required
-                    className="w-full p-3 rounded-input border border-gray-300 focus:border-brand-green"
-                  />
-                </div>
+              <div>
+                <label className="font-semibold text-gray-600 block mb-1">Subject</label>
+                <input
+                  type="text"
+                  placeholder="Order Inquiry / Custom Gift Set"
+                  value={formData.subject}
+                  onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                  required
+                  className="w-full p-3 rounded-input border border-gray-300 focus:border-brand-green"
+                />
               </div>
               <div>
                 <label className="font-semibold text-gray-600 block mb-1">Your Message</label>

@@ -22,7 +22,7 @@ export default function Footer() {
     <footer className="bg-brand-darkGreen text-brand-beige pt-16 pb-12 border-t border-brand-green/30">
       {/* Brand Trust Badges Bar */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 mb-12 border-b border-white/10">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
           <div className="flex flex-col items-center p-4 rounded-card bg-white/5 backdrop-blur-sm border border-white/10">
             <ShieldCheck className="w-8 h-8 text-brand-gold mb-2" />
             <h4 className="font-heading font-semibold text-white text-sm">100% Organic & Pure</h4>
@@ -37,11 +37,6 @@ export default function Footer() {
             <RefreshCw className="w-8 h-8 text-brand-gold mb-2" />
             <h4 className="font-heading font-semibold text-white text-sm">Fresh Batch Guarantee</h4>
             <p className="text-xs text-brand-mint/80 mt-1">Small batch roasted & packed under 7 days</p>
-          </div>
-          <div className="flex flex-col items-center p-4 rounded-card bg-white/5 backdrop-blur-sm border border-white/10">
-            <Award className="w-8 h-8 text-brand-gold mb-2" />
-            <h4 className="font-heading font-semibold text-white text-sm">Ayurvedic Certified</h4>
-            <p className="text-xs text-brand-mint/80 mt-1">Formulated by certified botanical experts</p>
           </div>
         </div>
       </div>
@@ -131,18 +126,16 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Legal & GST Info */}
+          {/* Legal & Policies Info */}
           <div>
             <h4 className="font-heading font-semibold text-white text-sm mb-4 border-b border-brand-gold/40 pb-1.5 inline-block">
-              Policies & GST
+              Policies & Compliance
             </h4>
             <ul className="space-y-2.5 text-xs text-brand-mint/80">
               <li><Link href="/privacy-policy" className="hover:text-brand-gold transition-colors">Privacy Policy</Link></li>
               <li><Link href="/terms" className="hover:text-brand-gold transition-colors">Terms & Conditions</Link></li>
               <li><Link href="/shipping-policy" className="hover:text-brand-gold transition-colors">Shipping Policy</Link></li>
               <li><Link href="/refund-policy" className="hover:text-brand-gold transition-colors">Refund & Cancellation</Link></li>
-              <li className="pt-2 text-[11px] text-brand-gold font-medium">GSTIN: 29AAAAA0000A1Z5</li>
-              <li className="text-[11px] text-brand-mint/60">FSSAI Lic No: 10020042001234</li>
             </ul>
           </div>
         </div>

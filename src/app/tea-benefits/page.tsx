@@ -80,11 +80,11 @@ export default function TeaBenefitsPage() {
                 </div>
                 <p className="text-xs text-gray-700 leading-relaxed font-light">{item.desc}</p>
                 <Link
-                  href={`/shop?category=${item.recommendedSlug}`}
-                  className="inline-flex items-center gap-1 text-xs font-bold text-brand-green hover:underline pt-2"
+                  href="/shop"
+                  className="inline-flex items-center gap-1.5 text-xs font-bold text-brand-green hover:text-brand-darkGreen hover:underline pt-2 group/btn"
                 >
                   <span>Explore {item.title.split(' ')[0]} Teas</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
+                  <ArrowRight className="w-3.5 h-3.5 group-hover/btn:translate-x-1 transition-transform" />
                 </Link>
               </div>
             );

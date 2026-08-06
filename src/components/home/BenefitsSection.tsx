@@ -88,7 +88,7 @@ export default function BenefitsSection() {
             return (
               <Link
                 key={i}
-                href={`/shop?category=${b.slug}`}
+                href="/shop"
                 className={`p-6 rounded-card border ${b.color} shadow-soft hover:shadow-card transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1`}
               >
                 <div>

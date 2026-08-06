@@ -8,14 +8,30 @@ import { Product } from '@/lib/types';
 import { Filter, SlidersHorizontal, Search, RotateCcw, Scale } from 'lucide-react';
 import CompareModal from '@/components/shop/CompareModal';
 
+const validCategorySlugs = initialCategories.map((c) => c.slug);
+const validHealthBenefits = ['Antioxidant', 'Digestion', 'Immunity', 'Blood Sugar', 'Stress'];
+
 function ShopContent() {
   const searchParams = useSearchParams();
-  const initialCategoryQuery = searchParams.get('category') || '';
+
+  const getValidCategory = (param: string | null) => {
+    if (!param) return '';
+    return validCategorySlugs.includes(param) ? param : '';
+  };
+
+  const getValidBenefit = (param: string | null) => {
+    if (!param) return '';
+    const match = validHealthBenefits.find((b) => b.toLowerCase() === param.toLowerCase());
+    return match || '';
+  };
+
+  const initialCategoryQuery = getValidCategory(searchParams.get('category'));
+  const initialBenefitQuery = getValidBenefit(searchParams.get('benefit'));
   const initialSearchQuery = searchParams.get('q') || '';
 
   const [search, setSearch] = useState(initialSearchQuery);
   const [selectedCategory, setSelectedCategory] = useState(initialCategoryQuery);
-  const [selectedBenefit, setSelectedBenefit] = useState('');
+  const [selectedBenefit, setSelectedBenefit] = useState(initialBenefitQuery);
   const [maxPrice, setMaxPrice] = useState(600);
   const [sortOption, setSortOption] = useState('featured');
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
@@ -23,9 +39,14 @@ function ShopContent() {
   const [compareProductIds, setCompareProductIds] = useState<string[]>(['prod-1', 'prod-2', 'prod-4']);
 
   useEffect(() => {
-    if (initialCategoryQuery) setSelectedCategory(initialCategoryQuery);
-    if (initialSearchQuery) setSearch(initialSearchQuery);
-  }, [initialCategoryQuery, initialSearchQuery]);
+    const cat = getValidCategory(searchParams.get('category'));
+    const ben = getValidBenefit(searchParams.get('benefit'));
+    const q = searchParams.get('q') || '';
+
+    setSelectedCategory(cat);
+    setSelectedBenefit(ben);
+    setSearch(q);
+  }, [searchParams]);
 
   // Dynamic filtering logic
   let filteredProducts: Product[] = initialProducts.filter((p) => {

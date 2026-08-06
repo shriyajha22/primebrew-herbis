@@ -61,7 +61,7 @@ PrimeBrew Herbis is a full-stack, production-ready herbal tea e-commerce platfor
 ## 🔑 Demo Admin & Customer Credentials
 
 ### Admin Account
-- **Email**: `admin@primebrewherbis.com`
+- **Email**: `Contact.primebrew@gmail.com`
 - **Password**: `Admin@12345`
 - **Access**: Full admin control panel at `/admin`
 

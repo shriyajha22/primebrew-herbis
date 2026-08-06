@@ -81,10 +81,10 @@ export default function CheckoutPage() {
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-white rounded-card border border-brand-mint/30 shadow-premium p-8 space-y-6">
             <div className="text-center space-y-2 border-b border-gray-100 pb-6">
-              <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-2">
+              <div className="w-16 h-16 bg-sky-100 text-sky-600 rounded-full flex items-center justify-center mx-auto mb-2">
                 <CheckCircle2 className="w-10 h-10" />
               </div>
-              <span className="text-xs font-bold uppercase tracking-widest text-emerald-700 bg-emerald-50 px-3 py-1 rounded-badge">
+              <span className="text-xs font-bold uppercase tracking-widest text-sky-700 bg-sky-50 px-3 py-1 rounded-badge">
                 Payment & Order Confirmed
               </span>
               <h1 className="font-heading font-extrabold text-2xl text-brand-darkGreen">
@@ -127,7 +127,7 @@ export default function CheckoutPage() {
               </div>
 
               {completedOrder.gstInvoice && (
-                <div className="bg-emerald-50 p-2.5 rounded border border-emerald-200 text-emerald-900">
+                <div className="bg-sky-50 p-2.5 rounded border border-sky-200 text-sky-900">
                   <p className="font-bold">GST B2B Tax Invoice Issued:</p>
                   <p>Company: {completedOrder.gstInvoice.companyName} | GSTIN: {completedOrder.gstInvoice.gstin}</p>
                 </div>
@@ -367,7 +367,7 @@ export default function CheckoutPage() {
                 <span className="font-medium text-brand-darkGreen">₹{cartSubtotal}</span>
               </div>
               {cartDiscount > 0 && (
-                <div className="flex justify-between text-emerald-700">
+                <div className="flex justify-between text-sky-700 font-semibold">
                   <span>Discount</span>
                   <span className="font-medium">-₹{cartDiscount}</span>
                 </div>
@@ -378,7 +378,7 @@ export default function CheckoutPage() {
               </div>
               <div className="flex justify-between">
                 <span>Shipping</span>
-                <span className="font-medium text-emerald-600">FREE</span>
+                <span className="font-medium text-sky-600 font-bold">FREE</span>
               </div>
               <div className="flex justify-between text-base font-bold text-brand-darkGreen pt-2 border-t border-gray-200">
                 <span>Total Amount</span>

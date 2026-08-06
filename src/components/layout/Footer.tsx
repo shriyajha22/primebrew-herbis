@@ -124,9 +124,10 @@ export default function Footer() {
               <li><Link href="/about" className="hover:text-brand-gold transition-colors">Farm to Cup Story</Link></li>
               <li><Link href="/tea-benefits" className="hover:text-brand-gold transition-colors">Tea Health Benefits</Link></li>
               <li><Link href="/blogs" className="hover:text-brand-gold transition-colors">Herbal Recipes & Articles</Link></li>
+              <li><Link href="/faq" className="hover:text-brand-gold transition-colors">Frequently Asked Questions (FAQ)</Link></li>
               <li><Link href="/track-order" className="hover:text-brand-gold transition-colors">Track Order Status</Link></li>
               <li><Link href="/dashboard" className="hover:text-brand-gold transition-colors">My Customer Account</Link></li>
-              <li><Link href="/contact" className="hover:text-brand-gold transition-colors">Contact Us & FAQ</Link></li>
+              <li><Link href="/contact" className="hover:text-brand-gold transition-colors">Contact Us</Link></li>
             </ul>
           </div>
 

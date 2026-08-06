@@ -7,7 +7,7 @@ export const initialCategories: Category[] = [
     slug: "blue-tea",
     description: "Mesmerising sapphire herbal infusions crafted from organic Butterfly Pea flowers.",
     iconName: "Sparkles",
-    image: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=800&q=80",
+    image: "/images/blue-tea.jpg",
     itemCount: 3,
     featured: true,
   },
@@ -17,7 +17,7 @@ export const initialCategories: Category[] = [
     slug: "wellness-tea",
     description: "Targeted Ayurvedic formulas for blood sugar balance and holistic bodily health.",
     iconName: "HeartPulse",
-    image: "https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?auto=format&fit=crop&w=800&q=80",
+    image: "/images/guava-jamun-neem.jpg",
     itemCount: 1,
     featured: true,
   },
@@ -27,7 +27,7 @@ export const initialCategories: Category[] = [
     slug: "ayurvedic-tea",
     description: "Tridosha balancing infusions infused with adaptogenic Ashwagandha & Sacred Tulsi.",
     iconName: "ShieldCheck",
-    image: "https://images.unsplash.com/photo-1556679343-c7306c1976bc?auto=format&fit=crop&w=800&q=80",
+    image: "/images/ayurvedic-kashayam.jpg",
     itemCount: 1,
     featured: true,
   },
@@ -36,10 +36,10 @@ export const initialCategories: Category[] = [
 export const initialProducts: Product[] = [
   {
     _id: "prod-1",
-    name: "Blue Tea",
+    name: "Blue Tea (Butterfly Pea Flower Tea)",
     slug: "blue-tea",
-    subtitle: "100% Pure Butterfly Pea Flower Infusion (30 Tea Bags)",
-    description: "Harvested at dawn from organic botanical gardens, this signature Blue Tea features premium Clitoria Ternatea (Butterfly Pea) flowers. Celebrated for its mesmerising sapphire blue color that naturally shifts to royal purple with a splash of fresh lemon juice. Abundant in anthocyanin antioxidants, it naturally enhances skin glow, calms daily stress, and improves mental focus.",
+    subtitle: "Discover the natural wellness of PrimeBrew Herbis Blue Tea, made from carefully selected Butterfly Pea Flowers. This vibrant, caffeine-free herbal infusion is packed with natural antioxidants that support your overall well-being. Enjoy a soothing cup any time of the day as part of a healthy lifestyle.",
+    description: "Discover the natural wellness of PrimeBrew Herbis Blue Tea, made from carefully selected Butterfly Pea Flowers. This vibrant, caffeine-free herbal infusion is packed with natural antioxidants that support your overall well-being. Enjoy a soothing cup any time of the day as part of a healthy lifestyle.",
     category: "blue-tea",
     categoryName: "Blue Tea",
     price: 249,
@@ -53,25 +53,27 @@ export const initialProducts: Product[] = [
     isBestSeller: true,
     isNewArrival: false,
     images: [
-      "https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=1000&q=80",
-      "https://images.unsplash.com/photo-1597481499750-3e6b22637e12?auto=format&fit=crop&w=1000&q=80"
+      "/images/blue-tea.jpg",
+      "/images/blue-tea-cup.png",
+      "/images/blue-tea-flowers.png"
     ],
     weightVariants: [
-      { weight: "30 Tea Bags", price: 249, mrp: 349 }
+      { weight: "30 Tea Bags", price: 249, mrp: 349 },
+      { weight: "50g Loose Tea", price: 349, mrp: 449 },
+      { weight: "100g Value Pack", price: 599, mrp: 799 }
     ],
     keyHerbs: [
-      "Butterfly Pea Flower (Clitoria Ternatea)",
-      "Organic Lemongrass",
-      "Stevia Leaf"
+      "100% Premium Butterfly Pea Flower (Clitoria Ternatea)"
     ],
     benefits: [
-      "Rich in anti-aging anthocyanin antioxidants",
-      "Promotes radiant skin & healthy hair",
-      "Eases mental fatigue & calms anxiety",
-      "100% caffeine-free evening relaxation"
+      "Supports metabolism & healthy weight management",
+      "Calms the nervous system, reduces stress & promotes restful sleep",
+      "Helps stabilize blood sugar after meals",
+      "Rich in antioxidants that help fight free radicals and inflammation",
+      "Naturally caffeine-free"
     ],
-    flavorProfile: "Smooth, earthy, floral with light citrus herb undertones",
-    caffeineLevel: "Zero Caffeine",
+    flavorProfile: "Mild • Earthy • Floral",
+    caffeineLevel: "Naturally Caffeine-Free",
     brewingGuide: {
       temp: "85°C / 185°F",
       steepTime: "3 to 5 minutes",
@@ -80,8 +82,7 @@ export const initialProducts: Product[] = [
     },
     storageInstructions: "Store in a cool, dry place away from direct sunlight in an airtight container.",
     ingredients: [
-      { name: "Clitoria Ternatea (Butterfly Pea Flowers)", percentage: "85%", description: "Rich in anthocyanin polyphenols" },
-      { name: "Organic Lemongrass", percentage: "15%", description: "Refreshing citrus aroma & digestive ease" }
+      { name: "100% Premium Butterfly Pea Flowers", percentage: "100%", description: "Pure hand-picked Clitoria Ternatea whole blossoms" }
     ],
     nutritionInfo: {
       calories: "2 kcal per cup",
@@ -90,17 +91,17 @@ export const initialProducts: Product[] = [
       fat: "0 g",
       antioxidants: "380 mg Anthocyanins"
     },
-    netQuantity: "30 Tea Bags",
-    certifications: ["100% Organic", "Direct Farm Sourced", "Pesticide-Free", "ISO Certified Packaging"],
+    netQuantity: "30 Tea Bags / 50g",
+    certifications: ["100% Organic", "Direct Farm Sourced", "Pesticide-Free", "Vegan & Gluten-Free"],
     sku: "PBH-BLU-001",
-    origin: "High-Altitude Organic Micro-Farms"
+    origin: "High-Altitude Himalayan Bio-Farms"
   },
   {
     _id: "prod-2",
-    name: "Blue Tea with Elaichi",
+    name: "Blue Tea + Elaichi",
     slug: "blue-tea-with-elaichi",
-    subtitle: "Butterfly Pea Infused with Aromatic Cardamom (30 Tea Bags)",
-    description: "An aromatic masterpiece blending vibrant sapphire Butterfly Pea flowers with freshly crushed Tellicherry green cardamom (Elaichi). The calming blue infusion delivers a heartwarming spicy floral aroma that eases digestion, refreshes breath, and promotes serene tranquility after every meal.",
+    subtitle: "Caffeine-Free | Digestive & Calming | Antioxidant Rich | Supports Metabolism",
+    description: "Experience the perfect fusion of vibrant Butterfly Pea Flowers and aromatic Green Cardamom (Elaichi). This naturally caffeine-free herbal infusion combines the antioxidant benefits of Blue Tea with the digestive and soothing properties of Elaichi, creating a refreshing and calming wellness drink for any time of the day.",
     category: "blue-tea",
     categoryName: "Blue Tea",
     price: 299,
@@ -114,36 +115,38 @@ export const initialProducts: Product[] = [
     isBestSeller: true,
     isNewArrival: false,
     images: [
-      "https://images.unsplash.com/photo-1544787219-7f47ccb76574?auto=format&fit=crop&w=1000&q=80",
-      "https://images.unsplash.com/photo-1514733670139-4d87a1941d55?auto=format&fit=crop&w=1000&q=80"
+      "/images/blue-tea-elaichi.jpg",
+      "/images/blue-tea-cup.png",
+      "/images/blue-tea-flowers.png"
     ],
     weightVariants: [
-      { weight: "30 Tea Bags", price: 299, mrp: 399 }
+      { weight: "30 Tea Bags", price: 299, mrp: 399 },
+      { weight: "50g Loose Tea", price: 399, mrp: 499 },
+      { weight: "100g Value Pack", price: 699, mrp: 899 }
     ],
     keyHerbs: [
-      "Butterfly Pea Flower",
-      "Green Elaichi (Cardamom)",
-      "Sweet Fennel"
+      "Premium Butterfly Pea Flowers",
+      "Premium Green Cardamom (Elaichi)"
     ],
     benefits: [
-      "Soothes digestive discomfort & post-meal bloating",
-      "Aromatic Elaichi refreshes breath & uplifts spirits",
-      "Protects cells against oxidative stress",
-      "Relieves nervous tension & stress"
+      "Supports Healthy Metabolism",
+      "Rich in Natural Antioxidants",
+      "Supports Healthy Digestion",
+      "Calming & Refreshing",
+      "100% Naturally Caffeine-Free"
     ],
-    flavorProfile: "Intensely aromatic, warm cardamom spice with subtle sweet floral notes",
-    caffeineLevel: "Zero Caffeine",
+    flavorProfile: "Floral • Mild • Refreshingly Aromatic • Smooth Finish",
+    caffeineLevel: "Naturally Caffeine-Free",
     brewingGuide: {
       temp: "90°C / 194°F",
       steepTime: "4 to 5 minutes",
       waterAmount: "220 ml",
-      servingSuggestion: "Best enjoyed warm after lunch or dinner."
+      servingSuggestion: "Add a drop of honey or squeeze of lemon for a refreshing twist!"
     },
-    storageInstructions: "Keep tin tightly sealed in a moisture-free pantry.",
+    storageInstructions: "Store in a cool, dry place away from direct sunlight in an airtight container.",
     ingredients: [
-      { name: "Butterfly Pea Flower", percentage: "70%", description: "Natural sapphire antioxidant infusion" },
-      { name: "Crushed Green Cardamom (Elaichi)", percentage: "20%", description: "Digestive stimulant & aromatic comfort" },
-      { name: "Sweet Fennel", percentage: "10%", description: "Calms stomach lining" }
+      { name: "Premium Butterfly Pea Flowers", percentage: "70%", description: "Organic Clitoria Ternatea whole blossoms" },
+      { name: "Premium Green Cardamom (Elaichi)", percentage: "30%", description: "Crushed Tellicherry aromatic cardamom pods" }
     ],
     nutritionInfo: {
       calories: "3 kcal",
@@ -152,17 +155,17 @@ export const initialProducts: Product[] = [
       fat: "0 g",
       antioxidants: "340 mg Polyphenols"
     },
-    netQuantity: "30 Tea Bags",
-    certifications: ["100% Organic", "Hand-Harvested Spices", "No Added Flavorings"],
+    netQuantity: "30 Tea Bags / 50g",
+    certifications: ["Farm-to-Cup Quality", "Premium Natural Ingredients", "No Artificial Colours", "No Artificial Flavours", "No Preservatives", "Vegan", "Gluten-Free"],
     sku: "PBH-BLU-002",
     origin: "High-Altitude Organic Micro-Farms"
   },
   {
     _id: "prod-3",
-    name: "Blue Tea with Ginger + Cinnamon",
+    name: "Blue Tea + Ginger Cinnamon (Butterfly Pea Flower, Ginger & Cinnamon Herbal Tea)",
     slug: "blue-tea-with-ginger-cinnamon",
-    subtitle: "Invigorating Sapphire Blend with Ginger Kick & Ceylon Cinnamon (30 Tea Bags)",
-    description: "A warming botanical tonic uniting Butterfly Pea flowers, sun-dried Zingiber ginger root, and fragrant Ceylon cinnamon bark. Designed to ignite metabolism, boost circulation, and protect the immune system against seasonal chills while mesmerising your senses with its vivid blue color.",
+    subtitle: "Warming • Caffeine-Free • Supports Digestion, Metabolism & Blood Sugar Balance",
+    description: "Enjoy the perfect fusion of Butterfly Pea Flowers, Ginger, and Cinnamon in a comforting herbal infusion. This naturally caffeine-free blend combines antioxidant-rich Blue Tea with the warming goodness of ginger and cinnamon, making it an ideal wellness beverage to support digestion, metabolism, and overall health.",
     category: "blue-tea",
     categoryName: "Blue Tea",
     price: 349,
@@ -176,26 +179,30 @@ export const initialProducts: Product[] = [
     isBestSeller: false,
     isNewArrival: true,
     images: [
-      "https://images.unsplash.com/photo-1597481499750-3e6b22637e12?auto=format&fit=crop&w=1000&q=80",
-      "https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=1000&q=80"
+      "/images/blue-tea-ginger-cinnamon.jpg",
+      "/images/blue-tea-cup.png",
+      "/images/blue-tea-flowers.png"
     ],
     weightVariants: [
-      { weight: "30 Tea Bags", price: 349, mrp: 449 }
+      { weight: "30 Tea Bags", price: 349, mrp: 449 },
+      { weight: "50g Loose Tea", price: 449, mrp: 549 },
+      { weight: "100g Value Pack", price: 749, mrp: 949 }
     ],
     keyHerbs: [
-      "Butterfly Pea Flower",
-      "Organic Ginger Root",
-      "Ceylon Cinnamon Bark",
-      "Black Pepper"
+      "Premium Butterfly Pea Flowers",
+      "Natural Ginger",
+      "Premium Cinnamon"
     ],
     benefits: [
-      "Accelerates metabolic rate & calorie burn",
-      "Shields throat & chest against seasonal colds",
-      "Potent anti-inflammatory & antioxidant action",
-      "Improves circulation & morning vitality"
+      "Supports Healthy Digestion",
+      "Supports Metabolism",
+      "Supports Healthy Blood Sugar Balance",
+      "Rich in Natural Antioxidants",
+      "Naturally Caffeine-Free",
+      "Warming & Comforting Blend"
     ],
-    flavorProfile: "Zesty ginger spice, sweet comforting cinnamon warmth, clean herbal finish",
-    caffeineLevel: "Zero Caffeine",
+    flavorProfile: "Floral • Warm & Spicy • Mildly Sweet • Smooth Finish",
+    caffeineLevel: "Naturally Caffeine-Free",
     brewingGuide: {
       temp: "95°C / 203°F",
       steepTime: "4 to 6 minutes",
@@ -204,10 +211,9 @@ export const initialProducts: Product[] = [
     },
     storageInstructions: "Store in an airtight container away from heat and moisture.",
     ingredients: [
-      { name: "Butterfly Pea Flower", percentage: "55%", description: "Antioxidant powerhouse" },
-      { name: "Organic Ginger Root", percentage: "25%", description: "Metabolism & throat comfort" },
-      { name: "True Ceylon Cinnamon Bark", percentage: "15%", description: "Blood sugar stability & aroma" },
-      { name: "Tellicherry Black Pepper", percentage: "5%", description: "Enhances nutrient absorption" }
+      { name: "Premium Butterfly Pea Flowers", percentage: "55%", description: "Organic Clitoria Ternatea whole blossoms" },
+      { name: "Natural Ginger", percentage: "25%", description: "Sun-dried Zingiber ginger root" },
+      { name: "Premium Cinnamon", percentage: "20%", description: "True fragrant Ceylon cinnamon bark" }
     ],
     nutritionInfo: {
       calories: "4 kcal",
@@ -216,17 +222,17 @@ export const initialProducts: Product[] = [
       fat: "0 g",
       antioxidants: "420 mg Active Polyphenols"
     },
-    netQuantity: "30 Tea Bags",
-    certifications: ["Organic Certified", "Single Estate Sourced", "Lab Tested Pure"],
+    netQuantity: "30 Tea Bags / 50g",
+    certifications: ["Farm-to-Cup Quality", "Premium Natural Ingredients", "Antioxidant Rich", "No Artificial Colours", "No Artificial Flavours", "No Preservatives", "Vegan", "Gluten-Free"],
     sku: "PBH-BLU-003",
     origin: "High-Altitude Organic Micro-Farms"
   },
   {
     _id: "prod-4",
-    name: "Pre-Diabetic Tea",
-    slug: "pre-diabetic-tea",
-    subtitle: "Ayurvedic Sugar Balance & Glucose Support Formula (30 Tea Bags)",
-    description: "Expertly formulated by traditional Ayurvedic physicians using time-tested blood-sugar regulating herbs. Features Gymnema Sylvestre (Gurmar - the 'Sugar Destroyer'), Jamun seed, Methi (Fenugreek), Vijaysar bark, and Ceylon cinnamon to help maintain healthy glucose levels naturally, control sweet cravings, and support optimal insulin sensitivity.",
+    name: "Guava + Jamun + Neem Herbal Blend",
+    slug: "guava-jamun-neem-herbal-blend",
+    subtitle: "Supports Digestion & Traditional Wellness | Part of a Balanced Healthy Lifestyle",
+    description: "Discover the goodness of three time-honored herbs in one refreshing cup. Our Guava + Jamun + Neem Herbal Blend is thoughtfully crafted using premium natural ingredients to support digestive wellness and promote overall well-being. This caffeine-free herbal infusion is a perfect addition to a balanced, healthy lifestyle and can be enjoyed any time of the day.",
     category: "wellness-tea",
     categoryName: "Wellness Tea",
     price: 425,
@@ -240,59 +246,59 @@ export const initialProducts: Product[] = [
     isBestSeller: true,
     isNewArrival: false,
     images: [
-      "https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?auto=format&fit=crop&w=1000&q=80",
-      "https://images.unsplash.com/photo-1571934811356-5cc561d6821f?auto=format&fit=crop&w=1000&q=80"
+      "/images/guava-jamun-neem.jpg",
+      "/images/blue-tea-flowers.png",
+      "/images/blue-tea-cup.png"
     ],
     weightVariants: [
-      { weight: "30 Tea Bags", price: 425, mrp: 549 }
+      { weight: "30 Tea Bags", price: 425, mrp: 549 },
+      { weight: "50g Loose Tea", price: 525, mrp: 649 },
+      { weight: "100g Value Pack", price: 899, mrp: 1099 }
     ],
     keyHerbs: [
-      "Gymnema Sylvestre (Gurmar)",
-      "Jamun Seed",
-      "Methi (Fenugreek)",
-      "Vijaysar Bark",
-      "Ceylon Cinnamon"
+      "Premium Guava Leaves",
+      "Natural Jamun",
+      "Premium Neem Leaves"
     ],
     benefits: [
-      "Regulates post-meal blood glucose spikes naturally",
-      "Gurmar blocks sugar receptors and curbs sweet cravings",
-      "Improves insulin sensitivity & metabolic health",
-      "Supports pancreatic health & healthy body weight"
+      "Supports Healthy Digestion",
+      "Supports Traditional Wellness",
+      "Rich in Natural Plant Compounds",
+      "Daily Wellness Support",
+      "Naturally Caffeine-Free"
     ],
-    flavorProfile: "Earthy, warm, woody with herbal bitter-sweet notes",
-    caffeineLevel: "Zero Caffeine",
+    flavorProfile: "Mild Herbal • Earthy • Smooth • Refreshing",
+    caffeineLevel: "Naturally Caffeine-Free",
     brewingGuide: {
       temp: "90°C / 194°F",
       steepTime: "5 minutes",
       waterAmount: "200 ml",
-      servingSuggestion: "Drink warm 30 minutes before or after main meals twice daily."
+      servingSuggestion: "Drink warm after main meals or any time of the day as part of your daily wellness ritual."
     },
     storageInstructions: "Store in a dry, cool environment in an airtight container.",
     ingredients: [
-      { name: "Gurmar Leaves (Gymnema Sylvestre)", percentage: "30%", description: "Blocks sugar taste receptors & curbs cravings" },
-      { name: "Jamun Seed Powder", percentage: "25%", description: "Supports healthy blood sugar metabolism" },
-      { name: "Methi (Fenugreek)", percentage: "20%", description: "High soluble fiber for slow glucose absorption" },
-      { name: "Vijaysar Bark", percentage: "15%", description: "Ayurvedic glucose balance agent" },
-      { name: "Ceylon Cinnamon", percentage: "10%", description: "Enhances insulin responsiveness" }
+      { name: "Premium Guava Leaves", percentage: "40%", description: "Rich in polyphenols & flavonoid antioxidants for digestive comfort" },
+      { name: "Natural Jamun", percentage: "35%", description: "Time-honored botanical for traditional wellness & vitality" },
+      { name: "Premium Neem Leaves", percentage: "25%", description: "Cleansing plant compounds to support daily body harmony" }
     ],
     nutritionInfo: {
       calories: "2 kcal",
       carbs: "0.3 g",
       protein: "0.1 g",
       fat: "0 g",
-      antioxidants: "390 mg Active Botanicals"
+      antioxidants: "390 mg Active Plant Compounds"
     },
-    netQuantity: "30 Tea Bags",
-    certifications: ["100% Ayurvedic Formula", "Gluten-Free", "Zero Artificial Additives"],
+    netQuantity: "30 Tea Bags / 50g",
+    certifications: ["Farm-to-Cup Quality", "Premium Natural Ingredients", "100% Herbal Blend", "Rich in Natural Antioxidants", "No Artificial Colours", "No Artificial Flavours", "No Preservatives", "Vegan", "Gluten-Free"],
     sku: "PBH-WEL-004",
     origin: "High-Altitude Organic Micro-Farms"
   },
   {
     _id: "prod-5",
-    name: "Ayur Tea",
-    slug: "ayur-tea",
-    subtitle: "Holistic Tridosha Balancing Ayurvedic Brew (30 Tea Bags)",
-    description: "Rooted in 5,000-year-old Ayurvedic wisdom, Ayur Tea is a sacred wellness infusion combining adaptogenic KSM-66 Ashwagandha, Sacred Krishna Tulsi, Giloy (Amrita), and Licorice (Mulethi). Harmonizes Vata, Pitta, and Kapha doshas to build core immunity, relieve stress, and revitalize overall stamina.",
+    name: "Authentic Ayurvedic Kashayam",
+    slug: "authentic-ayurvedic-kashayam",
+    subtitle: "Supports Digestion, Immunity & Metabolism",
+    description: "Experience the wisdom of Ayurveda with PrimeBrew Herbis Authentic Ayurvedic Kashayam. Crafted from a carefully selected blend of traditional herbs and spices, this caffeine-free herbal drink is designed to support digestion, strengthen immunity, and promote healthy metabolism. Enjoy this comforting wellness beverage as part of your daily healthy lifestyle.",
     category: "ayurvedic-tea",
     categoryName: "Ayurvedic Tea",
     price: 380,
@@ -306,50 +312,54 @@ export const initialProducts: Product[] = [
     isBestSeller: true,
     isNewArrival: false,
     images: [
-      "https://images.unsplash.com/photo-1556679343-c7306c1976bc?auto=format&fit=crop&w=1000&q=80",
-      "https://images.unsplash.com/photo-1544787219-7f47ccb76574?auto=format&fit=crop&w=1000&q=80"
+      "/images/ayurvedic-kashayam.jpg",
+      "/images/blue-tea-flowers.png",
+      "/images/blue-tea-cup.png"
     ],
     weightVariants: [
-      { weight: "30 Tea Bags", price: 380, mrp: 499 }
+      { weight: "30 Tea Bags", price: 380, mrp: 499 },
+      { weight: "50g Loose Tea", price: 480, mrp: 599 },
+      { weight: "100g Value Pack", price: 799, mrp: 999 }
     ],
     keyHerbs: [
-      "KSM-66 Ashwagandha Root",
-      "Sacred Tulsi Trio",
-      "Giloy (Amrita)",
-      "Mulethi (Licorice Root)",
-      "Shankhpushpi"
+      "Ginger",
+      "Cinnamon",
+      "Black Pepper",
+      "Cardamom",
+      "Coriander",
+      "Traditional Ayurvedic Herbs & Spices"
     ],
     benefits: [
-      "Balances all three Ayurvedic doshas (Vata, Pitta, Kapha)",
-      "Fortifies core immunity & daily stamina",
-      "Lowers cortisol and relieves workday stress",
-      "Soothes respiratory tract & clears throat"
+      "Supports Healthy Digestion",
+      "Supports Natural Immunity",
+      "Supports Healthy Metabolism",
+      "Traditional Ayurvedic Wellness",
+      "Naturally Caffeine-Free"
     ],
-    flavorProfile: "Rich herbal bouquet, sweet licorice undertones, soothing adaptogenic finish",
-    caffeineLevel: "Zero Caffeine",
+    flavorProfile: "Warm • Spicy • Herbal • Comforting",
+    caffeineLevel: "Naturally Caffeine-Free",
     brewingGuide: {
       temp: "90°C / 194°F",
       steepTime: "5 to 7 minutes",
       waterAmount: "220 ml",
-      servingSuggestion: "Sip warm morning and evening for holistic balance."
+      servingSuggestion: "Sip warm morning or evening for holistic digestion and immunity."
     },
     storageInstructions: "Store sealed in a cool, dry place away from moisture.",
     ingredients: [
-      { name: "Sacred Tulsi Trio (Krishna, Rama, Vana)", percentage: "35%", description: "Adaptogenic immune fortress" },
-      { name: "KSM-66 Ashwagandha Root", percentage: "25%", description: "Cortisol reduction & stress vitality" },
-      { name: "Giloy Stem (Amrita)", percentage: "20%", description: "Ayurvedic detoxifier & fever defense" },
-      { name: "Mulethi (Licorice Root)", percentage: "15%", description: "Throat soothing & natural sweetness" },
-      { name: "Shankhpushpi", percentage: "5%", description: "Nootropic brain calm" }
+      { name: "Zingiber Officinale (Ginger)", percentage: "25%", description: "Ignites digestive fire & eases throat" },
+      { name: "Ceylon Cinnamon", percentage: "20%", description: "Warming spice for metabolism & balance" },
+      { name: "Black Pepper & Cardamom", percentage: "25%", description: "Aromatic bio-enhancers for bioavailability" },
+      { name: "Coriander & Ayurvedic Spices", percentage: "30%", description: "Cooling & soothing digestive harmony" }
     ],
     nutritionInfo: {
       calories: "2 kcal",
       carbs: "0.4 g",
       protein: "0.1 g",
       fat: "0 g",
-      antioxidants: "460 mg Adaptogenic Glycosides"
+      antioxidants: "460 mg Active Botanicals"
     },
-    netQuantity: "30 Tea Bags",
-    certifications: ["100% Organic", "Ayurvedic Pharmacopoeia Grade", "Pesticide-Free"],
+    netQuantity: "30 Tea Bags / 50g",
+    certifications: ["Farm-to-Cup Quality", "Premium Natural Ingredients", "Traditional Ayurvedic Blend", "Rich in Natural Plant Compounds", "No Artificial Colours", "No Artificial Flavours", "No Preservatives", "Vegan", "Gluten-Free"],
     sku: "PBH-AYU-005",
     origin: "High-Altitude Organic Micro-Farms"
   }
@@ -386,7 +396,7 @@ Blue Tea derives its rich indigo pigment from potent anthocyanins—the same ant
     authorImage: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80",
     readTime: "4 min read",
     publishDate: "August 2, 2026",
-    coverImage: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=1200&q=80",
+    coverImage: "/images/blue-tea.jpg",
     tags: ["Blue Tea", "Mindfulness", "Wellness", "Antioxidants"],
     featured: true
   },
@@ -412,8 +422,8 @@ Managing blood sugar spikes post-meal is essential for sustained daily energy an
     authorImage: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80",
     readTime: "5 min read",
     publishDate: "July 28, 2026",
-    coverImage: "https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?auto=format&fit=crop&w=1200&q=80",
-    tags: ["Pre-Diabetic Tea", "Ayurveda", "Glucose Control", "Wellness"],
+    coverImage: "/images/guava-jamun-neem.jpg",
+    tags: ["Guava Jamun Neem", "Ayurveda", "Digestive Wellness", "Daily Care"],
     featured: true
   },
   {
@@ -442,7 +452,7 @@ When you experience stress, your Hypothalamic-Pituitary-Adrenal (HPA) axis trigg
     authorImage: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80",
     readTime: "6 min read",
     publishDate: "July 15, 2026",
-    coverImage: "https://images.unsplash.com/photo-1544787219-7f47ccb76574?auto=format&fit=crop&w=1200&q=80",
+    coverImage: "/images/ayurvedic-kashayam.jpg",
     tags: ["Ayur Tea", "Adaptogens", "Ashwagandha", "Ayurveda"],
     featured: false
   }

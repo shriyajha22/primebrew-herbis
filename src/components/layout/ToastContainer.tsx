@@ -16,14 +16,14 @@ export default function ToastContainer() {
           key={toast.id}
           className={`pointer-events-auto p-3.5 rounded-card shadow-premium border flex items-center justify-between gap-3 text-xs font-medium animate-in fade-in slide-in-from-right-5 ${
             toast.type === 'success'
-              ? 'bg-emerald-900 text-white border-emerald-700'
+              ? 'bg-sky-950 text-white border-sky-700'
               : toast.type === 'error'
-              ? 'bg-red-900 text-white border-red-700'
+              ? 'bg-red-950 text-white border-red-700'
               : 'bg-brand-darkGreen text-white border-brand-gold/40'
           }`}
         >
           <div className="flex items-center gap-2">
-            {toast.type === 'success' && <CheckCircle className="w-4 h-4 text-emerald-400 flex-shrink-0" />}
+            {toast.type === 'success' && <CheckCircle className="w-4 h-4 text-sky-400 flex-shrink-0" />}
             {toast.type === 'error' && <AlertCircle className="w-4 h-4 text-red-400 flex-shrink-0" />}
             {toast.type === 'info' && <Info className="w-4 h-4 text-brand-gold flex-shrink-0" />}
             <span>{toast.message}</span>

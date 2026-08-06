@@ -18,8 +18,8 @@ const benefits = [
     title: "Gentle Liver & Digestive Cleansing",
     desc: "Dandelion root and lemongrass assist natural hepatic detoxification and relieve post-meal abdominal bloating.",
     slug: "detox-tea",
-    color: "bg-emerald-50 border-emerald-200 text-emerald-800",
-    iconColor: "text-emerald-600",
+    color: "bg-sky-50 border-sky-200 text-sky-800",
+    iconColor: "text-sky-600",
   },
   {
     icon: ShieldCheck,

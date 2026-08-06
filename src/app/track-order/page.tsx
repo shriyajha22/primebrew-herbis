@@ -80,7 +80,7 @@ function TrackOrderContent() {
               <div className="bg-white p-8 rounded-card border border-brand-mint/30 shadow-premium space-y-6">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-gray-100 pb-4 gap-2">
                   <div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-badge">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-sky-700 bg-sky-50 px-2.5 py-0.5 rounded-badge">
                       Status: {trackedOrder.status}
                     </span>
                     <h3 className="font-heading font-bold text-lg text-brand-darkGreen mt-1">

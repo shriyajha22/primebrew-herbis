@@ -8,11 +8,17 @@ import ProductCard from '@/components/shop/ProductCard';
 import BrewingGuideModal from '@/components/shop/BrewingGuideModal';
 import { initialProducts, initialReviews } from '@/lib/seedData';
 import { useStore } from '@/lib/storeContext';
-import { Star, Heart, ShoppingBag, Timer, ShieldCheck, Truck, RefreshCw, CheckCircle2, ChevronRight, Share2, Sparkles, MessageSquare, ThumbsUp } from 'lucide-react';
+import { Star, Heart, ShoppingBag, Timer, ShieldCheck, Truck, RefreshCw, CheckCircle2, ChevronRight, Share2, Sparkles, MessageSquare, ThumbsUp, Leaf, Moon, Activity, Coffee, Shield, Check, Flower2, Sparkle } from 'lucide-react';
 
 export default function ProductDetailPage({ params }: { params: { slug: string } }) {
   const { slug } = params;
-  const product = initialProducts.find((p) => p.slug === slug || p._id === slug);
+  const product = initialProducts.find(
+    (p) =>
+      p.slug === slug ||
+      p._id === slug ||
+      (slug === 'pre-diabetic-tea' && p._id === 'prod-4') ||
+      (slug === 'ayur-tea' && p._id === 'prod-5')
+  );
   const { addToCart, toggleWishlist, isInWishlist, showToast } = useStore();
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedWeight, setSelectedWeight] = useState(product?.weightVariants?.[0]?.weight || "30 Tea Bags");
@@ -90,7 +96,19 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
             <div className="relative aspect-square rounded-image overflow-hidden bg-brand-beige border border-brand-mint/20 shadow-soft">
               <Image
                 src={product.images[selectedImage] || product.images[0]}
-                alt={product.name}
+                alt={
+                  product.slug === 'authentic-ayurvedic-kashayam' || product._id === 'prod-5' || product.slug === 'ayur-tea'
+                    ? "PrimeBrew Herbis Authentic Ayurvedic Kashayam made with traditional herbs, Ginger, Cinnamon, Black Pepper, Cardamom, and Coriander."
+                    : product.slug === 'guava-jamun-neem-herbal-blend' || product._id === 'prod-4' || product.slug === 'pre-diabetic-tea'
+                    ? "PrimeBrew Herbis Guava + Jamun + Neem Herbal Blend made with premium Guava leaves, natural Jamun, and Neem leaves."
+                    : product.slug === 'blue-tea-with-ginger-cinnamon' || product._id === 'prod-3'
+                    ? "PrimeBrew Herbis Blue Tea + Ginger Cinnamon made with Butterfly Pea Flowers, Ginger, and Ceylon Cinnamon."
+                    : product.slug === 'blue-tea-with-elaichi' || product._id === 'prod-2'
+                    ? "PrimeBrew Herbis Blue Tea + Elaichi made with Butterfly Pea Flowers and Green Cardamom."
+                    : product.slug === 'blue-tea' || product._id === 'prod-1'
+                    ? "PrimeBrew Herbis Blue Tea made from premium Butterfly Pea Flowers."
+                    : product.name
+                }
                 fill
                 priority
                 className="object-cover"
@@ -151,7 +169,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
                 </div>
                 <span className="font-bold text-brand-darkGreen">{product.rating} / 5.0</span>
                 <span className="text-gray-400">({product.reviewCount} customer reviews)</span>
-                <span className="text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded-badge text-[11px]">
+                <span className="text-sky-700 font-bold bg-sky-50 px-2 py-0.5 rounded-badge text-[11px]">
                   In Stock ({product.stock} units left)
                 </span>
               </div>
@@ -188,7 +206,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
                 {currentMrp > currentPrice && (
                   <span className="text-base text-gray-400 line-through">₹{currentMrp}</span>
                 )}
-                <span className="text-xs font-bold text-emerald-700">
+                <span className="text-xs font-bold text-sky-700">
                   Save ₹{currentMrp - currentPrice} ({product.discountPercentage}%)
                 </span>
               </div>
@@ -290,6 +308,212 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
           </div>
         </div>
 
+        {/* Key Health Benefits & Pure Botanicals Showcase */}
+        <div className="mt-12 space-y-8 bg-gradient-to-b from-brand-beige/60 to-white rounded-card p-6 sm:p-10 border border-brand-mint/40 shadow-soft relative overflow-hidden">
+          {/* Subtle Botanical BG Pattern */}
+          <div className="absolute top-0 right-0 w-72 h-72 bg-brand-mint/10 rounded-full blur-3xl pointer-events-none -z-0" />
+          <div className="absolute bottom-0 left-0 w-72 h-72 bg-brand-gold/10 rounded-full blur-3xl pointer-events-none -z-0" />
+
+          {/* Section Heading */}
+          <div className="text-center max-w-2xl mx-auto space-y-2 relative z-10">
+            <span className="text-[11px] font-extrabold uppercase tracking-widest text-brand-green bg-white px-3.5 py-1.5 rounded-badge border border-brand-mint/30 shadow-soft inline-flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-brand-gold" /> Farm to Cup Pure Wellness
+            </span>
+            <h2 className="font-heading font-extrabold text-2xl sm:text-3xl text-brand-darkGreen">
+              Key Health Benefits
+            </h2>
+            <p className="text-xs sm:text-sm text-gray-600 font-light">
+              Formulated with 100% natural Butterfly Pea Flowers to nourish your body, mind, and daily vitality.
+            </p>
+          </div>
+
+          {/* Benefit Cards Grid (Attractive Icon Cards with Hover Animations) */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 relative z-10">
+            {/* Benefit Card 1: Metabolism */}
+            <div className="group relative bg-white p-5 rounded-card border border-brand-mint/30 shadow-card hover:shadow-xl hover:border-brand-green hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between overflow-hidden">
+              <div className="absolute -right-4 -bottom-4 text-sky-900/5 group-hover:text-sky-900/10 transition-all duration-300 pointer-events-none">
+                <Leaf className="w-24 h-24" />
+              </div>
+              <div className="space-y-3 relative z-10">
+                <div className="w-12 h-12 rounded-2xl bg-sky-100/80 text-sky-800 flex items-center justify-center shadow-soft group-hover:scale-110 group-hover:bg-brand-green group-hover:text-white transition-all duration-300">
+                  <Leaf className="w-6 h-6" />
+                </div>
+                <h3 className="font-heading font-bold text-sm text-brand-darkGreen group-hover:text-brand-green transition-colors">
+                  🌿 Supports Metabolism & Weight Management
+                </h3>
+                <p className="text-xs text-gray-600 font-light leading-relaxed">
+                  Helps support a healthy metabolism when combined with a balanced diet and active lifestyle.
+                </p>
+              </div>
+              <div className="pt-4 mt-2 border-t border-gray-100 flex items-center gap-1 text-[11px] font-bold text-sky-700">
+                <CheckCircle2 className="w-3.5 h-3.5" /> Healthy Metabolic Support
+              </div>
+            </div>
+
+            {/* Benefit Card 2: Relaxation & Sleep */}
+            <div className="group relative bg-white p-5 rounded-card border border-brand-mint/30 shadow-card hover:shadow-xl hover:border-brand-green hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between overflow-hidden">
+              <div className="absolute -right-4 -bottom-4 text-indigo-900/5 group-hover:text-indigo-900/10 transition-all duration-300 pointer-events-none">
+                <Moon className="w-24 h-24" />
+              </div>
+              <div className="space-y-3 relative z-10">
+                <div className="w-12 h-12 rounded-2xl bg-indigo-100/80 text-indigo-800 flex items-center justify-center shadow-soft group-hover:scale-110 group-hover:bg-indigo-600 group-hover:text-white transition-all duration-300">
+                  <Moon className="w-6 h-6" />
+                </div>
+                <h3 className="font-heading font-bold text-sm text-brand-darkGreen group-hover:text-indigo-700 transition-colors">
+                  😌 Promotes Relaxation & Better Sleep
+                </h3>
+                <p className="text-xs text-gray-600 font-light leading-relaxed">
+                  Naturally calms the nervous system, helping reduce stress and promote restful sleep.
+                </p>
+              </div>
+              <div className="pt-4 mt-2 border-t border-gray-100 flex items-center gap-1 text-[11px] font-bold text-indigo-700">
+                <CheckCircle2 className="w-3.5 h-3.5" /> Restful Night Companion
+              </div>
+            </div>
+
+            {/* Benefit Card 3: Blood Sugar */}
+            <div className="group relative bg-white p-5 rounded-card border border-brand-mint/30 shadow-card hover:shadow-xl hover:border-brand-green hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between overflow-hidden">
+              <div className="absolute -right-4 -bottom-4 text-rose-900/5 group-hover:text-rose-900/10 transition-all duration-300 pointer-events-none">
+                <Activity className="w-24 h-24" />
+              </div>
+              <div className="space-y-3 relative z-10">
+                <div className="w-12 h-12 rounded-2xl bg-rose-100/80 text-rose-800 flex items-center justify-center shadow-soft group-hover:scale-110 group-hover:bg-rose-600 group-hover:text-white transition-all duration-300">
+                  <Activity className="w-6 h-6" />
+                </div>
+                <h3 className="font-heading font-bold text-sm text-brand-darkGreen group-hover:text-rose-700 transition-colors">
+                  🩸 Supports Healthy Blood Sugar Levels
+                </h3>
+                <p className="text-xs text-gray-600 font-light leading-relaxed">
+                  May help stabilize blood sugar levels after meals as part of a healthy lifestyle.
+                </p>
+              </div>
+              <div className="pt-4 mt-2 border-t border-gray-100 flex items-center gap-1 text-[11px] font-bold text-rose-700">
+                <CheckCircle2 className="w-3.5 h-3.5" /> Post-Meal Glucose Care
+              </div>
+            </div>
+
+            {/* Benefit Card 4: Antioxidants */}
+            <div className="group relative bg-white p-5 rounded-card border border-brand-mint/30 shadow-card hover:shadow-xl hover:border-brand-green hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between overflow-hidden">
+              <div className="absolute -right-4 -bottom-4 text-amber-900/5 group-hover:text-amber-900/10 transition-all duration-300 pointer-events-none">
+                <ShieldCheck className="w-24 h-24" />
+              </div>
+              <div className="space-y-3 relative z-10">
+                <div className="w-12 h-12 rounded-2xl bg-amber-100/80 text-amber-800 flex items-center justify-center shadow-soft group-hover:scale-110 group-hover:bg-brand-gold group-hover:text-brand-darkGreen transition-all duration-300">
+                  <ShieldCheck className="w-6 h-6" />
+                </div>
+                <h3 className="font-heading font-bold text-sm text-brand-darkGreen group-hover:text-amber-800 transition-colors">
+                  🛡️ Rich in Natural Antioxidants
+                </h3>
+                <p className="text-xs text-gray-600 font-light leading-relaxed">
+                  Contains powerful antioxidants that help fight free radicals and reduce oxidative stress.
+                </p>
+              </div>
+              <div className="pt-4 mt-2 border-t border-gray-100 flex items-center gap-1 text-[11px] font-bold text-amber-800">
+                <CheckCircle2 className="w-3.5 h-3.5" /> High Cellular Shield
+              </div>
+            </div>
+
+            {/* Benefit Card 5: Caffeine-Free */}
+            <div className="group relative bg-white p-5 rounded-card border border-brand-mint/30 shadow-card hover:shadow-xl hover:border-brand-green hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between overflow-hidden sm:col-span-2 lg:col-span-1">
+              <div className="absolute -right-4 -bottom-4 text-teal-900/5 group-hover:text-teal-900/10 transition-all duration-300 pointer-events-none">
+                <Coffee className="w-24 h-24" />
+              </div>
+              <div className="space-y-3 relative z-10">
+                <div className="w-12 h-12 rounded-2xl bg-teal-100/80 text-teal-800 flex items-center justify-center shadow-soft group-hover:scale-110 group-hover:bg-teal-600 group-hover:text-white transition-all duration-300">
+                  <Coffee className="w-6 h-6" />
+                </div>
+                <h3 className="font-heading font-bold text-sm text-brand-darkGreen group-hover:text-teal-700 transition-colors">
+                  ☕ 100% Caffeine-Free
+                </h3>
+                <p className="text-xs text-gray-600 font-light leading-relaxed">
+                  A naturally caffeine-free herbal tea that can be enjoyed any time of the day.
+                </p>
+              </div>
+              <div className="pt-4 mt-2 border-t border-gray-100 flex items-center gap-1 text-[11px] font-bold text-teal-700">
+                <CheckCircle2 className="w-3.5 h-3.5" /> Any Time Wellness Sip
+              </div>
+            </div>
+          </div>
+
+          {/* Additional Information Section */}
+          <div className="mt-8 pt-8 border-t border-brand-mint/30 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative z-10">
+            {/* Ingredients */}
+            <div className="bg-white p-5 rounded-card border border-brand-mint/30 shadow-soft space-y-2 hover:border-brand-green transition-colors">
+              <div className="flex items-center gap-2">
+                <Flower2 className="w-4 h-4 text-brand-green" />
+                <h3 className="font-heading font-bold text-xs uppercase tracking-wider text-brand-darkGreen">
+                  Ingredients
+                </h3>
+              </div>
+              <p className="font-bold text-sm text-brand-darkGreen">
+                100% Premium Butterfly Pea Flowers
+              </p>
+            </div>
+
+            {/* Taste Profile */}
+            <div className="bg-white p-5 rounded-card border border-brand-mint/30 shadow-soft space-y-2 hover:border-brand-green transition-colors">
+              <div className="flex items-center gap-2">
+                <Sparkle className="w-4 h-4 text-brand-gold" />
+                <h3 className="font-heading font-bold text-xs uppercase tracking-wider text-brand-darkGreen">
+                  Taste Profile
+                </h3>
+              </div>
+              <div className="flex flex-wrap gap-2 pt-1">
+                {['Mild', 'Floral', 'Earthy'].map((taste) => (
+                  <span
+                    key={taste}
+                    className="bg-brand-beige border border-brand-mint/40 text-brand-darkGreen font-bold text-xs px-3 py-1 rounded-badge shadow-soft"
+                  >
+                    {taste}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Perfect For */}
+            <div className="bg-white p-5 rounded-card border border-brand-mint/30 shadow-soft space-y-2 hover:border-brand-green transition-colors">
+              <div className="flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-sky-600" />
+                <h3 className="font-heading font-bold text-xs uppercase tracking-wider text-brand-darkGreen">
+                  Perfect For
+                </h3>
+              </div>
+              <div className="flex flex-wrap gap-1.5 text-[11px] font-semibold text-sky-900 pt-1">
+                {['Daily Wellness', 'Evening Relaxation', 'Healthy Lifestyle', 'Natural Herbal Tea Lovers'].map((item) => (
+                  <span key={item} className="bg-sky-50 text-sky-900 border border-sky-200 px-2 py-0.5 rounded-badge">
+                    • {item}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Why Choose PrimeBrew Herbis Blue Tea? */}
+            <div className="bg-white p-5 rounded-card border border-brand-mint/30 shadow-soft space-y-2 hover:border-brand-green transition-colors">
+              <div className="flex items-center gap-2">
+                <Shield className="w-4 h-4 text-brand-green" />
+                <h3 className="font-heading font-bold text-xs uppercase tracking-wider text-brand-darkGreen">
+                  Why Choose PrimeBrew Herbis?
+                </h3>
+              </div>
+              <div className="grid grid-cols-1 gap-1 text-[11px] font-semibold text-sky-900 pt-1">
+                {[
+                  'Farm-to-Cup Quality',
+                  'Premium Handpicked Herbs',
+                  'No Artificial Colours',
+                  'No Artificial Flavours',
+                  'No Preservatives',
+                  'Vegan',
+                  'Gluten-Free',
+                ].map((reason) => (
+                  <span key={reason} className="flex items-center gap-1">
+                    <Check className="w-3 h-3 text-brand-green flex-shrink-0" /> {reason}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Detailed Info Tabs Section */}
         <div className="mt-12 bg-white rounded-card border border-brand-mint/30 shadow-card overflow-hidden">
           {/* Tab Headers */}
@@ -341,11 +565,13 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
             {activeTab === 'benefits' && (
               <div className="space-y-4">
                 <h3 className="font-heading font-bold text-lg text-brand-darkGreen">Targeted Health Advantages</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {product.benefits.map((b, i) => (
-                    <div key={i} className="flex items-center gap-3 p-3 rounded-button bg-emerald-50 text-emerald-900 text-xs font-medium">
-                      <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                      <span>{b}</span>
+                    <div key={i} className="group p-4 rounded-card border border-brand-mint/30 bg-sky-50/50 hover:bg-white hover:shadow-soft hover:border-brand-green transition-all flex items-start gap-3">
+                      <div className="w-8 h-8 rounded-full bg-brand-green/10 text-brand-green flex items-center justify-center flex-shrink-0 group-hover:bg-brand-green group-hover:text-white transition-colors">
+                        <CheckCircle2 className="w-4 h-4" />
+                      </div>
+                      <span className="text-xs font-semibold text-brand-darkGreen leading-snug">{b}</span>
                     </div>
                   ))}
                 </div>
@@ -398,7 +624,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
                     </tr>
                     <tr className="bg-brand-beige">
                       <td className="p-3 font-semibold text-brand-darkGreen">Active Antioxidants</td>
-                      <td className="p-3 text-emerald-700 font-bold">{product.nutritionInfo.antioxidants}</td>
+                      <td className="p-3 text-sky-700 font-bold">{product.nutritionInfo.antioxidants}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -427,7 +653,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
                         <p className="text-xs text-gray-600 font-light">{rev.comment}</p>
                         <div className="flex items-center justify-between text-[10px] text-gray-400 pt-2 border-t border-gray-100">
                           <span className="font-semibold text-brand-darkGreen flex items-center gap-1">
-                            <CheckCircle2 className="w-3 h-3 text-emerald-600" /> {rev.userName} (Verified Buyer)
+                            <CheckCircle2 className="w-3 h-3 text-sky-600" /> {rev.userName} (Verified Buyer)
                           </span>
                           <button className="flex items-center gap-1 hover:text-brand-green">
                             <ThumbsUp className="w-3 h-3" /> Helpful ({rev.helpfulCount})

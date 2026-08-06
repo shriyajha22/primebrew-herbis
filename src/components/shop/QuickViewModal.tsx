@@ -84,7 +84,7 @@ export default function QuickViewModal({
               {currentMrp > currentPrice && (
                 <span className="text-sm text-gray-400 line-through">₹{currentMrp}</span>
               )}
-              <span className="text-xs text-emerald-600 font-semibold">(Inclusive of all taxes)</span>
+              <span className="text-xs text-sky-600 font-semibold">(Inclusive of all taxes)</span>
             </div>
 
             {/* Weight Variant Selector */}

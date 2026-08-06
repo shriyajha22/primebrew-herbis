@@ -23,6 +23,7 @@ export default function Navbar() {
     { name: 'Tea Benefits', href: '/tea-benefits' },
     { name: 'About Us', href: '/about' },
     { name: 'Blogs', href: '/blogs' },
+    { name: 'FAQ', href: '/faq' },
     { name: 'Track Order', href: '/track-order' },
     { name: 'Contact', href: '/contact' },
   ];
@@ -34,7 +35,7 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-3 group">
+            <Link href="/" className="flex items-center gap-3 group shrink-0">
               <div className="w-11 h-11 rounded-card bg-brand-green flex items-center justify-center text-white shadow-soft group-hover:scale-105 transition-transform duration-300">
                 <Leaf className="w-6 h-6 text-brand-gold fill-brand-gold/20" />
               </div>
@@ -48,15 +49,15 @@ export default function Navbar() {
               </div>
             </Link>
 
-            {/* Desktop Navigation Links */}
-            <nav className="hidden lg:flex items-center space-x-8">
+            {/* Desktop Navigation Links - Single Horizontal Line Guarantee */}
+            <nav className="hidden lg:flex items-center space-x-2 xl:space-x-5 whitespace-nowrap">
               {navLinks.map((link) => {
                 const isActive = pathname === link.href;
                 return (
                   <Link
                     key={link.name}
                     href={link.href}
-                    className={`text-sm font-medium transition-colors hover:text-brand-green relative py-1 ${
+                    className={`text-xs xl:text-sm font-medium transition-colors hover:text-brand-green relative py-1 whitespace-nowrap shrink-0 ${
                       isActive ? 'text-brand-green font-semibold' : 'text-brand-charcoal'
                     }`}
                   >
@@ -70,7 +71,7 @@ export default function Navbar() {
             </nav>
 
             {/* Right Action Icons */}
-            <div className="flex items-center space-x-3 sm:space-x-5">
+            <div className="flex items-center space-x-2 sm:space-x-3 shrink-0">
               {/* Live Search Trigger */}
               <button
                 onClick={() => setShowSearchModal(true)}
@@ -159,16 +160,23 @@ export default function Navbar() {
                     ) : (
                       <div className="p-2 space-y-1">
                         <Link
-                          href="/dashboard"
+                          href="/login"
                           onClick={() => setUserDropdownOpen(false)}
-                          className="block px-3 py-2 text-xs font-semibold text-brand-darkGreen bg-brand-beige hover:bg-brand-mint/30 rounded-button text-center transition-colors"
+                          className="block px-3 py-2 text-xs font-bold text-white bg-brand-green hover:bg-brand-darkGreen rounded-button text-center transition-colors shadow-soft"
                         >
-                          Customer Account / Sign In
+                          Customer Login
+                        </Link>
+                        <Link
+                          href="/register"
+                          onClick={() => setUserDropdownOpen(false)}
+                          className="block px-3 py-2 text-xs font-semibold text-brand-darkGreen bg-brand-beige hover:bg-brand-mint/30 rounded-button text-center transition-colors border border-brand-mint/30"
+                        >
+                          Create New Account
                         </Link>
                         <Link
                           href="/admin/login"
                           onClick={() => setUserDropdownOpen(false)}
-                          className="block px-3 py-2 text-xs font-semibold text-brand-brown hover:text-brand-darkGreen hover:bg-gray-50 rounded-button text-center transition-colors border border-gray-100"
+                          className="block px-3 py-2 text-xs font-semibold text-brand-brown hover:text-brand-darkGreen hover:bg-gray-50 rounded-button text-center transition-colors border border-gray-100 mt-1"
                         >
                           🔒 Admin Portal Login
                         </Link>

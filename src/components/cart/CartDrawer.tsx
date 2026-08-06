@@ -179,9 +179,9 @@ export default function CartDrawer() {
               {/* Coupon Code Section */}
               <div className="space-y-2">
                 {appliedCoupon ? (
-                  <div className="flex items-center justify-between p-2 rounded-button bg-emerald-50 border border-emerald-200 text-xs text-emerald-800">
+                  <div className="flex items-center justify-between p-2 rounded-button bg-sky-50 border border-sky-200 text-xs text-sky-800">
                     <div className="flex items-center gap-1.5">
-                      <Tag className="w-3.5 h-3.5 text-emerald-600" />
+                      <Tag className="w-3.5 h-3.5 text-sky-600" />
                       <span>Code <strong>{appliedCoupon.code}</strong> applied (-₹{cartDiscount})</span>
                     </div>
                     <button onClick={removeCoupon} className="text-xs font-bold text-red-600 hover:underline">
@@ -215,7 +215,7 @@ export default function CartDrawer() {
                   <span className="font-medium text-brand-darkGreen">₹{cartSubtotal}</span>
                 </div>
                 {cartDiscount > 0 && (
-                  <div className="flex justify-between text-emerald-700">
+                  <div className="flex justify-between text-sky-700 font-semibold">
                     <span>Discount</span>
                     <span className="font-medium">-₹{cartDiscount}</span>
                   </div>
@@ -227,7 +227,7 @@ export default function CartDrawer() {
                 <div className="flex justify-between">
                   <span>Shipping</span>
                   <span className="font-medium text-brand-darkGreen">
-                    {cartShipping === 0 ? <strong className="text-emerald-600">FREE</strong> : `₹${cartShipping}`}
+                    {cartShipping === 0 ? <strong className="text-sky-600">FREE</strong> : `₹${cartShipping}`}
                   </span>
                 </div>
                 {giftWrap && (

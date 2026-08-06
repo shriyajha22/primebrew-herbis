@@ -70,14 +70,17 @@ Warm
 
 # Color Palette
 
-Primary Green
-#2E7D32
+Primary Blue (Dusty Blue)
+#5F86A8
 
-Dark Green
-#1B5E20
+Secondary Blue (Sky Blue)
+#8CB8D9
 
-Light Green
-#A5D6A7
+Deep Dusty Blue
+#3E5C76
+
+Light Sky Accent
+#B4D3EC
 
 Tea Beige
 #F8F5F0

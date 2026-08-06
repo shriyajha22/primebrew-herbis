@@ -57,7 +57,7 @@ export default function BlogDetailPage({ params }: { params: { slug: string } })
             <Image src={blog.coverImage} alt={blog.title} fill priority className="object-cover" />
           </div>
 
-          <div className="prose prose-emerald max-w-none text-xs sm:text-sm text-gray-700 leading-relaxed space-y-4">
+          <div className="prose prose-slate max-w-none text-xs sm:text-sm text-gray-700 leading-relaxed space-y-4">
             <p className="font-semibold text-brand-darkGreen text-base leading-relaxed">{blog.excerpt}</p>
             <div className="whitespace-pre-line font-light text-gray-600">{blog.content}</div>
           </div>

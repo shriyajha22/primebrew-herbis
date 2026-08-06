@@ -121,7 +121,7 @@ export default function CartPage() {
                   <span className="font-medium text-brand-darkGreen">₹{cartSubtotal}</span>
                 </div>
                 {cartDiscount > 0 && (
-                  <div className="flex justify-between text-emerald-700">
+                  <div className="flex justify-between text-sky-700 font-semibold">
                     <span>Coupon Discount ({appliedCoupon?.code})</span>
                     <span className="font-medium">-₹{cartDiscount}</span>
                   </div>
@@ -133,7 +133,7 @@ export default function CartPage() {
                 <div className="flex justify-between">
                   <span>Shipping Charges</span>
                   <span className="font-medium text-brand-darkGreen">
-                    {cartShipping === 0 ? <strong className="text-emerald-600">FREE</strong> : `₹${cartShipping}`}
+                    {cartShipping === 0 ? <strong className="text-sky-600 font-bold">FREE</strong> : `₹${cartShipping}`}
                   </span>
                 </div>
                 <div className="flex justify-between text-sm font-bold text-brand-darkGreen pt-3 border-t border-gray-200">

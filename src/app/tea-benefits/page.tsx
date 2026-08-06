@@ -9,7 +9,7 @@ export default function TeaBenefitsPage() {
     {
       title: "Detoxification & Liver Health",
       icon: Sparkles,
-      color: "text-emerald-700 bg-emerald-50 border-emerald-200",
+      color: "text-sky-700 bg-sky-50 border-sky-200",
       desc: "Herbal detox blends utilize wild dandelion root, lemongrass, and milk thistle. Dandelion contains taraxacin which stimulates bile production in the liver, while green tea polyphenols flush cellular waste.",
       recommendedSlug: "detox-tea",
     },

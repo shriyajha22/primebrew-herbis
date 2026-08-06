@@ -9,23 +9,23 @@
   --font-inter: 'Inter', sans-serif;
   --font-jetbrains: 'JetBrains Mono', monospace;
 
-  /* Herbal Green Palette */
-  --color-primary: #6FAF5A;        /* Soft herbal green */
-  --color-secondary: #8BCB75;      /* Soft sage green */
-  --color-accent: #A8D89C;         /* Light herbal green */
-  --color-dark-green: #3B5B30;     /* Deep herbal green */
+  /* Calming Blue Palette */
+  --color-primary: #5F86A8;        /* Primary Dusty Blue */
+  --color-secondary: #8CB8D9;      /* Secondary Sky Blue */
+  --color-accent: #B4D3EC;         /* Light Sky Blue */
+  --color-dark-green: #3E5C76;     /* Deep Dusty Blue */
 
-  /* Warm Soft Beige Backgrounds */
-  --color-bg-beige: #F8F3E8;       /* Main warm soft beige */
-  --color-bg-soft: #F5EFE2;        /* Soft natural cream shade */
+  /* Background Beige (Preserved Warm Beige) */
+  --color-bg-beige: #F5EFE6;       /* Main warm soft beige */
+  --color-bg-soft: #FAF6EE;        /* Soft natural cream shade */
   --color-card-beige: #FAF6EE;     /* Warm off-white card */
 
   /* Text Colors */
-  --color-dark-grey: #2C352B;      /* Dark natural charcoal */
-  --color-medium-grey: #556054;    /* Medium sage grey */
+  --color-dark-grey: #2B3746;      /* Dark navy charcoal */
+  --color-medium-grey: #556475;    /* Medium blue-grey */
 
   /* Action Buttons */
-  --color-increase: #6FAF5A;       /* Herbal green */
+  --color-increase: #5F86A8;       /* Primary Dusty Blue */
   --color-decrease: #E69C45;       /* Warm orange */
   --color-remove: rgb(215, 65, 65);/* Muted red */
 
@@ -38,8 +38,8 @@ html {
 
 body {
   font-family: var(--font-inter);
-  background-color: #F8F3E8;
-  color: #2C352B;
+  background-color: #F5EFE6;
+  color: #2B3746;
   font-size: 1rem; /* 16px default body */
   line-height: 1.65; /* Balanced whitespace */
   overflow-x: hidden;
@@ -47,7 +47,7 @@ body {
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-poppins);
-  color: #2C352B;
+  color: #2B3746;
   letter-spacing: -0.015em;
 }
 
@@ -74,9 +74,9 @@ a:focus-visible,
 input:focus-visible, 
 select:focus-visible, 
 textarea:focus-visible {
-  outline: 2px solid #6FAF5A;
+  outline: 2px solid #5F86A8;
   outline-offset: 3px;
-  box-shadow: 0 0 0 4px rgba(111, 175, 90, 0.2);
+  box-shadow: 0 0 0 4px rgba(95, 134, 168, 0.25);
 }
 
 /* Custom Scrollbar */
@@ -85,33 +85,33 @@ textarea:focus-visible {
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #F8F3E8;
+  background: #F5EFE6;
 }
 ::-webkit-scrollbar-thumb {
-  background: #A8D89C;
+  background: #8CB8D9;
   border-radius: 999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #6FAF5A;
+  background: #5F86A8;
 }
 
 /* Glassmorphism Navbar (Warm Soft Beige blur + transparent) */
 .glass-navbar {
-  background: rgba(248, 243, 232, 0.92);
+  background: rgba(245, 239, 230, 0.92);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  border-bottom: 1px solid rgba(168, 216, 156, 0.35);
+  border-bottom: 1px solid rgba(140, 184, 217, 0.35);
 }
 
 .glass-panel {
   background: rgba(250, 246, 238, 0.94);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(168, 216, 156, 0.3);
+  border: 1px solid rgba(140, 184, 217, 0.3);
 }
 
 .glass-dark {
-  background: rgba(43, 68, 34, 0.94);
+  background: rgba(43, 68, 95, 0.94);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.15);
@@ -119,27 +119,27 @@ textarea:focus-visible {
 
 /* Button Gradients */
 .btn-primary-gradient {
-  background: linear-gradient(270deg, #A8D89C, #8BCB75, #6FAF5A);
+  background: linear-gradient(270deg, #B4D3EC, #8CB8D9, #5F86A8);
   color: #FFFFFF;
   font-weight: 600;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 15px rgba(111, 175, 90, 0.25);
+  box-shadow: 0 4px 15px rgba(95, 134, 168, 0.25);
 }
 
 .btn-primary-gradient:hover {
-  background: linear-gradient(270deg, #8BCB75, #6FAF5A, #589745);
-  box-shadow: 0 6px 20px rgba(88, 151, 69, 0.3);
+  background: linear-gradient(270deg, #8CB8D9, #5F86A8, #3E5C76);
+  box-shadow: 0 6px 20px rgba(62, 92, 118, 0.3);
   transform: translateY(-2px);
 }
 
 /* Action Buttons */
 .btn-action-increase {
-  background-color: #6FAF5A;
+  background-color: #5F86A8;
   color: #FFFFFF;
   transition: all 0.2s ease;
 }
 .btn-action-increase:hover {
-  background-color: #589745;
+  background-color: #3E5C76;
   transform: scale(1.08);
 }
 
@@ -164,7 +164,7 @@ textarea:focus-visible {
 
 /* Soft Shadows */
 .soft-card-shadow {
-  box-shadow: 0 6px 24px -4px rgba(60, 90, 50, 0.08), 0 2px 8px -2px rgba(0, 0, 0, 0.03);
+  box-shadow: 0 6px 24px -4px rgba(62, 92, 118, 0.10), 0 2px 8px -2px rgba(0, 0, 0, 0.03);
 }
 
 /* Gold Accent Gradient */
@@ -175,12 +175,14 @@ textarea:focus-visible {
   -webkit-text-fill-color: transparent;
 }
 
-.green-gradient {
-  background: linear-gradient(270deg, #A8D89C 0%, #8BCB75 50%, #6FAF5A 100%);
+.green-gradient,
+.blue-gradient {
+  background: linear-gradient(270deg, #B4D3EC 0%, #8CB8D9 50%, #5F86A8 100%);
 }
 
-.green-gradient-text {
-  background: linear-gradient(270deg, #8BCB75 0%, #6FAF5A 100%);
+.green-gradient-text,
+.blue-gradient-text {
+  background: linear-gradient(270deg, #8CB8D9 0%, #5F86A8 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -192,7 +194,7 @@ textarea:focus-visible {
 }
 .interactive-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 30px -8px rgba(111, 175, 90, 0.2);
+  box-shadow: 0 12px 30px -8px rgba(95, 134, 168, 0.25);
 }
 
 /* Pulse animation for live badge */

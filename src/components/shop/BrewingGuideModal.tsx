@@ -79,8 +79,8 @@ export default function BrewingGuideModal({
           </div>
 
           {/* Serving Suggestion */}
-          <div className="bg-emerald-50 p-3.5 rounded-button border border-emerald-200 text-xs text-emerald-900 flex items-start gap-2">
-            <Sparkles className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
+          <div className="bg-sky-50 p-3.5 rounded-button border border-sky-200 text-xs text-sky-900 flex items-start gap-2">
+            <Sparkles className="w-4 h-4 text-sky-600 flex-shrink-0 mt-0.5" />
             <p><strong>Master Herbalist Note:</strong> {product.brewingGuide.servingSuggestion}</p>
           </div>
 

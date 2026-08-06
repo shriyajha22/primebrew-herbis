@@ -12,10 +12,42 @@ function DashboardContent() {
   const searchParams = useSearchParams();
   const initialTab = (searchParams.get('tab') as any) || 'orders';
 
-  const { currentUser, wishlist, toggleWishlist, addToCart } = useStore();
-  const [activeTab, setActiveTab] = useState<'orders' | 'wishlist' | 'addresses' | 'wallet'>(initialTab);
+  const { currentUser, wishlist, toggleWishlist, addToCart, logout, loginAsDemoCustomer, showToast } = useStore();
+  const [activeTab, setActiveTab] = useState<'orders' | 'wishlist' | 'addresses' | 'wallet' | 'settings'>(initialTab);
+  const [passCurrent, setPassCurrent] = useState('');
+  const [passNew, setPassNew] = useState('');
 
   const wishlistedProducts = initialProducts.filter((p) => wishlist.includes(p._id));
+
+  const handlePasswordChange = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!passNew) return;
+    showToast("Password updated successfully!", "success");
+    setPassCurrent('');
+    setPassNew('');
+  };
+
+  if (!currentUser) {
+    return (
+      <div className="py-20 text-center space-y-5 max-w-md mx-auto px-4">
+        <div className="w-16 h-16 rounded-2xl bg-brand-cream text-brand-darkGreen flex items-center justify-center mx-auto border border-brand-mint/40 shadow-soft">
+          <Shield className="w-8 h-8 text-brand-green" />
+        </div>
+        <div className="space-y-2">
+          <h2 className="font-heading font-extrabold text-2xl text-brand-darkGreen">Customer Account Required</h2>
+          <p className="text-xs text-gray-500 leading-relaxed">
+            Please log in or click below to access your saved orders, delivery addresses, tea wallet, and wishlist.
+          </p>
+        </div>
+        <button
+          onClick={loginAsDemoCustomer}
+          className="bg-brand-green hover:bg-brand-darkGreen text-white font-extrabold text-xs px-6 py-3.5 rounded-button transition-all shadow-soft w-full"
+        >
+          ⚡ Access Demo Customer Dashboard (Ananya Sharma)
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="py-12 bg-brand-cream min-h-screen">
@@ -84,6 +116,20 @@ function DashboardContent() {
             >
               <Wallet className="w-4 h-4" /> Wallet & Rewards
             </button>
+            <button
+              onClick={() => setActiveTab('settings')}
+              className={`w-full text-left text-xs font-bold px-4 py-3 rounded-button flex items-center gap-3 transition-colors ${
+                activeTab === 'settings' ? 'bg-brand-green text-white shadow-soft' : 'text-brand-charcoal hover:bg-brand-beige'
+              }`}
+            >
+              <Shield className="w-4 h-4" /> Account & Password Settings
+            </button>
+            <button
+              onClick={logout}
+              className="w-full text-left text-xs font-bold px-4 py-3 rounded-button flex items-center gap-3 text-red-600 hover:bg-red-50 transition-colors pt-2 border-t border-gray-100 mt-2"
+            >
+              Logout Account
+            </button>
           </div>
 
           {/* Right Tab Content */}
@@ -96,7 +142,7 @@ function DashboardContent() {
                 <div className="bg-white rounded-card border border-brand-mint/30 shadow-card p-6 space-y-4">
                   <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-gray-100 pb-3 gap-2">
                     <div>
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-badge">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-sky-700 bg-sky-50 px-2.5 py-0.5 rounded-badge">
                         Status: Shipped via Shiprocket
                       </span>
                       <h3 className="font-heading font-bold text-base text-brand-darkGreen mt-1">
@@ -200,6 +246,71 @@ function DashboardContent() {
                     <span className="font-heading font-extrabold text-2xl text-brand-green">₹250.00</span>
                   </div>
                   <p className="text-gray-500">You earn 5% cashback on every tea order placed!</p>
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'settings' && (
+              <div className="space-y-6">
+                <h2 className="font-heading font-bold text-xl text-brand-darkGreen">Account & Security Settings</h2>
+                <div className="bg-white p-6 rounded-card border border-brand-mint/30 shadow-card space-y-6 text-xs">
+                  <div className="space-y-3">
+                    <h3 className="font-bold text-sm text-brand-darkGreen">Profile Details</h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-gray-500 font-semibold block mb-1">Full Name</label>
+                        <input
+                          type="text"
+                          value={currentUser?.name || ''}
+                          readOnly
+                          className="w-full p-2.5 rounded-button bg-gray-50 border border-gray-200 text-brand-darkGreen font-bold"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-gray-500 font-semibold block mb-1">Email Address</label>
+                        <input
+                          type="email"
+                          value={currentUser?.email || ''}
+                          readOnly
+                          className="w-full p-2.5 rounded-button bg-gray-50 border border-gray-200 text-brand-darkGreen font-bold"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="pt-4 border-t border-gray-100 space-y-3">
+                    <h3 className="font-bold text-sm text-brand-darkGreen">Change Password</h3>
+                    <form onSubmit={handlePasswordChange} className="space-y-3 max-w-md">
+                      <div>
+                        <label className="text-gray-500 font-semibold block mb-1">Current Password</label>
+                        <input
+                          type="password"
+                          placeholder="••••••••"
+                          value={passCurrent}
+                          onChange={(e) => setPassCurrent(e.target.value)}
+                          required
+                          className="w-full p-2.5 rounded-button border border-gray-300"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-gray-500 font-semibold block mb-1">New Password</label>
+                        <input
+                          type="password"
+                          placeholder="••••••••"
+                          value={passNew}
+                          onChange={(e) => setPassNew(e.target.value)}
+                          required
+                          className="w-full p-2.5 rounded-button border border-gray-300"
+                        />
+                      </div>
+                      <button
+                        type="submit"
+                        className="bg-brand-green hover:bg-brand-darkGreen text-white font-bold px-5 py-2.5 rounded-button"
+                      >
+                        Update Security Password
+                      </button>
+                    </form>
+                  </div>
                 </div>
               </div>
             )}

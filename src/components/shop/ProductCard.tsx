@@ -51,16 +51,16 @@ export default function ProductCard({ product }: { product: Product }) {
           </Link>
 
           {/* Quick Action Overlay Buttons */}
-          <div className="absolute inset-x-3 bottom-3 opacity-0 group-hover:opacity-100 transition-all duration-300 flex gap-2">
+          <div className="absolute inset-x-2 bottom-3 opacity-0 group-hover:opacity-100 transition-all duration-300 flex gap-1.5">
             <button
               onClick={() => setShowQuickView(true)}
-              className="flex-1 bg-white/95 hover:bg-white active:scale-95 text-brand-darkGreen text-xs font-semibold py-2 rounded-button backdrop-blur-sm flex items-center justify-center gap-1 shadow-soft hover:shadow-md transition-all"
+              className="flex-1 bg-white/95 hover:bg-white active:scale-95 text-brand-darkGreen text-[11px] font-semibold py-1.5 rounded-button backdrop-blur-sm flex items-center justify-center gap-1 shadow-soft hover:shadow-md transition-all"
             >
               <Eye className="w-3.5 h-3.5" /> Quick View
             </button>
             <button
               onClick={() => setShowBrewingGuide(true)}
-              className="bg-brand-darkGreen hover:bg-black active:scale-95 text-brand-gold text-xs font-semibold px-3 py-2 rounded-button flex items-center justify-center transition-all"
+              className="bg-brand-darkGreen hover:bg-black active:scale-95 text-brand-gold text-[11px] font-semibold px-2.5 py-1.5 rounded-button flex items-center justify-center transition-all"
               title="Brewing Timer & Guide"
             >
               <Timer className="w-3.5 h-3.5" />

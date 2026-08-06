@@ -51,7 +51,7 @@ class InMemoryStore {
         {
           productId: "prod-1",
           productName: "Blue Tea",
-          image: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=1000&q=80",
+          image: "/images/blue-tea.jpg",
           weight: "30 Tea Bags",
           quantity: 2,
           price: 249

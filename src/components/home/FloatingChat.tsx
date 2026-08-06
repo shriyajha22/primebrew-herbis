@@ -24,8 +24,8 @@ export default function FloatingChat() {
       let botReply = "Thank you for reaching out! For pure antioxidants and natural relaxation, try our signature 'Blue Tea' (₹249) or our adaptogenic 'Ayur Tea' (₹380)!";
       const q = userText.toLowerCase();
 
-      if (q.includes('sugar') || q.includes('diabetic') || q.includes('glucose')) {
-        botReply = "For natural blood sugar balance and glucose regulation, we strongly recommend our 'Pre-Diabetic Tea' (₹425) with Gurmar & Jamun seed!";
+      if (q.includes('sugar') || q.includes('diabetic') || q.includes('glucose') || q.includes('guava') || q.includes('jamun') || q.includes('neem')) {
+        botReply = "For traditional digestive wellness and natural gut comfort, we strongly recommend our 'Guava + Jamun + Neem Herbal Blend' (₹425)!";
       } else if (q.includes('digest') || q.includes('elaichi') || q.includes('bloat')) {
         botReply = "For digestive ease and post-meal comfort, check out our 'Blue Tea with Elaichi' (₹299) or 'Blue Tea with Ginger + Cinnamon' (₹349)!";
       } else if (q.includes('ayurved') || q.includes('stress') || q.includes('immunity')) {
@@ -62,7 +62,7 @@ export default function FloatingChat() {
               {/* Friendly Robot Avatar */}
               <div className="w-9 h-9 rounded-full bg-brand-bgBeige border border-brand-gold/60 flex items-center justify-center relative shadow-soft">
                 <Bot className="w-5 h-5 text-brand-green" />
-                <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-brand-darkGreen animate-pulse" />
+                <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-sky-400 border-2 border-brand-darkGreen animate-pulse" />
               </div>
               <div>
                 <h4 className="font-heading font-bold text-xs text-white flex items-center gap-1.5">

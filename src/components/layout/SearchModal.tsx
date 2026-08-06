@@ -116,10 +116,10 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
 
   const popularTags = [
     { label: 'Blue Tea', slug: 'blue-tea' },
-    { label: 'Elaichi Blue Tea', slug: 'blue-tea-with-elaichi' },
-    { label: 'Ginger + Cinnamon Tea', slug: 'blue-tea-with-ginger-cinnamon' },
-    { label: 'Ayurvedic Herbal Tea', slug: 'ayur-tea' },
-    { label: 'Pre-Diabetic Tea', slug: 'pre-diabetic-tea' },
+    { label: 'Blue Tea + Elaichi', slug: 'blue-tea-with-elaichi' },
+    { label: 'Blue Tea + Ginger Cinnamon', slug: 'blue-tea-with-ginger-cinnamon' },
+    { label: 'Guava Jamun Neem', slug: 'guava-jamun-neem-herbal-blend' },
+    { label: 'Ayurvedic Kashayam', slug: 'authentic-ayurvedic-kashayam' },
   ];
 
   return (

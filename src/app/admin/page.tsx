@@ -9,7 +9,7 @@ import { Product } from '@/lib/types';
 import { Shield, TrendingUp, DollarSign, ShoppingBag, Users, AlertTriangle, Plus, Edit, Trash2, RefreshCw, CheckCircle2 } from 'lucide-react';
 
 export default function AdminDashboardPage() {
-  const { currentUser, showToast } = useStore();
+  const { currentUser, loginAsDemoAdmin, showToast } = useStore();
   const [productsList, setProductsList] = useState<Product[]>([...initialProducts]);
   const [activeTab, setActiveTab] = useState<'overview' | 'products' | 'orders' | 'settings'>('overview');
   const [showAddModal, setShowAddModal] = useState(false);
@@ -25,21 +25,30 @@ export default function AdminDashboardPage() {
   if (!currentUser || currentUser.role !== 'admin') {
     return (
       <div className="py-20 text-center space-y-5 max-w-md mx-auto px-4">
-        <div className="w-16 h-16 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center mx-auto border border-amber-200">
+        <div className="w-16 h-16 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center mx-auto border border-amber-200 shadow-soft">
           <Shield className="w-9 h-9" />
         </div>
         <div className="space-y-2">
-          <h2 className="font-heading font-bold text-2xl text-brand-darkGreen">Admin Access Restricted</h2>
-          <p className="text-xs text-gray-500">
-            This security control panel requires authenticated administrator privileges. Please log in with your security credentials.
+          <h2 className="font-heading font-extrabold text-2xl text-brand-darkGreen">Admin Access Restricted</h2>
+          <p className="text-xs text-gray-500 leading-relaxed">
+            This security control panel requires administrator credentials (<code className="bg-gray-100 px-1.5 py-0.5 rounded font-mono">admin@primebrewherbis.com</code>). Please log in or use quick demo admin access.
           </p>
         </div>
-        <div className="pt-2 flex flex-col sm:flex-row gap-3 justify-center">
-          <Link href="/admin/login" className="inline-block bg-brand-darkGreen hover:bg-brand-green text-white font-bold text-xs px-6 py-3 rounded-xl transition-colors">
-            Log In as Admin
+        <div className="pt-2 flex flex-col gap-2.5 justify-center">
+          <Link href="/admin/login" className="inline-block bg-brand-darkGreen hover:bg-brand-green text-white font-bold text-xs px-6 py-3.5 rounded-button transition-colors shadow-soft">
+            Log In via Admin Login Portal
           </Link>
-          <Link href="/" className="inline-block bg-brand-beige hover:bg-brand-mint/40 text-brand-darkGreen font-semibold text-xs px-6 py-3 rounded-xl transition-colors">
-            Return to Home Page
+          <button
+            onClick={() => {
+              loginAsDemoAdmin();
+              showToast("Admin access granted via demo session!", "success");
+            }}
+            className="inline-block bg-brand-gold hover:bg-amber-400 text-brand-darkGreen font-extrabold text-xs px-6 py-3.5 rounded-button transition-all shadow-gold"
+          >
+            ⚡ Instant Demo Admin Access
+          </button>
+          <Link href="/" className="text-xs text-gray-500 hover:text-brand-green font-semibold pt-1">
+            ← Return to Main Storefront
           </Link>
         </div>
       </div>
@@ -147,7 +156,7 @@ export default function AdminDashboardPage() {
                   <DollarSign className="w-4 h-4 text-brand-green" />
                 </div>
                 <span className="font-heading font-extrabold text-2xl text-brand-darkGreen">₹3,490</span>
-                <span className="text-[10px] text-emerald-600 font-bold block mt-1">+14% vs yesterday</span>
+                <span className="text-[10px] text-sky-600 font-bold block mt-1">+14% vs yesterday</span>
               </div>
               <div className="bg-white p-5 rounded-card border border-brand-mint/30 shadow-card">
                 <div className="flex items-center justify-between text-xs text-gray-500 mb-1">
@@ -155,7 +164,7 @@ export default function AdminDashboardPage() {
                   <TrendingUp className="w-4 h-4 text-brand-green" />
                 </div>
                 <span className="font-heading font-extrabold text-2xl text-brand-darkGreen">₹54,200</span>
-                <span className="text-[10px] text-emerald-600 font-bold block mt-1">+28% growth</span>
+                <span className="text-[10px] text-sky-600 font-bold block mt-1">+28% growth</span>
               </div>
               <div className="bg-white p-5 rounded-card border border-brand-mint/30 shadow-card">
                 <div className="flex items-center justify-between text-xs text-gray-500 mb-1">
@@ -230,7 +239,7 @@ export default function AdminDashboardPage() {
                     <td className="p-4 uppercase font-semibold text-brand-green">{p.categoryName}</td>
                     <td className="p-4 font-bold">₹{p.price}</td>
                     <td className="p-4 font-bold">
-                      <span className={p.stock < 50 ? 'text-amber-600 font-extrabold' : 'text-emerald-600'}>
+                      <span className={p.stock < 50 ? 'text-amber-600 font-extrabold' : 'text-sky-600'}>
                         {p.stock} units
                       </span>
                     </td>
@@ -259,7 +268,7 @@ export default function AdminDashboardPage() {
                 <p className="font-bold text-brand-darkGreen">Order #PBH-2026-9812</p>
                 <p className="text-gray-500">Customer: Ananya Sharma • Total: ₹942.90 (Razorpay Paid)</p>
               </div>
-              <span className="bg-emerald-100 text-emerald-800 font-bold px-3 py-1 rounded-badge text-[11px]">
+              <span className="bg-sky-100 text-sky-800 font-bold px-3 py-1 rounded-badge text-[11px]">
                 Shipped via Shiprocket
               </span>
             </div>

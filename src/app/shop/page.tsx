@@ -5,7 +5,8 @@ import { useSearchParams } from 'next/navigation';
 import ProductCard from '@/components/shop/ProductCard';
 import { initialProducts, initialCategories } from '@/lib/seedData';
 import { Product } from '@/lib/types';
-import { Filter, SlidersHorizontal, Search, RotateCcw } from 'lucide-react';
+import { Filter, SlidersHorizontal, Search, RotateCcw, Scale } from 'lucide-react';
+import CompareModal from '@/components/shop/CompareModal';
 
 function ShopContent() {
   const searchParams = useSearchParams();
@@ -14,11 +15,12 @@ function ShopContent() {
 
   const [search, setSearch] = useState(initialSearchQuery);
   const [selectedCategory, setSelectedCategory] = useState(initialCategoryQuery);
-  const [selectedCaffeine, setSelectedCaffeine] = useState('');
   const [selectedBenefit, setSelectedBenefit] = useState('');
   const [maxPrice, setMaxPrice] = useState(600);
   const [sortOption, setSortOption] = useState('featured');
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
+  const [showCompareModal, setShowCompareModal] = useState(false);
+  const [compareProductIds, setCompareProductIds] = useState<string[]>(['prod-1', 'prod-2', 'prod-4']);
 
   useEffect(() => {
     if (initialCategoryQuery) setSelectedCategory(initialCategoryQuery);
@@ -37,7 +39,6 @@ function ShopContent() {
     }
 
     if (selectedCategory && p.category !== selectedCategory) return false;
-    if (selectedCaffeine && p.caffeineLevel !== selectedCaffeine) return false;
     if (selectedBenefit && !p.benefits.some((b) => b.toLowerCase().includes(selectedBenefit.toLowerCase()))) return false;
     if (p.price > maxPrice) return false;
 
@@ -60,7 +61,6 @@ function ShopContent() {
   const resetFilters = () => {
     setSearch('');
     setSelectedCategory('');
-    setSelectedCaffeine('');
     setSelectedBenefit('');
     setMaxPrice(600);
     setSortOption('featured');
@@ -111,6 +111,14 @@ function ShopContent() {
               className="lg:hidden flex items-center gap-2 bg-brand-beige text-brand-darkGreen text-xs font-bold px-4 py-2.5 rounded-button border border-brand-mint/40"
             >
               <SlidersHorizontal className="w-4 h-4" /> Filters
+            </button>
+
+            <button
+              onClick={() => setShowCompareModal(true)}
+              className="bg-brand-green hover:bg-brand-darkGreen text-white text-xs font-bold px-3.5 py-2 rounded-button shadow-soft flex items-center gap-1.5 transition-colors"
+            >
+              <Scale className="w-3.5 h-3.5 text-brand-gold" />
+              <span>Compare Teas ({compareProductIds.length})</span>
             </button>
 
             <span className="text-xs font-medium text-gray-500">
@@ -176,26 +184,9 @@ function ShopContent() {
             </div>
 
             <div className="space-y-2 pt-3 border-t border-gray-100">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-brand-darkGreen">Caffeine Level</h4>
-              <div className="space-y-1 text-xs">
-                {['', 'Zero Caffeine', 'Low Caffeine', 'Medium Caffeine'].map((caf) => (
-                  <button
-                    key={caf}
-                    onClick={() => setSelectedCaffeine(caf)}
-                    className={`w-full text-left px-2.5 py-1.5 rounded-button transition-colors ${
-                      selectedCaffeine === caf ? 'bg-brand-green text-white font-bold' : 'text-gray-600 hover:bg-brand-beige'
-                    }`}
-                  >
-                    {caf || 'All Levels'}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="space-y-2 pt-3 border-t border-gray-100">
               <h4 className="text-xs font-bold uppercase tracking-wider text-brand-darkGreen">Health Benefit</h4>
               <div className="flex flex-wrap gap-1.5 text-[11px]">
-                {['Antioxidant', 'Digestion', 'Immunity', 'Blood Sugar', 'Stress', 'Skin Glow'].map((ben) => (
+                {['Antioxidant', 'Digestion', 'Immunity', 'Blood Sugar', 'Stress'].map((ben) => (
                   <button
                     key={ben}
                     onClick={() => setSelectedBenefit(selectedBenefit === ben ? '' : ben)}
@@ -253,6 +244,13 @@ function ShopContent() {
           </main>
         </div>
       </div>
+
+      <CompareModal
+        isOpen={showCompareModal}
+        onClose={() => setShowCompareModal(false)}
+        selectedProductIds={compareProductIds}
+        onRemoveProduct={(id) => setCompareProductIds(compareProductIds.filter((p) => p !== id))}
+      />
     </div>
   );
 }

@@ -10,35 +10,35 @@ const steps = [
     step: "01",
     title: "High-Altitude Himalayan Bio-Farms",
     desc: "Sourced from high-elevation estates in Darjeeling, Meghalaya, and Himachal Pradesh where mountain mist and mineral soil naturally enrich botanical nutrients.",
-    img: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=600&q=80"
+    img: "/images/blue-tea.jpg"
   },
   {
     icon: Sun,
     step: "02",
     title: "Selective Dawn Harvesting",
     desc: "Experienced local farmers hand-pick whole leaves, flower buds, and roots at morning dew when volatile aromatic essential oils are at their highest concentration.",
-    img: "https://images.unsplash.com/photo-1544787219-7f47ccb76574?auto=format&fit=crop&w=600&q=80"
+    img: "/images/blue-tea-elaichi.jpg"
   },
   {
     icon: Sparkles,
     step: "03",
     title: "Gentle Solar & Shadow Drying",
     desc: "Herbs are slowly air-dried under natural shade to preserve delicate antioxidants, natural flavonoids, and pristine green leaf colors.",
-    img: "https://images.unsplash.com/photo-1597481499750-3e6b22637e12?auto=format&fit=crop&w=600&q=80"
+    img: "/images/blue-tea-ginger-cinnamon.jpg"
   },
   {
     icon: HeartHandshake,
     step: "04",
     title: "Ayurvedic Master Blending",
     desc: "Formulated by certified Ayurvedic herbalists to ensure precise synergistic ratios for maximum absorption and biological harmony.",
-    img: "https://images.unsplash.com/photo-1563822249510-04678c7870a4?auto=format&fit=crop&w=600&q=80"
+    img: "/images/guava-jamun-neem.jpg"
   },
   {
     icon: Box,
     step: "05",
     title: "Airtight Eco Packaging",
     desc: "Sealed in 100% recyclable tin canisters and bio-pyramid tea bags to protect freshness directly from our farm warehouse to your teacup.",
-    img: "https://images.unsplash.com/photo-1513201099705-a9746e1e201f?auto=format&fit=crop&w=600&q=80"
+    img: "/images/ayurvedic-kashayam.jpg"
   }
 ];
 

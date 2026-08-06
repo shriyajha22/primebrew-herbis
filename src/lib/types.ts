@@ -20,7 +20,7 @@ export interface Product {
   weightVariants: { weight: string; price: number; mrp: number }[];
   ingredients: { name: string; percentage?: string; icon?: string; description: string }[];
   benefits: string[];
-  caffeineLevel: "Zero Caffeine" | "Low Caffeine" | "Medium Caffeine" | "High Caffeine";
+  caffeineLevel: "Zero Caffeine" | "Low Caffeine" | "Medium Caffeine" | "High Caffeine" | "Naturally Caffeine-Free";
   brewingGuide: {
     temp: string; // e.g. "90°C / 195°F"
     steepTime: string; // e.g. "3-5 mins"
@@ -74,7 +74,7 @@ export interface Blog {
   slug: string;
   excerpt: string;
   content: string;
-  category: string; // "Health Tips" | "Tea Recipes" | "Tea Knowledge" | "Lifestyle"
+  category: string; // "Health Tips" | "Tea Knowledge"
   author: string;
   authorRole: string;
   authorImage: string;

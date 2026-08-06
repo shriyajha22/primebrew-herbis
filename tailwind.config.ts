@@ -11,25 +11,25 @@ const config: Config = {
     extend: {
       colors: {
         brand: {
-          green: "#6FAF5A",         // Soft herbal primary green
-          darkGreen: "#3B5B30",     // Deep herbal green
-          softGreen: "#8BCB75",     // Secondary soft sage green
-          accentGreen: "#A8D89C",   // Light herbal green accent
-          mint: "#A8D89C",          // Light green border / badge
-          bgBeige: "#F8F3E8",       // Warm soft beige primary background
-          bgSoft: "#F5EFE2",        // Soft natural cream shade
+          green: "#5F86A8",         // Primary Dusty Blue
+          darkGreen: "#3E5C76",     // Deep Dusty Blue
+          softGreen: "#8CB8D9",     // Secondary Sky Blue
+          accentGreen: "#B4D3EC",   // Light Sky Blue accent
+          mint: "#B4D3EC",          // Light Sky Blue border / badge
+          bgBeige: "#F5EFE6",       // Background Warm Soft Beige
+          bgSoft: "#FAF6EE",        // Soft natural cream shade
           cardBeige: "#FAF6EE",     // Warm off-white card background
           cardWhite: "#FAF6EE",     // Warm off-white card background
-          darkGrey: "#2C352B",      // Dark natural charcoal text
-          mediumGrey: "#556054",    // Medium sage grey text
-          actionIncrease: "#6FAF5A",// Green +
+          darkGrey: "#2B3746",      // Dark navy charcoal text
+          mediumGrey: "#556475",    // Medium blue-grey text
+          actionIncrease: "#5F86A8",// Blue +
           actionDecrease: "#E69C45",// Warm Orange -
           actionRemove: "rgb(215, 65, 65)", // Muted Red remove
           gold: "#D4AF37",
-          charcoal: "#2C352B",
+          charcoal: "#2B3746",
           lightGray: "#F3ECE0",
-          darkBg: "#1F291E",
-          darkCard: "#2B372A",
+          darkBg: "#1E2D3B",
+          darkCard: "#273849",
         },
       },
       borderRadius: {
@@ -46,9 +46,9 @@ const config: Config = {
         mono: ["var(--font-jetbrains)", "monospace"],
       },
       boxShadow: {
-        soft: "0 4px 20px -2px rgba(111, 175, 90, 0.12)",
-        card: "0 6px 24px -4px rgba(60, 90, 50, 0.08), 0 2px 8px -2px rgba(0, 0, 0, 0.03)",
-        premium: "0 14px 35px -10px rgba(59, 91, 48, 0.15)",
+        soft: "0 4px 20px -2px rgba(95, 134, 168, 0.18)",
+        card: "0 6px 24px -4px rgba(62, 92, 118, 0.10), 0 2px 8px -2px rgba(0, 0, 0, 0.03)",
+        premium: "0 14px 35px -10px rgba(62, 92, 118, 0.20)",
         gold: "0 4px 15px rgba(212, 175, 55, 0.2)",
       },
     },

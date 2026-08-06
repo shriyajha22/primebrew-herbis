@@ -8,8 +8,8 @@ const steps = [
   {
     icon: Mountain,
     step: "01",
-    title: "High-Altitude Himalayan Bio-Farms",
-    desc: "Sourced from high-elevation estates in Darjeeling, Meghalaya, and Himachal Pradesh where mountain mist and mineral soil naturally enrich botanical nutrients.",
+    title: "Trusted Karnataka Farming Network",
+    desc: "Our herbs and flowers are grown and sourced through trusted farming networks across Karnataka. The region's rich agricultural heritage and ideal growing conditions ensure exceptional quality in every blend.",
     img: "/images/blue-tea.jpg"
   },
   {
@@ -55,7 +55,7 @@ export default function FarmToCupStory() {
             Our Farm to Cup Journey
           </h2>
           <p className="text-sm text-brand-mediumGrey leading-relaxed font-light">
-            We eliminate middleman traders to support local Himalayan farming communities while guaranteeing you receive the freshest, most potent herbal teas available anywhere.
+            We eliminate middleman traders to support local farming communities across Karnataka while guaranteeing you receive the freshest, most potent herbal teas available anywhere.
           </p>
         </div>
 

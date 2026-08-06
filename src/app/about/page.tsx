@@ -18,7 +18,7 @@ export default function AboutPage() {
             Farm to Cup. Nature in Every Sip.
           </h1>
           <p className="text-sm text-gray-600 font-light leading-relaxed">
-            PrimeBrew Herbis was founded to bridge the gap between traditional Himalayan herbal farmers and conscious wellness seekers.
+            PrimeBrew Herbis was founded to bridge the gap between traditional herbal farmers across Karnataka and conscious wellness seekers.
           </p>
         </div>
 

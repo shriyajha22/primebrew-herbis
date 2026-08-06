@@ -162,7 +162,7 @@ export default function HomePage() {
               Our Commitment to Pure Herbal Quality
             </h2>
             <p className="text-xs sm:text-sm text-brand-mediumGrey leading-relaxed font-light">
-              We partner directly with high-altitude Himalayan micro-farms to bring you 100% natural, additive-free botanical infusions.
+              We partner directly with trusted farming networks across Karnataka to bring you 100% natural, additive-free botanical infusions.
             </p>
           </div>
 

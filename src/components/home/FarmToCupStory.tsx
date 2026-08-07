@@ -47,16 +47,13 @@ export default function FarmToCupStory() {
     <section className="py-20 bg-brand-bgSoft relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto space-y-3 mb-16">
+        <div className="text-center max-w-3xl mx-auto space-y-3 mb-10 sm:mb-12">
           <span className="text-xs font-bold uppercase tracking-widest text-brand-green bg-brand-mint/30 px-3.5 py-1.5 rounded-badge">
             Transparency & Origin
           </span>
           <h2 className="font-heading font-extrabold text-3xl sm:text-4xl text-brand-darkGreen">
             Our Farm to Cup Journey
           </h2>
-          <p className="text-sm text-brand-mediumGrey leading-relaxed font-light">
-            We eliminate middleman traders to support local farming communities across Karnataka while guaranteeing you receive the freshest, most potent herbal teas available anywhere.
-          </p>
         </div>
 
         {/* Timeline Cards Grid */}

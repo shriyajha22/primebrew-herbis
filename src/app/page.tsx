@@ -10,6 +10,45 @@ import ProductCard from '@/components/shop/ProductCard';
 import { initialCategories, initialProducts, initialBlogs } from '@/lib/seedData';
 import { ArrowRight, Star, ShieldCheck, Package, Truck, Leaf, Sparkles, Heart, Instagram } from 'lucide-react';
 
+const instagramPosts = [
+  {
+    id: "post-1",
+    img: "/images/blue-tea-cup.png",
+    alt: "Brewed Blue Tea Ritual",
+    title: "Visual Blue Tea Ritual on Instagram @primebrew_herbis"
+  },
+  {
+    id: "post-2",
+    img: "/images/blue-tea-flowers.png",
+    alt: "Organic Butterfly Pea Flower Botanicals",
+    title: "Organic Butterfly Pea Flowers on Instagram @primebrew_herbis"
+  },
+  {
+    id: "post-3",
+    img: "/images/blue-tea-elaichi.jpg",
+    alt: "Blue Tea + Elaichi Blend",
+    title: "Aromatic Elaichi Blue Tea on Instagram @primebrew_herbis"
+  },
+  {
+    id: "post-4",
+    img: "/images/guava-jamun-neem.jpg",
+    alt: "Guava Jamun Neem Herbal Blend",
+    title: "Guava Jamun Neem Wellness on Instagram @primebrew_herbis"
+  },
+  {
+    id: "post-5",
+    img: "/images/blue-tea-ginger-cinnamon.jpg",
+    alt: "Blue Tea + Ginger Cinnamon Infusion",
+    title: "Warming Ginger Cinnamon Tea on Instagram @primebrew_herbis"
+  },
+  {
+    id: "post-6",
+    img: "/images/ayurvedic-kashayam.jpg",
+    alt: "Authentic Ayurvedic Kashayam",
+    title: "Authentic Ayurvedic Kashayam on Instagram @primebrew_herbis"
+  }
+];
+
 export default function HomePage() {
   const [activeTab, setActiveTab] = useState<'all' | 'blue' | 'wellness'>('all');
 
@@ -306,19 +345,19 @@ export default function HomePage() {
             Tag #PrimeBrewHerbis in your daily tea rituals for a chance to be featured!
           </p>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 pt-4">
-            {initialProducts.map((product) => (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 pt-4">
+            {instagramPosts.map((post) => (
               <a
-                key={product._id}
+                key={post.id}
                 href="https://www.instagram.com/primebrew_herbis/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="relative aspect-square rounded-card overflow-hidden group cursor-pointer border border-brand-mint/20 shadow-soft"
-                title={`View ${product.name} on Instagram @primebrew_herbis`}
+                title={post.title}
               >
                 <Image
-                  src={product.images[0]}
-                  alt={product.name}
+                  src={post.img}
+                  alt={post.alt}
                   fill
                   className="object-cover group-hover:scale-110 transition-transform duration-500"
                 />

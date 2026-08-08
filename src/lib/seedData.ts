@@ -94,7 +94,7 @@ export const initialProducts: Product[] = [
     netQuantity: "30 Tea Bags / 50g",
     certifications: ["100% Organic", "Direct Farm Sourced", "Pesticide-Free", "Vegan & Gluten-Free"],
     sku: "PBH-BLU-001",
-    origin: "High-Altitude Himalayan Bio-Farms"
+    origin: "PrimeBrew Herbis Own Farms, Karnataka"
   },
   {
     _id: "prod-2",
@@ -158,7 +158,7 @@ export const initialProducts: Product[] = [
     netQuantity: "30 Tea Bags / 50g",
     certifications: ["Farm-to-Cup Quality", "Premium Natural Ingredients", "No Artificial Colours", "No Artificial Flavours", "No Preservatives", "Vegan", "Gluten-Free"],
     sku: "PBH-BLU-002",
-    origin: "High-Altitude Organic Micro-Farms"
+    origin: "PrimeBrew Herbis Own Farms, Karnataka"
   },
   {
     _id: "prod-3",
@@ -225,7 +225,7 @@ export const initialProducts: Product[] = [
     netQuantity: "30 Tea Bags / 50g",
     certifications: ["Farm-to-Cup Quality", "Premium Natural Ingredients", "Antioxidant Rich", "No Artificial Colours", "No Artificial Flavours", "No Preservatives", "Vegan", "Gluten-Free"],
     sku: "PBH-BLU-003",
-    origin: "High-Altitude Organic Micro-Farms"
+    origin: "PrimeBrew Herbis Own Farms, Karnataka"
   },
   {
     _id: "prod-4",
@@ -291,7 +291,7 @@ export const initialProducts: Product[] = [
     netQuantity: "30 Tea Bags / 50g",
     certifications: ["Farm-to-Cup Quality", "Premium Natural Ingredients", "100% Herbal Blend", "Rich in Natural Antioxidants", "No Artificial Colours", "No Artificial Flavours", "No Preservatives", "Vegan", "Gluten-Free"],
     sku: "PBH-WEL-004",
-    origin: "High-Altitude Organic Micro-Farms"
+    origin: "PrimeBrew Herbis Own Farms, Karnataka"
   },
   {
     _id: "prod-5",
@@ -361,7 +361,7 @@ export const initialProducts: Product[] = [
     netQuantity: "30 Tea Bags / 50g",
     certifications: ["Farm-to-Cup Quality", "Premium Natural Ingredients", "Traditional Ayurvedic Blend", "Rich in Natural Plant Compounds", "No Artificial Colours", "No Artificial Flavours", "No Preservatives", "Vegan", "Gluten-Free"],
     sku: "PBH-AYU-005",
-    origin: "High-Altitude Organic Micro-Farms"
+    origin: "PrimeBrew Herbis Own Farms, Karnataka"
   }
 ];
 

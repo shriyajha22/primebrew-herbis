@@ -25,7 +25,7 @@ function TrackOrderContent() {
         courier: 'Shiprocket Express',
         awb: 'SR-884920194',
         status: 'In Transit',
-        origin: 'Himalayan Bio-Farms Warehouse, HP',
+        origin: 'PrimeBrew Herbis Farm Warehouse, Karnataka',
         destination: 'Bengaluru, Karnataka',
         estimatedDelivery: 'August 6, 2026',
         timeline: [

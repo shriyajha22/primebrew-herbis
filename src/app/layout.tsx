@@ -9,7 +9,7 @@ import FloatingChat from '@/components/home/FloatingChat';
 
 export const metadata: Metadata = {
   title: 'PrimeBrew Herbis | Farm to Cup Herbal Teas',
-  description: 'Discover premium artisanal herbal teas sourced directly from trusted Himalayan high-altitude bio-farms. 100% organic, pesticide-free, and crafted for pure natural wellness.',
+  description: 'Discover premium artisanal herbal teas sourced directly from our own farms. 100% organic, pesticide-free, and crafted for pure natural wellness.',
   keywords: ['herbal tea', 'organic tea', 'detox tea', 'sleep tea', 'immunity tea', 'farm to cup', 'Ayurvedic tea'],
   openGraph: {
     title: 'PrimeBrew Herbis | Farm to Cup Herbal Teas',

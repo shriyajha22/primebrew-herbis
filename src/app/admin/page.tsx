@@ -83,7 +83,7 @@ export default function AdminDashboardPage() {
       nutritionInfo: { calories: '0 kcal', carbs: '0g', protein: '0g', fat: '0g', antioxidants: 'High' },
       certifications: ['100% Organic'],
       sku: `PBH-${Math.floor(100 + Math.random() * 900)}`,
-      origin: 'Himalayan Organic Bio-Farms',
+      origin: 'PrimeBrew Herbis Own Farms, Karnataka',
     };
 
     setProductsList([created, ...productsList]);

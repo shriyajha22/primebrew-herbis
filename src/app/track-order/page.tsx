@@ -17,26 +17,74 @@ function TrackOrderContent() {
     }
   }, [orderQuery]);
 
-  const handleSearchTrack = (query: string) => {
+  const handleSearchTrack = async (query: string) => {
+    if (!query.trim()) return;
     setSearched(true);
-    if (query.trim().toUpperCase().includes('PBH') || query.length > 3) {
-      setTrackedOrder({
-        orderNumber: query.toUpperCase(),
-        courier: 'Shiprocket Express',
-        awb: 'SR-884920194',
-        status: 'In Transit',
-        origin: 'PrimeBrew Herbis Farm Warehouse, Karnataka',
-        destination: 'Bengaluru, Karnataka',
-        estimatedDelivery: 'August 6, 2026',
-        timeline: [
-          { status: 'Order Verified & Packed', date: 'August 3, 2026 - 11:30 AM', done: true },
-          { status: 'Handed over to Shiprocket Express', date: 'August 3, 2026 - 04:15 PM', done: true },
-          { status: 'In Transit via Regional Hub', date: 'August 4, 2026 - 09:00 AM', done: true },
-          { status: 'Out for Local Delivery', date: 'Expected August 6', done: false },
-          { status: 'Delivered', date: 'Expected August 6', done: false },
-        ]
-      });
-    } else {
+
+    try {
+      const res = await fetch(`/api/orders?orderNumber=${encodeURIComponent(query.trim())}`);
+      const data = await res.json();
+
+      if (res.ok && data.success && data.order) {
+        const ord = data.order;
+        const currentStatus = ord.orderStatus || 'Processing';
+
+        // Construct dynamic timeline based on real order status
+        const statuses = ['Processing', 'Packed', 'Shipped', 'Out for Delivery', 'Delivered'];
+        const currentIdx = statuses.indexOf(currentStatus);
+
+        const timeline = [
+          { status: 'Order Placed & Confirmed', date: new Date(ord.createdAt).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }), done: true },
+          { status: 'Order Verified & Packed', date: currentIdx >= 1 ? 'Completed' : 'In Progress', done: currentIdx >= 1 },
+          { status: 'Handed over to Shiprocket Express', date: currentIdx >= 2 ? 'In Transit' : 'Pending', done: currentIdx >= 2 },
+          { status: 'Out for Local Delivery', date: currentIdx >= 3 ? 'Out for Delivery' : 'Expected soon', done: currentIdx >= 3 },
+          { status: 'Delivered', date: currentIdx >= 4 ? 'Delivered' : ord.estimatedDelivery || '3-5 Days', done: currentIdx >= 4 },
+        ];
+
+        setTrackedOrder({
+          orderNumber: ord.orderNumber,
+          courier: ord.courierName || 'Shiprocket Express',
+          awb: ord.trackingNumber || 'SR-884920194',
+          status: currentStatus,
+          origin: 'PrimeBrew Herbis Farm Warehouse, Karnataka',
+          destination: ord.shippingAddress ? `${ord.shippingAddress.city}, ${ord.shippingAddress.state}` : 'India',
+          estimatedDelivery: ord.estimatedDelivery || '3-5 Business Days',
+          total: ord.total,
+          items: ord.items,
+          timeline,
+        });
+      } else {
+        // LocalStorage fallback for recent orders placed in session
+        try {
+          const stored = localStorage.getItem('pbh_orders');
+          if (stored) {
+            const parsedArr = JSON.parse(stored);
+            const found = parsedArr.find((o: any) => o.orderNumber?.toLowerCase() === query.trim().toLowerCase());
+            if (found) {
+              setTrackedOrder({
+                orderNumber: found.orderNumber,
+                courier: found.courierName || 'Shiprocket Express',
+                awb: found.trackingNumber || 'SR-884920194',
+                status: found.orderStatus || 'Processing',
+                origin: 'PrimeBrew Herbis Farm Warehouse, Karnataka',
+                destination: found.shippingAddress ? `${found.shippingAddress.city}, ${found.shippingAddress.state}` : 'India',
+                estimatedDelivery: '3-5 Business Days',
+                total: found.total,
+                items: found.items,
+                timeline: [
+                  { status: 'Order Placed & Confirmed', date: 'Just now', done: true },
+                  { status: 'Order Verified & Packed', date: 'In Progress', done: false },
+                  { status: 'Handed over to Shiprocket Express', date: 'Pending', done: false },
+                  { status: 'Delivered', date: '3-5 Business Days', done: false },
+                ],
+              });
+              return;
+            }
+          }
+        } catch (err) {}
+        setTrackedOrder(null);
+      }
+    } catch (e) {
       setTrackedOrder(null);
     }
   };

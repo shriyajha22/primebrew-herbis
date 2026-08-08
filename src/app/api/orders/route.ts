@@ -8,13 +8,23 @@ export async function GET(request: Request) {
   await connectToDatabase();
   const { searchParams } = new URL(request.url);
   const orderNumber = searchParams.get('orderNumber');
+  const email = searchParams.get('email');
 
   if (orderNumber) {
-    const order = inMemoryStore.orders.find((o) => o.orderNumber.toLowerCase() === orderNumber.toLowerCase());
+    const order = inMemoryStore.orders.find(
+      (o) => o.orderNumber.toLowerCase() === orderNumber.trim().toLowerCase()
+    );
     if (!order) {
       return NextResponse.json({ success: false, message: 'Order not found' }, { status: 404 });
     }
     return NextResponse.json({ success: true, order });
+  }
+
+  if (email) {
+    const filteredOrders = inMemoryStore.orders.filter(
+      (o) => o.shippingAddress?.email?.toLowerCase() === email.trim().toLowerCase()
+    );
+    return NextResponse.json({ success: true, orders: filteredOrders });
   }
 
   return NextResponse.json({
@@ -24,25 +34,39 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  await connectToDatabase();
   try {
     const body = await request.json();
+
+    if (!body.items || body.items.length === 0 || !body.shippingAddress) {
+      return NextResponse.json(
+        { success: false, message: 'Invalid order data. Items and shipping address are required.' },
+        { status: 400 }
+      );
+    }
+
+    const uniqueId = Date.now();
+    const randomSuffix = Math.floor(1000 + Math.random() * 9000);
+    const orderNumber = `PBH-2026-${randomSuffix}`;
+    const trackingNumber = `SR-${Math.floor(100000000 + Math.random() * 900000000)}`;
+
     const newOrder: Order = {
-      _id: `ord-${Date.now()}`,
-      orderNumber: `PBH-2026-${Math.floor(1000 + Math.random() * 9000)}`,
+      _id: `ord-${uniqueId}`,
+      orderNumber,
       createdAt: new Date().toISOString(),
-      items: body.items || [],
+      items: body.items,
       shippingAddress: body.shippingAddress,
       gstInvoice: body.gstInvoice,
       paymentMethod: body.paymentMethod || 'Razorpay',
       paymentStatus: body.paymentMethod === 'Cash on Delivery' ? 'Pending' : 'Paid',
       orderStatus: 'Processing',
-      trackingNumber: `SR-${Math.floor(100000000 + Math.random() * 900000000)}`,
+      trackingNumber,
       courierName: 'Shiprocket Express',
-      subtotal: body.subtotal,
-      discount: body.discount || 0,
-      shippingFee: body.shippingFee || 0,
-      tax: body.tax || 0,
-      total: body.total,
+      subtotal: Number(body.subtotal) || 0,
+      discount: Number(body.discount) || 0,
+      shippingFee: Number(body.shippingFee) || 0,
+      tax: Number(body.tax) || 0,
+      total: Number(body.total) || 0,
       estimatedDelivery: '3-5 Business Days',
     };
 

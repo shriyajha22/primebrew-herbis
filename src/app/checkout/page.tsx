@@ -233,9 +233,8 @@ export default function CheckoutPage() {
     }
   };
 
-  const handlePlaceOrder = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (cart.length === 0) return;
+  const handlePlaceOrder = async () => {
+    if (isProcessing) return;
 
     if (!validateForm()) {
       showToast('Please fix the errors in the delivery form before proceeding.', 'error');
@@ -244,13 +243,8 @@ export default function CheckoutPage() {
 
     setIsProcessing(true);
 
-    setTimeout(() => {
-      setIsProcessing(false);
-
-      const order: Order = {
-        _id: `ord-${Date.now()}`,
-        orderNumber: `PBH-2026-${Math.floor(1000 + Math.random() * 9000)}`,
-        createdAt: new Date().toISOString(),
+    try {
+      const payload = {
         items: cart.map((c) => ({
           productId: c.product._id,
           productName: c.product.name,
@@ -262,23 +256,45 @@ export default function CheckoutPage() {
         shippingAddress: address,
         gstInvoice: wantGstInvoice ? gstDetails : undefined,
         paymentMethod,
-        paymentStatus: paymentMethod === 'Cash on Delivery' ? 'Pending' : 'Paid',
-        orderStatus: 'Processing',
-        trackingNumber: `SR-${Math.floor(100000000 + Math.random() * 900000000)}`,
-        courierName: 'Shiprocket Express',
         subtotal: cartSubtotal,
         discount: cartDiscount,
         shippingFee: cartShipping,
         tax: cartTax,
         total: cartTotal,
-        estimatedDelivery: 'August 8, 2026',
       };
 
-      setCompletedOrder(order);
-      clearCart();
-      confetti({ particleCount: 120, spread: 70, origin: { y: 0.6 } });
-      showToast('Order Placed Successfully! Your invoice has been generated.', 'success');
-    }, 1800);
+      const res = await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.success && data.order) {
+        setCompletedOrder(data.order);
+        clearCart();
+
+        // Save order to localStorage as local fallback
+        try {
+          const stored = localStorage.getItem('pbh_orders');
+          const ordersArr = stored ? JSON.parse(stored) : [];
+          localStorage.setItem('pbh_orders', JSON.stringify([data.order, ...ordersArr]));
+        } catch (e) {}
+
+        try {
+          confetti({ particleCount: 120, spread: 70, origin: { y: 0.6 } });
+        } catch (e) {}
+
+        showToast(`Order ${data.order.orderNumber} Placed Successfully!`, 'success');
+      } else {
+        showToast(data.message || 'Failed to place order. Please try again.', 'error');
+      }
+    } catch (err) {
+      showToast('Server connection error. Please try again.', 'error');
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   const handlePrintInvoice = () => {

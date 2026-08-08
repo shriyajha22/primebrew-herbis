@@ -14,8 +14,39 @@ function DashboardContent() {
 
   const { currentUser, wishlist, toggleWishlist, addToCart, logout, loginAsDemoCustomer, showToast } = useStore();
   const [activeTab, setActiveTab] = useState<'orders' | 'wishlist' | 'addresses' | 'wallet' | 'settings'>(initialTab);
+  const [customerOrders, setCustomerOrders] = useState<any[]>([]);
+  const [loadingOrders, setLoadingOrders] = useState(false);
   const [passCurrent, setPassCurrent] = useState('');
   const [passNew, setPassNew] = useState('');
+
+  React.useEffect(() => {
+    if (currentUser?.email) {
+      fetchCustomerOrders(currentUser.email);
+    }
+  }, [currentUser]);
+
+  const fetchCustomerOrders = async (email: string) => {
+    setLoadingOrders(true);
+    try {
+      const res = await fetch(`/api/orders?email=${encodeURIComponent(email)}`);
+      const data = await res.json();
+      if (res.ok && data.success && Array.isArray(data.orders) && data.orders.length > 0) {
+        setCustomerOrders(data.orders);
+      } else {
+        const stored = localStorage.getItem('pbh_orders');
+        if (stored) {
+          try { setCustomerOrders(JSON.parse(stored)); } catch (e) {}
+        }
+      }
+    } catch (e) {
+      const stored = localStorage.getItem('pbh_orders');
+      if (stored) {
+        try { setCustomerOrders(JSON.parse(stored)); } catch (err) {}
+      }
+    } finally {
+      setLoadingOrders(false);
+    }
+  };
 
   const wishlistedProducts = initialProducts.filter((p) => wishlist.includes(p._id));
 
@@ -130,51 +161,59 @@ function DashboardContent() {
               <div className="space-y-6">
                 <h2 className="font-heading font-bold text-xl text-brand-darkGreen">Your Order History</h2>
 
-                {/* Sample Order Tracking Card */}
-                <div className="bg-white rounded-card border border-brand-mint/30 shadow-card p-6 space-y-4">
-                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-gray-100 pb-3 gap-2">
-                    <div>
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-sky-700 bg-sky-50 px-2.5 py-0.5 rounded-badge">
-                        Status: Shipped via Shiprocket
-                      </span>
-                      <h3 className="font-heading font-bold text-base text-brand-darkGreen mt-1">
-                        Order #PBH-2026-9812
-                      </h3>
-                      <p className="text-xs text-gray-500">Placed on August 3, 2026 • Total: ₹470.40</p>
-                    </div>
+                {loadingOrders ? (
+                  <p className="text-xs text-gray-500">Loading your orders...</p>
+                ) : customerOrders.length === 0 ? (
+                  <div className="bg-white p-8 rounded-card border border-brand-mint/30 shadow-card text-center space-y-3">
+                    <ShoppingBag className="w-10 h-10 text-gray-400 mx-auto" />
+                    <p className="text-xs text-gray-500">You haven&apos;t placed any tea orders yet.</p>
                     <Link
-                      href="/track-order?orderNumber=PBH-2026-9812"
-                      className="bg-brand-darkGreen text-white text-xs font-semibold px-4 py-2 rounded-button hover:bg-brand-green"
+                      href="/shop"
+                      className="inline-block bg-brand-green text-white text-xs font-bold px-5 py-2.5 rounded-button hover:bg-brand-darkGreen transition-colors"
                     >
-                      Track Shipment Live
+                      Explore Tea Shop
                     </Link>
                   </div>
+                ) : (
+                  customerOrders.map((ord) => (
+                    <div key={ord._id || ord.orderNumber} className="bg-white rounded-card border border-brand-mint/30 shadow-card p-6 space-y-4">
+                      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-gray-100 pb-3 gap-2">
+                        <div>
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-sky-700 bg-sky-50 px-2.5 py-0.5 rounded-badge">
+                            Status: {ord.orderStatus || 'Processing'} ({ord.paymentMethod})
+                          </span>
+                          <h3 className="font-heading font-bold text-base text-brand-darkGreen mt-1 font-mono">
+                            Order #{ord.orderNumber}
+                          </h3>
+                          <p className="text-xs text-gray-500">
+                            Placed on {new Date(ord.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })} • Total: ₹{ord.total}
+                          </p>
+                        </div>
+                        <Link
+                          href={`/track-order?orderNumber=${ord.orderNumber}`}
+                          className="bg-brand-darkGreen text-white text-xs font-semibold px-4 py-2 rounded-button hover:bg-brand-green transition-colors"
+                        >
+                          Track Shipment Live
+                        </Link>
+                      </div>
 
-                  {/* Interactive Status Timeline */}
-                  <div className="py-2">
-                    <div className="flex justify-between items-center text-xs font-semibold text-gray-500 mb-2">
-                      <span className="text-emerald-700">Order Placed</span>
-                      <span className="text-emerald-700">Processing</span>
-                      <span className="text-emerald-700 font-bold">Shipped (In Transit)</span>
-                      <span>Out for Delivery</span>
-                      <span>Delivered</span>
+                      {/* Items */}
+                      <div className="space-y-2 pt-1">
+                        {(ord.items || []).map((it: any, idx: number) => (
+                          <div key={idx} className="flex items-center gap-3 text-xs">
+                            <div className="w-12 h-12 rounded bg-brand-beige relative overflow-hidden flex-shrink-0">
+                              <Image src={it.image || '/images/blue-tea.jpg'} alt={it.productName} fill className="object-cover" />
+                            </div>
+                            <div>
+                              <h4 className="font-bold text-brand-darkGreen">{it.productName}</h4>
+                              <p className="text-gray-500">Quantity: {it.quantity} x {it.weight} • ₹{it.price}</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                    <div className="w-full bg-gray-200 h-2 rounded-full overflow-hidden flex">
-                      <div className="w-3/5 bg-brand-green h-full" />
-                    </div>
-                  </div>
-
-                  {/* Order Items */}
-                  <div className="flex items-center gap-3 pt-2">
-                    <div className="w-14 h-14 rounded-card overflow-hidden relative bg-brand-beige">
-                      <Image src="https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=200&q=80" alt="" fill className="object-cover" />
-                    </div>
-                    <div className="text-xs">
-                      <h4 className="font-bold text-brand-darkGreen">Blue Tea</h4>
-                      <p className="text-gray-500">Quantity: 2 x 30 Tea Bags</p>
-                    </div>
-                  </div>
-                </div>
+                  ))
+                )}
               </div>
             )}
 

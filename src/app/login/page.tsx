@@ -18,29 +18,27 @@ export default function CustomerLoginPage() {
     e.preventDefault();
     if (!email || !password) return;
 
-    setCurrentUser({
-      _id: `usr-${Date.now()}`,
-      name: email.split('@')[0].replace('.', ' '),
-      email,
-      role: 'customer',
-      addresses: [
-        {
-          fullName: email.split('@')[0],
-          phone: '+91 9876543210',
-          email,
-          street: '42 Tea Plantation Road',
-          city: 'Bengaluru',
-          state: 'Karnataka',
-          pincode: '560001',
-          isDefault: true,
-        },
-      ],
-      wishlist: [],
-      walletBalance: 250,
-    });
+    try {
+      const storedUsersRaw = localStorage.getItem('pbh_users');
+      const users = storedUsersRaw ? JSON.parse(storedUsersRaw) : [];
+      const match = users.find((u: any) => u.email.toLowerCase() === email.trim().toLowerCase());
 
-    showToast(`Welcome back, ${email.split('@')[0]}!`, 'success');
-    router.push('/dashboard');
+      const userToLogin = match || {
+        _id: `usr-${Date.now()}`,
+        name: email.split('@')[0].replace('.', ' '),
+        email: email.trim(),
+        role: 'customer',
+        addresses: [],
+        wishlist: [],
+        walletBalance: 250,
+      };
+
+      setCurrentUser(userToLogin);
+      showToast(`Welcome back, ${userToLogin.name}!`, 'success');
+      router.push('/dashboard');
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
@@ -59,19 +57,6 @@ export default function CustomerLoginPage() {
             Sign in to access your tea wallet, order history, and saved wishlist.
           </p>
         </div>
-
-        {/* Demo Fast Login Pill */}
-        <button
-          type="button"
-          onClick={() => {
-            loginAsDemoCustomer();
-            router.push('/dashboard');
-          }}
-          className="w-full py-3 px-4 bg-brand-gold/20 hover:bg-brand-gold/30 border border-brand-gold/50 rounded-2xl text-brand-darkGreen text-xs font-bold flex items-center justify-center gap-2 transition-all shadow-sm"
-        >
-          <Sparkles className="w-4 h-4 text-brand-darkGreen" />
-          <span>⚡ Instant Demo Login (Ananya Sharma)</span>
-        </button>
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4 text-xs">

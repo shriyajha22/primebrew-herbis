@@ -3,8 +3,9 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { User, Mail, Phone, Lock, Eye, EyeOff, ArrowRight, ShieldCheck } from 'lucide-react';
+import { User as UserIcon, Mail, Phone, Lock, Eye, EyeOff, ArrowRight, ShieldCheck } from 'lucide-react';
 import { useStore } from '@/lib/storeContext';
+import { User as UserType } from '@/lib/types';
 
 export default function CustomerRegisterPage() {
   const router = useRouter();
@@ -24,29 +25,36 @@ export default function CustomerRegisterPage() {
       return;
     }
 
-    setCurrentUser({
-      _id: `usr-${Date.now()}`,
-      name: fullName,
-      email,
-      role: 'customer',
-      addresses: [
-        {
-          fullName,
-          phone: phone || '+91 9876543210',
-          email,
-          street: '12 Organic Wellness Way',
-          city: 'Mumbai',
-          state: 'Maharashtra',
-          pincode: '400001',
-          isDefault: true,
-        },
-      ],
-      wishlist: [],
-      walletBalance: 250,
-    });
+    try {
+      const storedUsersRaw = localStorage.getItem('pbh_users');
+      const users: UserType[] = storedUsersRaw ? JSON.parse(storedUsersRaw) : [];
 
-    showToast(`Welcome to PrimeBrew Herbis, ${fullName}! ₹250 signup bonus added.`, 'success');
-    router.push('/dashboard');
+      const duplicate = users.find((u) => u.email.toLowerCase() === email.trim().toLowerCase());
+      if (duplicate) {
+        showToast('An account with this email already exists. Please log in instead.', 'error');
+        return;
+      }
+
+      const newUser: UserType = {
+        _id: `usr-${Date.now()}`,
+        name: fullName.trim(),
+        email: email.trim(),
+        phone: phone.trim(),
+        role: 'customer',
+        addresses: [],
+        wishlist: [],
+        walletBalance: 250,
+      };
+
+      const updatedUsers = [...users, newUser];
+      localStorage.setItem('pbh_users', JSON.stringify(updatedUsers));
+      setCurrentUser(newUser);
+
+      showToast(`Welcome to PrimeBrew Herbis, ${fullName}! ₹250 signup bonus added.`, 'success');
+      router.push('/dashboard');
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
@@ -56,7 +64,7 @@ export default function CustomerRegisterPage() {
         {/* Header */}
         <div className="text-center space-y-2">
           <div className="w-16 h-16 rounded-2xl bg-brand-darkGreen text-brand-gold flex items-center justify-center mx-auto shadow-md">
-            <User className="w-8 h-8" />
+            <UserIcon className="w-8 h-8" />
           </div>
           <h1 className="font-heading font-extrabold text-2xl sm:text-3xl text-brand-darkGreen">
             Create Your Account
@@ -71,7 +79,7 @@ export default function CustomerRegisterPage() {
           <div>
             <label className="block font-bold text-brand-darkGreen uppercase mb-1">Full Name</label>
             <div className="relative">
-              <User className="w-4 h-4 text-gray-400 absolute left-4 top-1/2 -translate-y-1/2" />
+              <UserIcon className="w-4 h-4 text-gray-400 absolute left-4 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
                 required

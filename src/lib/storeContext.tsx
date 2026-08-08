@@ -55,33 +55,13 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [appliedCoupon, setAppliedCoupon] = useState<Coupon | null>(null);
   const [giftWrap, setGiftWrap] = useState(false);
-  const [wishlist, setWishlist] = useState<string[]>(["prod-2"]);
-  const [currentUser, setCurrentUser] = useState<User | null>({
-    _id: "usr-customer",
-    name: "Ananya Sharma",
-    email: "customer@example.com",
-    role: "customer",
-    addresses: [
-      {
-        fullName: "Ananya Sharma",
-        phone: "+91 9876543210",
-        email: "customer@example.com",
-        street: "42 Tea Plantation Road, Green Valley",
-        city: "Bengaluru",
-        state: "Karnataka",
-        pincode: "560001",
-        isDefault: true
-      }
-    ],
-    wishlist: ["prod-2"],
-    walletBalance: 250
-  });
-
+  const [wishlist, setWishlist] = useState<string[]>([]);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [toasts, setToasts] = useState<Toast[]>([]);
 
-  // Local storage persistence
+  // Local storage persistence for cart, wishlist & auth
   useEffect(() => {
     try {
       const savedCart = localStorage.getItem('pbh_cart');
@@ -89,6 +69,9 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
 
       const savedWishlist = localStorage.getItem('pbh_wishlist');
       if (savedWishlist) setWishlist(JSON.parse(savedWishlist));
+
+      const savedUser = localStorage.getItem('pbh_user');
+      if (savedUser) setCurrentUser(JSON.parse(savedUser));
     } catch (e) {
       console.error(e);
     }
@@ -109,6 +92,18 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       console.error(e);
     }
   }, [wishlist]);
+
+  useEffect(() => {
+    try {
+      if (currentUser) {
+        localStorage.setItem('pbh_user', JSON.stringify(currentUser));
+      } else {
+        localStorage.removeItem('pbh_user');
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }, [currentUser]);
 
   const showToast = (message: string, type: 'success' | 'info' | 'error' = 'success') => {
     const id = Date.now().toString();

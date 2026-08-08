@@ -199,16 +199,13 @@ export default function HomePage() {
       {/* Why Choose PrimeBrew Herbis & Our Commitment */}
       <section className="py-16 bg-brand-cardWhite border-y border-brand-mint/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto space-y-3 mb-12">
+          <div className="text-center max-w-2xl mx-auto space-y-3 mb-10 sm:mb-12">
             <span className="text-xs font-bold uppercase tracking-widest text-brand-green bg-brand-mint/30 px-3.5 py-1.5 rounded-badge">
               Why Choose PrimeBrew Herbis
             </span>
             <h2 className="font-heading font-bold text-2xl sm:text-3xl text-brand-darkGreen">
               Our Commitment to Pure Herbal Quality
             </h2>
-            <p className="text-xs sm:text-sm text-brand-mediumGrey leading-relaxed font-light">
-              We partner directly with trusted farming networks across Karnataka to bring you 100% natural, additive-free botanical infusions.
-            </p>
           </div>
 
           {/* 4 Feature Cards Grid */}

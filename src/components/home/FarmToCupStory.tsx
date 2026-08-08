@@ -8,8 +8,8 @@ const steps = [
   {
     icon: Mountain,
     step: "01",
-    title: "Trusted Karnataka Farming Network",
-    desc: "Our herbs and flowers are grown and sourced through trusted farming networks across Karnataka. The region's rich agricultural heritage and ideal growing conditions ensure exceptional quality in every blend.",
+    title: "Direct Own Farm Cultivation",
+    desc: "Our herbs and flowers are grown and harvested directly on our own farms in Karnataka. Ideal growing conditions and sustainable farming practices ensure exceptional quality in every blend.",
     img: "/images/blue-tea.jpg"
   },
   {

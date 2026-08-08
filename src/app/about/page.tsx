@@ -22,7 +22,7 @@ export default function AboutPage() {
 
           <div className="space-y-4 text-xs sm:text-sm text-gray-700 font-light leading-relaxed max-w-4xl">
             <p>
-              We are a women-founded herbal wellness brand dedicated to bringing pure, natural, and thoughtfully crafted herbal teas directly from our farms to your cup. By sourcing from our own farming network, we ensure freshness, quality, and authenticity in every blend.
+              We are a women-founded herbal wellness brand dedicated to bringing pure, natural, and thoughtfully crafted herbal teas directly from our farms to your cup. By sourcing directly from our own farms, we ensure freshness, quality, and authenticity in every blend.
             </p>
             <p>
               Rooted in nature and inspired by traditional wellness, our teas are made from carefully selected herbs and flowers to support a healthier lifestyle—without artificial flavors, colors, or additives.

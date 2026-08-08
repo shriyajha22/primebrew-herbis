@@ -55,7 +55,7 @@ export default function Footer() {
               </span>
             </div>
             <p className="text-xs leading-relaxed text-brand-mint/90 max-w-sm">
-              Farm to Cup. Nature in Every Sip. We source artisanal herbal teas directly from trusted farming networks across Karnataka to deliver pure wellness, unmatched aroma, and zero-chemical vitality.
+              Farm to Cup. Nature in Every Sip. We source artisanal herbal teas directly from our own farms in Karnataka to deliver pure wellness, unmatched aroma, and zero-chemical vitality.
             </p>
 
             <a

@@ -13,7 +13,7 @@ interface FAQItem {
 const faqData: FAQItem[] = [
   {
     question: 'How are PrimeBrew Herbis teas sourced?',
-    answer: 'All our herbal teas are sourced directly from certified organic, high-altitude micro-farms in Darjeeling, Meghalaya, and Himachal Pradesh. We partner directly with local farming communities to eliminate middlemen and deliver the freshest harvest.',
+    answer: 'All our herbal teas are cultivated and harvested directly on our own farms in Karnataka. We source directly from our own farms to eliminate middlemen and deliver the freshest harvest from our farm to your cup.',
     category: 'sourcing',
   },
   {

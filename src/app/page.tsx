@@ -290,10 +290,15 @@ export default function HomePage() {
       {/* Instagram Grid Showcase */}
       <section className="py-14 bg-white border-t border-brand-mint/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4">
-          <div className="flex items-center justify-center gap-2 text-brand-green">
-            <Instagram className="w-5 h-5" />
+          <a
+            href="https://www.instagram.com/primebrew_herbis/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center gap-2 text-brand-green hover:text-brand-darkGreen transition-colors group"
+          >
+            <Instagram className="w-5 h-5 group-hover:scale-110 transition-transform" />
             <span className="text-xs font-bold uppercase tracking-wider">Follow @primebrew_herbis</span>
-          </div>
+          </a>
           <h2 className="font-heading font-bold text-2xl text-brand-darkGreen">
             Join Our Instagram Tea Community
           </h2>
@@ -301,21 +306,26 @@ export default function HomePage() {
             Tag #PrimeBrewHerbis in your daily tea rituals for a chance to be featured!
           </p>
 
-          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3 pt-4">
-            {[
-              "https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=400&q=80",
-              "https://images.unsplash.com/photo-1514733670139-4d87a1941d55?auto=format&fit=crop&w=400&q=80",
-              "https://images.unsplash.com/photo-1544787219-7f47ccb76574?auto=format&fit=crop&w=400&q=80",
-              "https://images.unsplash.com/photo-1597481499750-3e6b22637e12?auto=format&fit=crop&w=400&q=80",
-              "https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?auto=format&fit=crop&w=400&q=80",
-              "https://images.unsplash.com/photo-1597481499750-3e6b22637e12?auto=format&fit=crop&w=400&q=80",
-            ].map((img, i) => (
-              <div key={i} className="relative aspect-square rounded-card overflow-hidden group cursor-pointer">
-                <Image src={img} alt="Instagram Tea Post" fill className="object-cover group-hover:scale-110 transition-transform duration-500" />
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 pt-4">
+            {initialProducts.map((product) => (
+              <a
+                key={product._id}
+                href="https://www.instagram.com/primebrew_herbis/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="relative aspect-square rounded-card overflow-hidden group cursor-pointer border border-brand-mint/20 shadow-soft"
+                title={`View ${product.name} on Instagram @primebrew_herbis`}
+              >
+                <Image
+                  src={product.images[0]}
+                  alt={product.name}
+                  fill
+                  className="object-cover group-hover:scale-110 transition-transform duration-500"
+                />
                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
                   <Heart className="w-6 h-6 fill-white" />
                 </div>
-              </div>
+              </a>
             ))}
           </div>
         </div>

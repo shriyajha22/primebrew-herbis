@@ -24,14 +24,14 @@ export default function TeaBenefitsPage() {
       title: "Immune Shield & Anti-Inflammatory Synergy",
       icon: ShieldCheck,
       color: "text-amber-700 bg-amber-50 border-amber-200",
-      desc: "High-curcumin Lakadong turmeric combined with Sacred Krishna Tulsi and Tellicherry black pepper enhances curcumin bioavailability by up to 2000%, offering potent anti-inflammatory defense.",
+      desc: "Tellicherry cardamom paired with true Ceylon cinnamon bark and ginger root offers potent natural anti-inflammatory defense and cellular immunity.",
       recommendedSlug: "immunity-tea",
     },
     {
       title: "Cortisol Reduction & Stress Adaptogens",
       icon: Sun,
       color: "text-rose-700 bg-rose-50 border-rose-200",
-      desc: "KSM-66 grade Ashwagandha and Brahmi regulate the Hypothalamic-Pituitary-Adrenal (HPA) axis, mitigating stress-induced cortisol spikes and sharpening memory during high-workload hours.",
+      desc: "Natural Butterfly Pea Flowers and green cardamom regulate body tension, mitigating daily stress while sharpening mental clarity.",
       recommendedSlug: "stress-relief-tea",
     },
     {

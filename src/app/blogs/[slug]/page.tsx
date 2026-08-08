@@ -30,26 +30,9 @@ export default function BlogDetailPage({ params }: { params: { slug: string } })
               {blog.title}
             </h1>
 
-            <div className="flex flex-wrap items-center gap-4 text-xs text-gray-500 pt-2 border-t border-gray-100">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full overflow-hidden relative bg-gray-200">
-                  <Image src={blog.authorImage} alt={blog.author} fill className="object-cover" />
-                </div>
-                <div>
-                  <span className="font-bold text-brand-darkGreen block">{blog.author}</span>
-                  <span className="text-[10px] text-gray-400">{blog.authorRole}</span>
-                </div>
-              </div>
-              <span className="text-gray-300">•</span>
-              <div className="flex items-center gap-1">
-                <Calendar className="w-3.5 h-3.5" />
-                <span>{blog.publishDate}</span>
-              </div>
-              <span className="text-gray-300">•</span>
-              <div className="flex items-center gap-1">
-                <Clock className="w-3.5 h-3.5" />
-                <span>{blog.readTime}</span>
-              </div>
+            <div className="flex items-center gap-2 text-xs text-gray-500 pt-2 border-t border-gray-100 font-medium">
+              <Clock className="w-3.5 h-3.5 text-brand-green" />
+              <span>{blog.readTime}</span>
             </div>
           </div>
 

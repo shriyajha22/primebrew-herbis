@@ -24,7 +24,7 @@ const benefits = [
   {
     icon: ShieldCheck,
     title: "Cellular Immune Fortification",
-    desc: "High-curcumin Lakadong turmeric and Sacred Tulsi boost white blood cell activity and fight inflammation.",
+    desc: "Tellicherry cardamom and true Ceylon cinnamon bark support daily immune defense and fight inflammation.",
     slug: "immunity-tea",
     color: "bg-amber-50 border-amber-200 text-amber-800",
     iconColor: "text-amber-600",
@@ -32,7 +32,7 @@ const benefits = [
   {
     icon: Sun,
     title: "Cortisol Reduction & Anxiety Ease",
-    desc: "Adaptogenic KSM-66 Ashwagandha moderates body stress responses while maintaining calm mental focus.",
+    desc: "Natural Butterfly Pea Flowers and green cardamom soothe body stress responses while maintaining calm focus.",
     slug: "stress-relief-tea",
     color: "bg-rose-50 border-rose-200 text-rose-800",
     iconColor: "text-rose-600",

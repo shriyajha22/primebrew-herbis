@@ -29,7 +29,7 @@ export default function FloatingChat() {
       } else if (q.includes('digest') || q.includes('elaichi') || q.includes('bloat')) {
         botReply = "For digestive ease and post-meal comfort, check out our 'Blue Tea with Elaichi' (₹299) or 'Blue Tea with Ginger + Cinnamon' (₹349)!";
       } else if (q.includes('ayurved') || q.includes('stress') || q.includes('immunity')) {
-        botReply = "For stress relief and core immunity, try our tridosha balancing 'Ayur Tea' (₹380) with Ashwagandha & Sacred Tulsi!";
+        botReply = "For stress relief and core immunity, try our tridosha balancing 'Authentic Ayurvedic Kashayam' (₹380) with traditional Ayurvedic spices & herbs!";
       } else if (q.includes('shipping') || q.includes('delivery')) {
         botReply = "We provide Free Express Shipping across India on orders above ₹799! Metro delivery takes 2–3 business days.";
       }

@@ -36,7 +36,7 @@ export default function BlogsPage() {
             The PrimeBrew Journal
           </h1>
           <p className="text-sm text-gray-600 font-light leading-relaxed">
-            Discover authentic articles on tea brewing rituals, Ayurvedic adaptogens, natural health recipes, and holistic daily wellness tips.
+            Discover authentic articles on tea brewing rituals, natural health recipes, and holistic daily wellness tips.
           </p>
         </div>
 
@@ -46,7 +46,7 @@ export default function BlogsPage() {
             <Search className="w-5 h-5 text-brand-green absolute left-4 top-1/2 -translate-y-1/2" />
             <input
               type="text"
-              placeholder="Search articles by title, herb, benefit, or tag (e.g. Blue Tea, Adaptogens, Immunity)..."
+              placeholder="Search articles by title, herb, benefit, or tag (e.g. Blue Tea, Ginger, Immunity)..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-12 pr-4 py-3 rounded-button bg-brand-cream/40 border border-brand-mint/30 focus:outline-none focus:border-brand-green text-sm"
@@ -94,10 +94,6 @@ export default function BlogsPage() {
                 <div className="flex items-center gap-3 text-xs text-brand-mediumGrey">
                   <span className="bg-brand-mint/30 text-brand-darkGreen font-bold px-2.5 py-0.5 rounded">
                     {featuredBlog.category}
-                  </span>
-                  <span>•</span>
-                  <span className="flex items-center gap-1">
-                    <Calendar className="w-3.5 h-3.5" /> {featuredBlog.publishDate}
                   </span>
                   <span>•</span>
                   <span className="flex items-center gap-1">
@@ -169,9 +165,7 @@ export default function BlogsPage() {
                       </span>
                     </div>
                     <div className="p-6 space-y-3">
-                      <div className="flex items-center gap-2 text-[11px] text-gray-400">
-                        <span>{blog.publishDate}</span>
-                        <span>•</span>
+                      <div className="text-[11px] text-gray-400 font-medium">
                         <span>{blog.readTime}</span>
                       </div>
                       <h3 className="font-heading font-bold text-base text-brand-darkGreen group-hover:text-brand-green transition-colors leading-snug">

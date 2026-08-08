@@ -308,9 +308,7 @@ export default function HomePage() {
                     </span>
                   </div>
                   <div className="p-5 space-y-2">
-                    <div className="flex items-center gap-2 text-[11px] text-gray-400">
-                      <span>{blog.publishDate}</span>
-                      <span>•</span>
+                    <div className="text-[11px] text-gray-400 font-medium">
                       <span>{blog.readTime}</span>
                     </div>
                     <h3 className="font-heading font-bold text-sm text-brand-darkGreen group-hover:text-brand-green transition-colors line-clamp-2">

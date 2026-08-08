@@ -250,7 +250,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                   No herbal teas found for &quot;{query}&quot;
                 </h4>
                 <p className="text-xs text-brand-mediumGrey">
-                  Try searching for Butterfly Pea, Elaichi, Ginger, Pre-Diabetic, or Ashwagandha.
+                  Try searching for Butterfly Pea, Elaichi, Ginger, Guava, Jamun, or Kashayam.
                 </p>
               </div>
 

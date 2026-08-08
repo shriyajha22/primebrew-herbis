@@ -25,7 +25,7 @@ export const initialCategories: Category[] = [
     _id: "cat-3",
     name: "Ayurvedic Tea",
     slug: "ayurvedic-tea",
-    description: "Tridosha balancing infusions infused with adaptogenic Ashwagandha & Sacred Tulsi.",
+    description: "Tridosha balancing infusions infused with traditional herbs & spices.",
     iconName: "ShieldCheck",
     image: "/images/ayurvedic-kashayam.jpg",
     itemCount: 1,
@@ -391,69 +391,80 @@ Blue Tea derives its rich indigo pigment from potent anthocyanins—the same ant
 3. Squeeze fresh lemon juice for a magical color transformation and citrus kick!
     `,
     category: "Tea Knowledge",
-    author: "Dr. Ananya Sharma",
-    authorRole: "Chief Herbalist & Ayurvedic Consultant",
-    authorImage: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80",
+    author: "",
+    authorRole: "",
+    authorImage: "",
     readTime: "4 min read",
-    publishDate: "August 2, 2026",
+    publishDate: "",
     coverImage: "/images/blue-tea.jpg",
     tags: ["Blue Tea", "Mindfulness", "Wellness", "Antioxidants"],
     featured: true
   },
   {
     _id: "blog-2",
-    title: "Ayurvedic Sugar Balance: How Gurmar & Jamun Support Health",
-    slug: "ayurvedic-sugar-balance-gurmar-jamun",
-    excerpt: "Explore ancient Ayurvedic herbs proven by modern research to support healthy blood glucose levels and curb sweet cravings.",
+    title: "Guava, Jamun & Neem: Traditional Herbs for Digestive Comfort",
+    slug: "guava-jamun-neem-traditional-herbs-digestive-comfort",
+    excerpt: "Explore time-honored herbs like Guava leaves, Jamun, and Neem crafted to support digestive wellness and balanced daily living.",
     content: `
-# Natural Blood Glucose Harmony
+# Guava, Jamun & Neem for Digestive Comfort
 
-Managing blood sugar spikes post-meal is essential for sustained daily energy and longevity.
+Traditional botanical wisdom has long valued native leaves and seeds for daily stomach comfort and digestive balance.
 
-## Key Botanicals in Pre-Diabetic Care
+## The Goodness of 3 Time-Honored Botanicals
 
-- **Gurmar (Gymnema Sylvestre)**: Known as 'The Sugar Destroyer' because it suppresses sweet taste receptors on the tongue.
-- **Jamun Seed**: Packed with jamboline which helps slow down the conversion of starch into sugar.
-- **Methi & Cinnamon**: Soluble fiber and polyphenols that improve insulin responsiveness naturally.
+Our Guava + Jamun + Neem Herbal Blend combines three pure farm-sourced herbs:
+
+- **Guava Leaves**: Rich in polyphenols and flavonoid antioxidants that soothe the stomach and support smooth digestion.
+- **Jamun Seed**: Packed with natural plant compounds to promote gut harmony and overall well-being.
+- **Neem Leaves**: Gentle cleansing botanical compounds that support daily body balance.
+
+## How to Integrate into Your Routine
+
+1. Steep 1 Tea Bag in 200ml of hot water (90°C) for 5 minutes.
+2. Sip warm after main meals as part of your daily wellness ritual.
     `,
     category: "Health Tips",
-    author: "Dr. Ananya Sharma",
-    authorRole: "Chief Herbalist & Ayurvedic Consultant",
-    authorImage: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80",
+    author: "",
+    authorRole: "",
+    authorImage: "",
     readTime: "5 min read",
-    publishDate: "July 28, 2026",
+    publishDate: "",
     coverImage: "/images/guava-jamun-neem.jpg",
-    tags: ["Guava Jamun Neem", "Ayurveda", "Digestive Wellness", "Daily Care"],
+    tags: ["Guava Jamun Neem", "Digestive Wellness", "Daily Care"],
     featured: true
   },
   {
     _id: "blog-3",
-    title: "Understanding Adaptogens: Why Ashwagandha & Tulsi Belong in Your Cup",
-    slug: "understanding-adaptogens-ashwagandha-tulsi",
-    excerpt: "What makes an herb adaptogenic? Learn how these intelligent plants read your body's stress signals and bring equilibrium.",
+    title: "Warming Spices: How Ginger & Cinnamon Support Digestion & Metabolism",
+    slug: "warming-spices-ginger-cinnamon-digestion-metabolism",
+    excerpt: "Learn how natural sun-dried ginger root and aromatic Ceylon cinnamon bark create a comforting caffeine-free infusion to support daily digestion and metabolism.",
     content: `
-# The Science of Plant Adaptogens
+# Warming Spices for Daily Wellness
 
-Adaptogens are a unique class of herbs that help your body adapt to physical, chemical, and biological stress factors.
+Spices have been used for centuries to warm the body, assist digestion, and bring soothing aroma to daily tea rituals.
 
-## How Adaptogens Work in the HPA Axis
+## The Goodness of Ginger & Cinnamon
 
-When you experience stress, your Hypothalamic-Pituitary-Adrenal (HPA) axis triggers a cascade of cortisol and adrenaline. Adaptogens act like a thermostat:
-- If cortisol is too high (anxiety, insomnia), adaptogens bring it down.
-- If cortisol is depleted (chronic fatigue, burnout), adaptogens nourish energy reserves.
+In PrimeBrew Herbis Blue Tea with Ginger & Cinnamon, two powerful botanicals come together:
 
-## The Powerhouse Duo in Ayur Tea
-- **Ashwagandha**: Known as 'Indian Ginseng', renowned for calming neuro-overdrive.
-- **Tulsi (Holy Basil)**: Revered in India for thousands of years as the 'Queen of Herbs'.
+- **Sun-Dried Ginger Root**: Known for warming the stomach, easing abdominal discomfort after meals, and supporting natural metabolic rhythm.
+- **Ceylon Cinnamon Bark**: A fragrant bark rich in natural polyphenols that helps maintain balanced energy levels throughout the day without caffeine jitters.
+- **Butterfly Pea Flowers**: Rich in anthocyanin antioxidants that complement the warming spices with gentle cellular support.
+
+## How to Enjoy Your Warming Infusion
+
+1. Steep 1 Tea Bag in 200ml of hot water (95°C / 203°F) for 4 to 6 minutes.
+2. Inhale the warm, spicy aroma of ginger and true Ceylon cinnamon.
+3. Sip warm on chilly mornings or after main meals for comforting digestive support.
     `,
     category: "Health Tips",
-    author: "Dr. Ananya Sharma",
-    authorRole: "Chief Herbalist & Ayurvedic Consultant",
-    authorImage: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80",
-    readTime: "6 min read",
-    publishDate: "July 15, 2026",
-    coverImage: "/images/ayurvedic-kashayam.jpg",
-    tags: ["Ayur Tea", "Adaptogens", "Ashwagandha", "Ayurveda"],
+    author: "",
+    authorRole: "",
+    authorImage: "",
+    readTime: "5 min read",
+    publishDate: "",
+    coverImage: "/images/blue-tea-ginger-cinnamon.jpg",
+    tags: ["Blue Tea", "Ginger Cinnamon", "Digestion", "Metabolism"],
     featured: false
   }
 ];
@@ -502,7 +513,7 @@ export const initialReviews: Review[] = [
     userAvatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80",
     rating: 5,
     title: "True Ayurvedic vitality!",
-    comment: "Ayur Tea has become my daily morning ritual. The Ashwagandha and Tulsi combination gives me sustained energy without any caffeine crash.",
+    comment: "Ayurvedic Kashayam has become my daily morning ritual. The spice combination gives me sustained energy without any caffeine crash.",
     date: "July 20, 2026",
     verifiedBuyer: true,
     helpfulCount: 19

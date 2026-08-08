@@ -14,38 +14,44 @@ const instagramPosts = [
   {
     id: "post-1",
     img: "/images/blue-tea-cup.png",
-    alt: "Brewed Blue Tea Ritual",
-    title: "Visual Blue Tea Ritual on Instagram @primebrew_herbis"
+    alt: "Imagine your morning calmer, cleaner, better ☕ @primebrew_herbis",
+    title: "View post on Instagram @primebrew_herbis",
+    url: "https://www.instagram.com/primebrew_herbis/p/DbTeQNKzjto/"
   },
   {
     id: "post-2",
     img: "/images/blue-tea-flowers.png",
-    alt: "Organic Butterfly Pea Flower Botanicals",
-    title: "Organic Butterfly Pea Flowers on Instagram @primebrew_herbis"
+    alt: "No artificial flavors. No shortcuts. Just herbs. Just nature 🌿 @primebrew_herbis",
+    title: "View post on Instagram @primebrew_herbis",
+    url: "https://www.instagram.com/primebrew_herbis/p/DbQ0kuUzFzC/"
   },
   {
     id: "post-3",
     img: "/images/blue-tea-elaichi.jpg",
-    alt: "Blue Tea + Elaichi Blend",
-    title: "Aromatic Elaichi Blue Tea on Instagram @primebrew_herbis"
+    alt: "Every leaf has a journey. Grown with care. Harvested fresh 🍵 @primebrew_herbis",
+    title: "View reel on Instagram @primebrew_herbis",
+    url: "https://www.instagram.com/primebrew_herbis/reel/DbOKUnIzkY8/"
   },
   {
     id: "post-4",
     img: "/images/guava-jamun-neem.jpg",
-    alt: "Guava Jamun Neem Herbal Blend",
-    title: "Guava Jamun Neem Wellness on Instagram @primebrew_herbis"
+    alt: "Guava Jamun Neem Herbal Blend @primebrew_herbis",
+    title: "View profile on Instagram @primebrew_herbis",
+    url: "https://www.instagram.com/primebrew_herbis/"
   },
   {
     id: "post-5",
     img: "/images/blue-tea-ginger-cinnamon.jpg",
-    alt: "Blue Tea + Ginger Cinnamon Infusion",
-    title: "Warming Ginger Cinnamon Tea on Instagram @primebrew_herbis"
+    alt: "Warming Ginger Cinnamon Tea @primebrew_herbis",
+    title: "View profile on Instagram @primebrew_herbis",
+    url: "https://www.instagram.com/primebrew_herbis/"
   },
   {
     id: "post-6",
     img: "/images/ayurvedic-kashayam.jpg",
-    alt: "Authentic Ayurvedic Kashayam",
-    title: "Authentic Ayurvedic Kashayam on Instagram @primebrew_herbis"
+    alt: "Authentic Ayurvedic Kashayam @primebrew_herbis",
+    title: "View profile on Instagram @primebrew_herbis",
+    url: "https://www.instagram.com/primebrew_herbis/"
   }
 ];
 
@@ -349,7 +355,7 @@ export default function HomePage() {
             {instagramPosts.map((post) => (
               <a
                 key={post.id}
-                href="https://www.instagram.com/primebrew_herbis/"
+                href={post.url}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="relative aspect-square rounded-card overflow-hidden group cursor-pointer border border-brand-mint/20 shadow-soft"

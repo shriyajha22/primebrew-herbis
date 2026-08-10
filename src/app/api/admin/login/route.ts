@@ -7,17 +7,17 @@ import { UserModel } from '@/models/User';
 
 export const dynamic = 'force-dynamic';
 
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'Contact.primebrew@gmail.com';
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'Admin@12345';
+const ADMIN_EMAIL = (process.env.ADMIN_EMAIL || 'Contact.primebrew@gmail.com').trim().toLowerCase();
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH;
 const JWT_SECRET = process.env.JWT_SECRET || 'pbh_super_secret_jwt_key_2026_primebrew';
 
-// Ensure the admin account exists in MongoDB Atlas with a valid bcrypt password hash
-async function ensureAdminInDatabase(cleanEmail: string, rawPassword: string) {
+// Ensure the admin user account exists in MongoDB Atlas with a valid bcrypt hash
+async function ensureAdminInDatabase(cleanEmail: string, rawPasswordSubmitted: string) {
   if (mongoose.connection.readyState !== 1) return null;
 
   try {
-    // Look up existing admin account by normalized email or admin role
+    // 1. Look up existing admin account by normalized email or admin role
     let adminUser = await UserModel.findOne({
       $or: [
         { email: new RegExp(`^${cleanEmail.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') },
@@ -25,7 +25,8 @@ async function ensureAdminInDatabase(cleanEmail: string, rawPassword: string) {
       ],
     });
 
-    const passwordHash = await bcrypt.hash(rawPassword, 10);
+    const activePassword = ADMIN_PASSWORD || rawPasswordSubmitted;
+    const passwordHash = await bcrypt.hash(activePassword, 10);
 
     if (!adminUser) {
       // Seed missing admin user record in MongoDB Atlas
@@ -39,12 +40,29 @@ async function ensureAdminInDatabase(cleanEmail: string, rawPassword: string) {
         walletBalance: 1000,
         passwordHash,
       });
-      console.log('✅ Admin user account seeded successfully into MongoDB Atlas');
-    } else if (!adminUser.passwordHash) {
-      // Update missing passwordHash
-      adminUser.passwordHash = passwordHash;
-      if (adminUser.role !== 'admin') adminUser.role = 'admin';
-      await adminUser.save();
+      console.log('✅ Admin user account seeded into MongoDB Atlas');
+    } else {
+      // Update normalized email if needed
+      if (adminUser.email.toLowerCase() !== cleanEmail && cleanEmail === ADMIN_EMAIL) {
+        adminUser.email = cleanEmail;
+      }
+      if (adminUser.role !== 'admin') {
+        adminUser.role = 'admin';
+      }
+
+      // If ADMIN_PASSWORD env variable is configured, check if password in DB matches
+      if (ADMIN_PASSWORD && adminUser.passwordHash) {
+        const matchesEnv = await bcrypt.compare(ADMIN_PASSWORD, adminUser.passwordHash);
+        if (!matchesEnv) {
+          adminUser.passwordHash = await bcrypt.hash(ADMIN_PASSWORD, 10);
+        }
+      } else if (!adminUser.passwordHash) {
+        adminUser.passwordHash = passwordHash;
+      }
+
+      if (adminUser.isModified()) {
+        await adminUser.save();
+      }
     }
 
     return adminUser;
@@ -69,18 +87,16 @@ export async function POST(request: Request) {
     }
 
     const cleanEmail = email.trim().toLowerCase();
-    const targetAdminEmail = ADMIN_EMAIL.trim().toLowerCase();
-
-    // 1. Verify DB Connection status & ensure Admin Account exists in MongoDB
     const isDbConnected = mongoose.connection.readyState === 1;
-    let dbAdmin: any = null;
 
+    // 1. Verify DB Connection status & ensure Admin Account exists in MongoDB Atlas
+    let dbAdmin: any = null;
     if (isDbConnected) {
-      dbAdmin = await ensureAdminInDatabase(cleanEmail, ADMIN_PASSWORD);
+      dbAdmin = await ensureAdminInDatabase(cleanEmail, password);
     }
 
     // 2. Validate email match (case-insensitive & trimmed)
-    let isAdminEmailMatch = cleanEmail === targetAdminEmail;
+    let isAdminEmailMatch = cleanEmail === ADMIN_EMAIL;
     if (dbAdmin && dbAdmin.email.toLowerCase() === cleanEmail) {
       isAdminEmailMatch = true;
     }
@@ -94,21 +110,31 @@ export async function POST(request: Request) {
 
     let isPasswordValid = false;
 
-    // 3. Verify submitted password against stored bcrypt hash in MongoDB
+    // 3. Verify submitted password against stored bcrypt hash in MongoDB Atlas
     if (dbAdmin && dbAdmin.passwordHash) {
       isPasswordValid = await bcrypt.compare(password, dbAdmin.passwordHash);
     }
 
-    // 4. Fallback checks for env configured passwords / hashes
+    // 4. Verify against process.env.ADMIN_PASSWORD_HASH if configured
     if (!isPasswordValid && ADMIN_PASSWORD_HASH) {
       isPasswordValid = await bcrypt.compare(password, ADMIN_PASSWORD_HASH);
     }
-    if (!isPasswordValid && (password === ADMIN_PASSWORD || password === 'Admin@12345')) {
+
+    // 5. Verify against process.env.ADMIN_PASSWORD if configured
+    if (!isPasswordValid && ADMIN_PASSWORD && password === ADMIN_PASSWORD) {
       isPasswordValid = true;
-      // Sync hash to MongoDB Atlas for future logins
+      // Sync bcrypt hash to MongoDB Atlas for future logins
       if (dbAdmin) {
         dbAdmin.passwordHash = await bcrypt.hash(password, 10);
         await dbAdmin.save();
+      }
+    }
+
+    // 6. If no env password is set and DB admin hash exists, allow rawPassword matching during initial seed setup
+    if (!isPasswordValid && !ADMIN_PASSWORD && !ADMIN_PASSWORD_HASH && dbAdmin && dbAdmin.passwordHash) {
+      const matchSeeded = await bcrypt.compare(password, dbAdmin.passwordHash);
+      if (matchSeeded) {
+        isPasswordValid = true;
       }
     }
 
@@ -122,7 +148,7 @@ export async function POST(request: Request) {
     const adminUser = {
       _id: dbAdmin ? dbAdmin._id.toString() : 'usr-admin',
       name: dbAdmin ? dbAdmin.name : 'PrimeBrew Admin',
-      email: dbAdmin ? dbAdmin.email : targetAdminEmail,
+      email: dbAdmin ? dbAdmin.email : ADMIN_EMAIL,
       role: 'admin',
       addresses: dbAdmin ? dbAdmin.addresses || [] : [],
       wishlist: dbAdmin ? dbAdmin.wishlist || [] : [],
@@ -143,7 +169,7 @@ export async function POST(request: Request) {
       token,
     });
 
-    // Set HTTP-only admin cookies
+    // Set HTTP-only admin session cookies
     response.cookies.set('pbh_admin_token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',

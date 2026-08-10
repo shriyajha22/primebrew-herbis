@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { inMemoryStore, connectToDatabase } from '@/lib/db';
+import { verifyAdminToken } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
 
@@ -7,6 +8,11 @@ export async function PATCH(
   request: Request,
   { params }: { params: { orderId: string } }
 ) {
+  const auth = verifyAdminToken(request);
+  if (!auth.isAuthorized) {
+    return auth.errorResponse!;
+  }
+
   await connectToDatabase();
   try {
     const { orderId } = params;

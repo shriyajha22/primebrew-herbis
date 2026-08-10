@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { inMemoryStore, connectToDatabase } from '@/lib/db';
 import { Order } from '@/lib/types';
+import { verifyAdminToken } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
 
@@ -25,6 +26,12 @@ export async function GET(request: Request) {
       (o) => o.shippingAddress?.email?.toLowerCase() === email.trim().toLowerCase()
     );
     return NextResponse.json({ success: true, orders: filteredOrders });
+  }
+
+  // If no filters are provided, this is a storewide orders listing request which requires Admin Authorization
+  const auth = verifyAdminToken(request);
+  if (!auth.isAuthorized) {
+    return auth.errorResponse!;
   }
 
   return NextResponse.json({

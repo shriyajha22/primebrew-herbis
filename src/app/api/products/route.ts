@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { inMemoryStore, connectToDatabase } from '@/lib/db';
+import { verifyAdminToken } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
 
@@ -71,6 +72,11 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  const auth = verifyAdminToken(request);
+  if (!auth.isAuthorized) {
+    return auth.errorResponse!;
+  }
+
   try {
     const body = await request.json();
     const newProduct = {

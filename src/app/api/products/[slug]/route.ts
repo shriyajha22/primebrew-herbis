@@ -3,8 +3,12 @@ import { inMemoryStore, connectToDatabase } from '@/lib/db';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET(request: Request, { params }: { params: { slug: string } }) {
+export async function GET(
+  request: Request,
+  context: { params: { slug: string } | Promise<{ slug: string }> }
+) {
   await connectToDatabase();
+  const params = await context.params;
   const slug = params.slug;
 
   const product = inMemoryStore.products.find((p) => p.slug === slug || p._id === slug);

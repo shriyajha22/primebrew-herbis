@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic';
 
 export async function PATCH(
   request: Request,
-  { params }: { params: { orderId: string } }
+  context: { params: { orderId: string } | Promise<{ orderId: string }> }
 ) {
   const auth = verifyAdminToken(request);
   if (!auth.isAuthorized) {
@@ -15,6 +15,7 @@ export async function PATCH(
 
   await connectToDatabase();
   try {
+    const params = await context.params;
     const { orderId } = params;
     const body = await request.json();
 

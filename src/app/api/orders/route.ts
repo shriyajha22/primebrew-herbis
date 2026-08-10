@@ -1,11 +1,14 @@
 import { NextResponse } from 'next/server';
 import mongoose from 'mongoose';
+import jwt from 'jsonwebtoken';
 import { inMemoryStore, connectToDatabase } from '@/lib/db';
 import { OrderModel } from '@/models/Order';
 import { Order } from '@/lib/types';
 import { verifyAdminToken } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
+
+const JWT_SECRET = process.env.JWT_SECRET || 'pbh_super_secret_jwt_key_2026_primebrew';
 
 export async function GET(request: Request) {
   try {
@@ -16,6 +19,7 @@ export async function GET(request: Request) {
 
     const isDbConnected = mongoose.connection.readyState === 1;
 
+    // 1. Order Tracking by Order Number (Public / Track Order)
     if (orderNumber) {
       let order: any = null;
       if (isDbConnected) {
@@ -33,20 +37,61 @@ export async function GET(request: Request) {
       return NextResponse.json({ success: true, order });
     }
 
+    // 2. Customer Order History by Email (Protected with Customer Cross-Account Isolation)
     if (email) {
+      const cleanEmail = email.trim().toLowerCase();
+
+      // Verify token if present to prevent cross-customer order viewing
+      let token = request.headers.get('cookie')
+        ?.split(';')
+        .find((c) => c.trim().startsWith('pbh_token='))
+        ?.split('=')[1];
+
+      if (!token) {
+        token = request.headers.get('cookie')
+          ?.split(';')
+          .find((c) => c.trim().startsWith('pbh_admin_token='))
+          ?.split('=')[1];
+      }
+
+      if (!token) {
+        const authHeader = request.headers.get('authorization');
+        if (authHeader && authHeader.startsWith('Bearer ')) {
+          token = authHeader.split(' ')[1];
+        }
+      }
+
+      if (token) {
+        try {
+          const decoded = jwt.verify(token, JWT_SECRET) as any;
+          if (decoded && decoded.email) {
+            const tokenEmail = decoded.email.toLowerCase();
+            const isAdmin = decoded.role === 'admin';
+            if (tokenEmail !== cleanEmail && !isAdmin) {
+              return NextResponse.json(
+                { success: false, message: 'Access Denied: You are not authorized to view orders for another account.' },
+                { status: 403 }
+              );
+            }
+          }
+        } catch (err) {
+          // Token invalid or expired
+        }
+      }
+
       let filteredOrders: any[] = [];
       if (isDbConnected) {
-        filteredOrders = await OrderModel.find({ 'shippingAddress.email': new RegExp(`^${email.trim()}$`, 'i') }).sort({ createdAt: -1 }).lean();
+        filteredOrders = await OrderModel.find({ 'shippingAddress.email': new RegExp(`^${cleanEmail}$`, 'i') }).sort({ createdAt: -1 }).lean();
       }
       if (filteredOrders.length === 0) {
         filteredOrders = inMemoryStore.orders.filter(
-          (o) => o.shippingAddress?.email?.toLowerCase() === email.trim().toLowerCase()
+          (o) => o.shippingAddress?.email?.toLowerCase() === cleanEmail
         );
       }
       return NextResponse.json({ success: true, orders: filteredOrders });
     }
 
-    // Require Admin Authorization for storewide order listing
+    // 3. Storewide Orders Listing (Requires Admin Authorization)
     const auth = verifyAdminToken(request);
     if (!auth.isAuthorized) {
       return auth.errorResponse!;

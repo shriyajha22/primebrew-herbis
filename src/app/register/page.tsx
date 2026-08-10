@@ -18,7 +18,10 @@ export default function CustomerRegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [acceptTerms, setAcceptTerms] = useState(true);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!fullName || !email || !password) return;
     if (!acceptTerms) {
@@ -26,35 +29,31 @@ export default function CustomerRegisterPage() {
       return;
     }
 
+    setLoading(true);
+    setErrorMsg('');
+
     try {
-      const storedUsersRaw = localStorage.getItem('pbh_users');
-      const users: UserType[] = storedUsersRaw ? JSON.parse(storedUsersRaw) : [];
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: fullName, email, phone, password }),
+      });
 
-      const duplicate = users.find((u) => u.email.toLowerCase() === email.trim().toLowerCase());
-      if (duplicate) {
-        showToast('An account with this email already exists. Please log in instead.', 'error');
-        return;
+      const data = await res.json();
+
+      if (res.ok && data.success && data.user) {
+        setCurrentUser(data.user);
+        showToast(`Welcome to PrimeBrew Herbis, ${data.user.name}! ₹250 signup bonus added.`, 'success');
+        router.push('/dashboard');
+      } else {
+        setErrorMsg(data.message || 'Registration failed');
+        showToast(data.message || 'Registration failed', 'error');
       }
-
-      const newUser: UserType = {
-        _id: `usr-${Date.now()}`,
-        name: fullName.trim(),
-        email: email.trim(),
-        phone: phone.trim(),
-        role: 'customer',
-        addresses: [],
-        wishlist: [],
-        walletBalance: 250,
-      };
-
-      const updatedUsers = [...users, newUser];
-      localStorage.setItem('pbh_users', JSON.stringify(updatedUsers));
-      setCurrentUser(newUser);
-
-      showToast(`Welcome to PrimeBrew Herbis, ${fullName}! ₹250 signup bonus added.`, 'success');
-      router.push('/dashboard');
     } catch (err) {
-      console.error(err);
+      setErrorMsg('Failed to connect to registration server');
+      showToast('Connection error', 'error');
+    } finally {
+      setLoading(false);
     }
   };
 

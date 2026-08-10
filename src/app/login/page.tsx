@@ -14,31 +14,38 @@ export default function CustomerLoginPage() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) return;
 
+    setLoading(true);
+    setErrorMsg('');
+
     try {
-      const storedUsersRaw = localStorage.getItem('pbh_users');
-      const users = storedUsersRaw ? JSON.parse(storedUsersRaw) : [];
-      const match = users.find((u: any) => u.email.toLowerCase() === email.trim().toLowerCase());
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
 
-      const userToLogin = match || {
-        _id: `usr-${Date.now()}`,
-        name: email.split('@')[0].replace('.', ' '),
-        email: email.trim(),
-        role: 'customer',
-        addresses: [],
-        wishlist: [],
-        walletBalance: 250,
-      };
+      const data = await res.json();
 
-      setCurrentUser(userToLogin);
-      showToast(`Welcome back, ${userToLogin.name}!`, 'success');
-      router.push('/dashboard');
+      if (res.ok && data.success && data.user) {
+        setCurrentUser(data.user);
+        showToast(`Welcome back, ${data.user.name}!`, 'success');
+        router.push('/dashboard');
+      } else {
+        setErrorMsg(data.message || 'Invalid email or password');
+        showToast(data.message || 'Authentication failed', 'error');
+      }
     } catch (err) {
-      console.error(err);
+      setErrorMsg('Failed to connect to authentication server');
+      showToast('Connection error', 'error');
+    } finally {
+      setLoading(false);
     }
   };
 

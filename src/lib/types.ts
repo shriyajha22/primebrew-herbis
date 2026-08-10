@@ -152,6 +152,7 @@ export interface User {
   addresses: Address[];
   wishlist: string[]; // array of product IDs
   walletBalance: number;
+  passwordHash?: string;
 }
 
 export interface ActiveSession {

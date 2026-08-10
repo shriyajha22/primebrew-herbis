@@ -211,6 +211,32 @@ class InMemoryStore {
     return { success: true, message: 'Password updated successfully' };
   }
 
+  findUserByEmail(email: string): User | undefined {
+    if (!email) return undefined;
+    return this.users.find((u) => u.email.toLowerCase() === email.trim().toLowerCase());
+  }
+
+  createUser(userData: Partial<User> & { name: string; email: string }): User {
+    const newUser: User = {
+      _id: `usr-${Date.now()}`,
+      name: userData.name.trim(),
+      email: userData.email.trim().toLowerCase(),
+      phone: userData.phone || '',
+      role: userData.role || 'customer',
+      addresses: userData.addresses || [],
+      wishlist: userData.wishlist || [],
+      walletBalance: userData.walletBalance || 250,
+      passwordHash: userData.passwordHash,
+    };
+    this.users.unshift(newUser);
+    return newUser;
+  }
+
+  sanitizeUser(user: User): Omit<User, 'passwordHash'> {
+    const { passwordHash, ...safeUser } = user;
+    return safeUser;
+  }
+
   resetToDefaults() {
     this.products = [...initialProducts];
     this.categories = [...initialCategories];

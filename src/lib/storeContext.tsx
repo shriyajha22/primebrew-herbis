@@ -61,7 +61,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [toasts, setToasts] = useState<Toast[]>([]);
 
-  // Local storage persistence for cart, wishlist & auth
+  // Local storage persistence for cart & wishlist, and server cookie verification for auth
   useEffect(() => {
     try {
       const savedCart = localStorage.getItem('pbh_cart');
@@ -69,41 +69,22 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
 
       const savedWishlist = localStorage.getItem('pbh_wishlist');
       if (savedWishlist) setWishlist(JSON.parse(savedWishlist));
-
-      const savedUser = localStorage.getItem('pbh_user');
-      if (savedUser) setCurrentUser(JSON.parse(savedUser));
     } catch (e) {
       console.error(e);
     }
+
+    // Verify server session from HTTP-only cookie
+    fetch('/api/auth/me')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && data.user) {
+          setCurrentUser(data.user);
+        }
+      })
+      .catch((e) => {
+        console.error('Error verifying auth session:', e);
+      });
   }, []);
-
-  useEffect(() => {
-    try {
-      localStorage.setItem('pbh_cart', JSON.stringify(cart));
-    } catch (e) {
-      console.error(e);
-    }
-  }, [cart]);
-
-  useEffect(() => {
-    try {
-      localStorage.setItem('pbh_wishlist', JSON.stringify(wishlist));
-    } catch (e) {
-      console.error(e);
-    }
-  }, [wishlist]);
-
-  useEffect(() => {
-    try {
-      if (currentUser) {
-        localStorage.setItem('pbh_user', JSON.stringify(currentUser));
-      } else {
-        localStorage.removeItem('pbh_user');
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  }, [currentUser]);
 
   const showToast = (message: string, type: 'success' | 'info' | 'error' = 'success') => {
     const id = Date.now().toString();
@@ -254,7 +235,12 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     showToast("Logged in as Admin (PrimeBrew Admin)", "success");
   };
 
-  const logout = () => {
+  const logout = async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+    } catch (e) {
+      console.error('Logout API error:', e);
+    }
     setCurrentUser(null);
     showToast("Logged out successfully", "info");
   };

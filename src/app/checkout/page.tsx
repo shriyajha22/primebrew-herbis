@@ -743,7 +743,7 @@ export default function CheckoutPage() {
                       setAddress({ ...address, email: e.target.value });
                       if (errors.email) setErrors({ ...errors, email: '' });
                     }}
-                    placeholder="Enter email address for order confirmation & tracking"
+                    placeholder="Enter your email address"
                     required
                     className={`w-full p-2.5 rounded-input border ${
                       errors.email ? 'border-red-500 bg-red-50/50' : 'border-gray-300 focus:border-brand-green'
@@ -764,7 +764,7 @@ export default function CheckoutPage() {
                       setAddress({ ...address, street: e.target.value });
                       if (errors.street) setErrors({ ...errors, street: '' });
                     }}
-                    placeholder="Enter house no., street name, area"
+                    placeholder="Enter your complete address"
                     required
                     className={`w-full p-2.5 rounded-input border ${
                       errors.street ? 'border-red-500 bg-red-50/50' : 'border-gray-300 focus:border-brand-green'
@@ -785,7 +785,7 @@ export default function CheckoutPage() {
                       setAddress({ ...address, city: e.target.value });
                       if (errors.city) setErrors({ ...errors, city: '' });
                     }}
-                    placeholder="Enter city"
+                    placeholder="Enter your city"
                     required
                     className={`w-full p-2.5 rounded-input border ${
                       errors.city ? 'border-red-500 bg-red-50/50' : 'border-gray-300 focus:border-brand-green'
@@ -806,7 +806,7 @@ export default function CheckoutPage() {
                       setAddress({ ...address, state: e.target.value });
                       if (errors.state) setErrors({ ...errors, state: '' });
                     }}
-                    placeholder="Enter state (e.g. Karnataka)"
+                    placeholder="Enter your state"
                     required
                     className={`w-full p-2.5 rounded-input border ${
                       errors.state ? 'border-red-500 bg-red-50/50' : 'border-gray-300 focus:border-brand-green'

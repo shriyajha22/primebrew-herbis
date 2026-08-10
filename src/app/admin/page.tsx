@@ -189,15 +189,21 @@ export default function AdminDashboardPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Admin Header */}
         <div className="bg-brand-darkGreen text-white p-6 sm:p-8 rounded-card mb-8 shadow-premium flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-card bg-brand-gold text-brand-darkGreen flex items-center justify-center font-bold">
-              <Shield className="w-6 h-6" />
+          <div className="flex items-center gap-4">
+            <div className="bg-white p-2.5 rounded-card shadow-soft max-w-[150px]">
+              <Image
+                src="/images/logo.png"
+                alt="PrimeBrew Herbis Logo"
+                width={140}
+                height={40}
+                className="w-full h-auto object-contain"
+              />
             </div>
             <div>
               <span className="text-[10px] font-bold uppercase tracking-widest text-brand-gold bg-white/10 px-2.5 py-0.5 rounded">
                 Admin Control Center
               </span>
-              <h1 className="font-heading font-extrabold text-2xl text-white mt-0.5">
+              <h1 className="font-heading font-extrabold text-xl sm:text-2xl text-white mt-0.5">
                 PrimeBrew Management Console
               </h1>
             </div>

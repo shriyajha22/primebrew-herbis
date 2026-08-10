@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Leaf, Mail, ShieldCheck, Truck, RefreshCw, Award, Instagram, Facebook, Twitter, Phone, MapPin, CheckCircle } from 'lucide-react';
 import { useStore } from '@/lib/storeContext';
 
@@ -46,13 +47,15 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
           {/* Brand Info */}
           <div className="lg:col-span-2 space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-card bg-brand-gold flex items-center justify-center text-brand-darkGreen font-bold shadow-gold">
-                <Leaf className="w-6 h-6 fill-brand-darkGreen" />
-              </div>
-              <span className="font-heading font-bold text-2xl text-white">
-                PrimeBrew <span className="text-brand-gold">Herbis</span>
-              </span>
+            {/* Official Logo with Tagline */}
+            <div className="inline-block bg-white p-3.5 rounded-card shadow-soft max-w-[240px]">
+              <Image
+                src="/images/logo_tagline.png"
+                alt="PrimeBrew Herbis - From our Farms to your Cup"
+                width={200}
+                height={71}
+                className="w-full h-auto object-contain"
+              />
             </div>
             <p className="text-xs leading-relaxed text-brand-mint/90 max-w-sm">
               Farm to Cup. Nature in Every Sip. We source artisanal herbal teas directly from our own farms in Karnataka to deliver pure wellness, unmatched aroma, and zero-chemical vitality.

@@ -341,15 +341,24 @@ export default function CheckoutPage() {
             {/* Order Details Invoice View */}
             <div className="bg-brand-beige p-5 rounded-card border border-brand-mint/30 text-xs space-y-4">
               <div className="flex justify-between items-center border-b border-gray-200 pb-3">
-                <div>
-                  <h3 className="font-bold text-brand-darkGreen">PrimeBrew Herbis Invoice</h3>
-                  <p className="text-[11px] text-gray-500">Official Tax Invoice</p>
+                <div className="flex items-center gap-3">
+                  <Image
+                    src="/images/logo.png"
+                    alt="PrimeBrew Herbis Logo"
+                    width={140}
+                    height={40}
+                    className="h-9 w-auto object-contain"
+                  />
+                  <div>
+                    <h3 className="font-bold text-brand-darkGreen">Official Tax Invoice</h3>
+                    <p className="text-[11px] text-gray-500">Farm to Cup. Nature in Every Sip.</p>
+                  </div>
                 </div>
                 <button
                   onClick={handlePrintInvoice}
-                  className="bg-brand-darkGreen text-white text-xs font-semibold px-3 py-1.5 rounded-button flex items-center gap-1 hover:bg-brand-green"
+                  className="bg-brand-darkGreen text-white text-xs font-semibold px-3.5 py-2 rounded-button flex items-center gap-1.5 hover:bg-brand-green transition-colors"
                 >
-                  <Download className="w-3.5 h-3.5" /> Print / Save Invoice
+                  <Download className="w-4 h-4" /> Print / Save Invoice
                 </button>
               </div>
 

@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { Leaf, ShieldCheck, Lock, Mail, Eye, EyeOff, ArrowRight, KeyRound, Sparkles, CheckCircle2 } from 'lucide-react';
 import { useStore } from '@/lib/storeContext';
@@ -55,19 +56,21 @@ export default function AdminLoginPage() {
       <div className="relative w-full max-w-md bg-white/90 backdrop-blur-xl p-8 sm:p-10 rounded-3xl shadow-card border border-brand-mint/50 space-y-8 z-10 transition-all duration-300 hover:shadow-2xl">
         
         {/* Header Badge & Title */}
-        <div className="text-center space-y-3">
-          <div className="relative inline-block">
-            <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-brand-darkGreen to-brand-green text-brand-gold flex items-center justify-center mx-auto shadow-lg shadow-brand-darkGreen/20 ring-4 ring-white">
-              <ShieldCheck className="w-10 h-10 text-brand-gold" />
-            </div>
-            <span className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-brand-gold text-brand-darkGreen flex items-center justify-center shadow-md">
-              <Sparkles className="w-3.5 h-3.5 fill-brand-darkGreen" />
-            </span>
-          </div>
+        <div className="text-center space-y-4">
+          <Link href="/" className="inline-block hover:scale-105 transition-transform">
+            <Image
+              src="/images/logo.png"
+              alt="PrimeBrew Herbis Logo"
+              width={180}
+              height={52}
+              priority
+              className="h-12 w-auto mx-auto object-contain"
+            />
+          </Link>
 
           <div className="space-y-1">
             <h2 className="font-heading font-extrabold text-2xl sm:text-3xl text-brand-darkGreen tracking-tight">
-              Admin Portal
+              Admin Portal Login
             </h2>
             <p className="text-xs text-brand-brown font-semibold tracking-wide uppercase">
               PrimeBrew Herbis • Security Control

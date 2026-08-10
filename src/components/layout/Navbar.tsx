@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { Leaf, Search, ShoppingBag, Heart, User, Menu, X, Shield, ChevronDown, CheckCircle2 } from 'lucide-react';
 import { useStore } from '@/lib/storeContext';
@@ -34,18 +35,17 @@ export default function Navbar() {
       <header className="sticky top-0 z-40 glass-navbar shadow-soft">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
-            {/* Logo */}
-            <Link href="/" className="flex items-center gap-3 group shrink-0">
-              <div className="w-11 h-11 rounded-card bg-brand-green flex items-center justify-center text-white shadow-soft group-hover:scale-105 transition-transform duration-300">
-                <Leaf className="w-6 h-6 text-brand-gold fill-brand-gold/20" />
-              </div>
-              <div className="flex flex-col">
-                <span className="font-heading font-bold text-xl sm:text-2xl text-brand-darkGreen tracking-tight leading-none">
-                  PrimeBrew <span className="text-brand-green font-normal">Herbis</span>
-                </span>
-                <span className="text-[10px] text-brand-brown tracking-widest font-semibold uppercase mt-0.5">
-                  Farm to Cup • Nature in Every Sip
-                </span>
+            {/* Official PrimeBrew Herbis Logo */}
+            <Link href="/" className="flex items-center group shrink-0 py-1" title="PrimeBrew Herbis - Farm to Cup">
+              <div className="relative h-10 sm:h-12 w-auto transition-transform duration-300 group-hover:scale-105">
+                <Image
+                  src="/images/logo.png"
+                  alt="PrimeBrew Herbis Logo"
+                  width={173}
+                  height={50}
+                  priority
+                  className="h-full w-auto object-contain"
+                />
               </div>
             </Link>
 

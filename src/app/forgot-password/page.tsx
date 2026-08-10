@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Mail, ArrowLeft, Send, CheckCircle2, ShieldCheck } from 'lucide-react';
 import { useStore } from '@/lib/storeContext';
 
@@ -28,11 +29,18 @@ export default function ForgotPasswordPage() {
         </Link>
 
         {/* Header */}
-        <div className="text-center space-y-2">
-          <div className="w-16 h-16 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center mx-auto border border-amber-200">
-            <ShieldCheck className="w-8 h-8" />
-          </div>
-          <h1 className="font-heading font-extrabold text-2xl sm:text-3xl text-brand-darkGreen">
+        <div className="text-center space-y-3">
+          <Link href="/" className="inline-block hover:scale-105 transition-transform">
+            <Image
+              src="/images/logo.png"
+              alt="PrimeBrew Herbis Logo"
+              width={180}
+              height={52}
+              priority
+              className="h-12 w-auto mx-auto object-contain"
+            />
+          </Link>
+          <h1 className="font-heading font-extrabold text-2xl text-brand-darkGreen">
             Reset Password
           </h1>
           <p className="text-xs text-gray-500 font-light">

@@ -63,7 +63,7 @@ export default function CheckoutPage() {
   // GST & Payment states
   const [wantGstInvoice, setWantGstInvoice] = useState(false);
   const [gstDetails, setGstDetails] = useState({ companyName: '', gstin: '' });
-  const [paymentMethod, setPaymentMethod] = useState<'Razorpay' | 'Stripe' | 'Cash on Delivery'>('Razorpay');
+  const paymentMethod = 'Cash on Delivery';
   const [isProcessing, setIsProcessing] = useState(false);
   const [completedOrder, setCompletedOrder] = useState<Order | null>(null);
 
@@ -327,8 +327,8 @@ export default function CheckoutPage() {
               <div className="w-16 h-16 bg-sky-100 text-sky-600 rounded-full flex items-center justify-center mx-auto mb-2">
                 <CheckCircle2 className="w-10 h-10" />
               </div>
-              <span className="text-xs font-bold uppercase tracking-widest text-sky-700 bg-sky-50 px-3 py-1 rounded-badge">
-                Payment & Order Confirmed
+              <span className="text-xs font-bold uppercase tracking-widest text-amber-700 bg-amber-50 border border-amber-200 px-3 py-1 rounded-badge">
+                Order Confirmed (Cash on Delivery)
               </span>
               <h1 className="font-heading font-extrabold text-2xl text-brand-darkGreen">
                 Thank You for Your Order!
@@ -372,7 +372,9 @@ export default function CheckoutPage() {
                   <p>Email: {completedOrder.shippingAddress.email}</p>
                 </div>
                 <div>
-                  <p className="font-bold text-brand-darkGreen">Shipment Tracking:</p>
+                  <p className="font-bold text-brand-darkGreen">Shipment & Payment Info:</p>
+                  <p>Payment: <strong className="text-amber-800 font-bold">Cash on Delivery (COD)</strong></p>
+                  <p>Status: <strong className="text-amber-700 font-bold">Pending Collection on Delivery</strong></p>
                   <p>Courier: <strong>{completedOrder.courierName}</strong></p>
                   <p>AWB Number: <strong className="font-mono text-brand-green">{completedOrder.trackingNumber}</strong></p>
                   <p>Est. Delivery: <strong>{completedOrder.estimatedDelivery}</strong></p>
@@ -395,7 +397,7 @@ export default function CheckoutPage() {
                   </div>
                 ))}
                 <div className="pt-2 border-t border-gray-200 flex justify-between font-bold text-brand-darkGreen">
-                  <span>Grand Total Paid ({completedOrder.paymentMethod})</span>
+                  <span>Total Payable on Delivery (COD)</span>
                   <span className="text-brand-green text-sm">₹{completedOrder.total}</span>
                 </div>
               </div>
@@ -885,60 +887,23 @@ export default function CheckoutPage() {
               )}
             </div>
 
-            {/* Payment Gateway Method */}
+            {/* Payment Method - COD Only */}
             <div className="bg-white rounded-card border border-brand-mint/30 shadow-card p-6 space-y-4">
               <div className="flex items-center gap-2 font-heading font-bold text-base text-brand-darkGreen border-b border-gray-100 pb-3">
-                <CreditCard className="w-5 h-5 text-brand-green" /> 2. Payment Gateway Method
+                <Truck className="w-5 h-5 text-brand-green" /> 2. Payment Method
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <button
-                  type="button"
-                  onClick={() => setPaymentMethod('Razorpay')}
-                  className={`p-4 rounded-card border text-left text-xs space-y-1 transition-all ${
-                    paymentMethod === 'Razorpay'
-                      ? 'border-brand-green bg-brand-green/10 text-brand-darkGreen font-bold shadow-soft'
-                      : 'border-gray-200 bg-brand-beige text-gray-600'
-                  }`}
-                >
-                  <div className="flex justify-between items-center">
-                    <span className="font-bold text-sm">Razorpay</span>
-                    <span className="text-[10px] bg-brand-green text-white px-1.5 py-0.5 rounded">UPI / Cards</span>
+              <div className="p-4 rounded-card border border-brand-green bg-brand-green/10 text-brand-darkGreen space-y-2">
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold text-sm">Cash on Delivery (COD)</span>
+                    <span className="text-[10px] bg-amber-600 text-white font-bold px-2 py-0.5 rounded-badge">Only Payment Method</span>
                   </div>
-                  <p className="text-[11px] text-gray-500 font-light">GPay, PhonePe, Cards & NetBanking</p>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setPaymentMethod('Stripe')}
-                  className={`p-4 rounded-card border text-left text-xs space-y-1 transition-all ${
-                    paymentMethod === 'Stripe'
-                      ? 'border-brand-green bg-brand-green/10 text-brand-darkGreen font-bold shadow-soft'
-                      : 'border-gray-200 bg-brand-beige text-gray-600'
-                  }`}
-                >
-                  <div className="flex justify-between items-center">
-                    <span className="font-bold text-sm">Stripe</span>
-                    <span className="text-[10px] bg-blue-600 text-white px-1.5 py-0.5 rounded">Global</span>
-                  </div>
-                  <p className="text-[11px] text-gray-500 font-light">Visa, Mastercard, Amex</p>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setPaymentMethod('Cash on Delivery')}
-                  className={`p-4 rounded-card border text-left text-xs space-y-1 transition-all ${
-                    paymentMethod === 'Cash on Delivery'
-                      ? 'border-brand-green bg-brand-green/10 text-brand-darkGreen font-bold shadow-soft'
-                      : 'border-gray-200 bg-brand-beige text-gray-600'
-                  }`}
-                >
-                  <div className="flex justify-between items-center">
-                    <span className="font-bold text-sm">Cash on Delivery</span>
-                    <span className="text-[10px] bg-amber-600 text-white px-1.5 py-0.5 rounded">COD</span>
-                  </div>
-                  <p className="text-[11px] text-gray-500 font-light">Pay cash upon delivery</p>
-                </button>
+                  <CheckCircle2 className="w-5 h-5 text-brand-green" />
+                </div>
+                <p className="text-xs text-brand-mediumGrey font-light leading-relaxed">
+                  PrimeBrew Herbis accepts Cash on Delivery (COD) only. Pay cash directly to the courier agent upon doorstep package delivery. No advance online payment required!
+                </p>
               </div>
             </div>
           </div>
@@ -1000,7 +965,7 @@ export default function CheckoutPage() {
                     </span>
                   </div>
                   <div className="flex justify-between text-base font-bold text-brand-darkGreen pt-2 border-t border-gray-200">
-                    <span>Total Amount</span>
+                    <span>Total Amount (COD)</span>
                     <span className="text-brand-green">₹{cartTotal}</span>
                   </div>
                 </div>
@@ -1011,11 +976,11 @@ export default function CheckoutPage() {
                   className="w-full btn-primary-gradient text-sm py-4 rounded-button shadow-soft flex items-center justify-center gap-2 transition-all disabled:opacity-50"
                 >
                   {isProcessing ? (
-                    <span className="animate-pulse">Processing Payment...</span>
+                    <span className="animate-pulse">Placing Order...</span>
                   ) : (
                     <>
-                      <Lock className="w-4 h-4 text-brand-gold" />
-                      <span>Pay ₹{cartTotal} & Place Order</span>
+                      <CheckCircle2 className="w-4 h-4 text-white" />
+                      <span>Place Order (Cash on Delivery - ₹{cartTotal})</span>
                     </>
                   )}
                 </button>

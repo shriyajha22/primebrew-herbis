@@ -33,8 +33,8 @@ const OrderSchema = new Schema<IOrderDocument>(
       gstin: String,
       companyName: String,
     },
-    paymentMethod: { type: String, default: 'Razorpay' },
-    paymentStatus: { type: String, enum: ['Paid', 'Pending', 'Failed', 'Refunded'], default: 'Paid' },
+    paymentMethod: { type: String, default: 'Cash on Delivery' },
+    paymentStatus: { type: String, enum: ['Paid', 'Pending', 'Failed', 'Refunded'], default: 'Pending' },
     orderStatus: {
       type: String,
       enum: ['Pending', 'Confirmed', 'Processing', 'Packed', 'Shipped', 'Out for Delivery', 'Delivered', 'Cancelled'],

@@ -146,11 +146,9 @@ export default function Footer() {
         {/* Bottom copyright and payment icons */}
         <div className="mt-12 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-brand-mint/70">
           <p>© {new Date().getFullYear()} PrimeBrew Herbis. All rights reserved. Crafted with care from Farm to Cup.</p>
-          <div className="flex items-center space-x-4">
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-brand-gold">Secure Payment via</span>
-            <span className="bg-white/10 px-2 py-1 rounded text-[11px] text-white">Razorpay</span>
-            <span className="bg-white/10 px-2 py-1 rounded text-[11px] text-white">Stripe</span>
-            <span className="bg-white/10 px-2 py-1 rounded text-[11px] text-white">Cash on Delivery</span>
+          <div className="flex items-center space-x-3">
+            <span className="text-[10px] font-semibold uppercase tracking-wider text-brand-gold">Payment Method</span>
+            <span className="bg-amber-600/90 font-bold px-2.5 py-1 rounded text-[11px] text-white">Cash on Delivery (COD Only)</span>
           </div>
         </div>
       </div>

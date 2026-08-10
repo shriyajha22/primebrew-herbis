@@ -129,6 +129,13 @@ export async function POST(request: Request) {
       );
     }
 
+    if (body.paymentMethod && body.paymentMethod !== 'Cash on Delivery') {
+      return NextResponse.json(
+        { success: false, message: 'PrimeBrew Herbis accepts Cash on Delivery (COD) only. Online payment options are disabled.' },
+        { status: 400 }
+      );
+    }
+
     const uniqueId = Date.now();
     const randomSuffix = Math.floor(1000 + Math.random() * 9000);
     const orderNumber = `PBH-2026-${randomSuffix}`;
@@ -141,8 +148,8 @@ export async function POST(request: Request) {
       items: body.items,
       shippingAddress: body.shippingAddress,
       gstInvoice: body.gstInvoice,
-      paymentMethod: body.paymentMethod || 'Razorpay',
-      paymentStatus: body.paymentMethod === 'Cash on Delivery' ? 'Pending' : 'Paid',
+      paymentMethod: 'Cash on Delivery',
+      paymentStatus: 'Pending',
       orderStatus: 'Processing',
       trackingNumber,
       courierName: 'Shiprocket Express',

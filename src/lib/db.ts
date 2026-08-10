@@ -67,8 +67,8 @@ class InMemoryStore {
         pincode: "560001",
         isDefault: true
       },
-      paymentMethod: "Razorpay",
-      paymentStatus: "Paid",
+      paymentMethod: "Cash on Delivery",
+      paymentStatus: "Pending",
       orderStatus: "Shipped",
       trackingNumber: "SR-884920194",
       courierName: "Shiprocket Express",

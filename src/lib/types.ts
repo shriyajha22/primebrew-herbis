@@ -129,7 +129,7 @@ export interface Order {
     companyName: string;
     gstin: string;
   };
-  paymentMethod: "Razorpay" | "Stripe" | "Cash on Delivery";
+  paymentMethod: "Cash on Delivery";
   paymentStatus: "Pending" | "Paid" | "Failed";
   orderStatus: "Pending" | "Processing" | "Packed" | "Shipped" | "Delivered" | "Cancelled";
   trackingNumber?: string;

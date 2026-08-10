@@ -153,3 +153,13 @@ export interface User {
   wishlist: string[]; // array of product IDs
   walletBalance: number;
 }
+
+export interface ActiveSession {
+  email: string;
+  name: string;
+  currentPage: string;
+  loginTime: string;
+  lastActive: string;
+  isOnline: boolean;
+}
+

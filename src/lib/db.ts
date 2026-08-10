@@ -81,12 +81,79 @@ class InMemoryStore {
     }
   ];
 
+  activeSessions = new Map<string, {
+    email: string;
+    name: string;
+    currentPage: string;
+    loginTime: string;
+    lastActive: string;
+    isOnline: boolean;
+  }>();
+
+  recordUserActivity(name: string, email: string, currentPage: string) {
+    if (!email) return;
+    const key = email.trim().toLowerCase();
+    const existing = this.activeSessions.get(key);
+    const now = new Date().toISOString();
+
+    if (existing) {
+      existing.name = name || existing.name;
+      existing.currentPage = currentPage || existing.currentPage;
+      existing.lastActive = now;
+      existing.isOnline = true;
+      this.activeSessions.set(key, existing);
+    } else {
+      this.activeSessions.set(key, {
+        email: email.trim(),
+        name: name || email.split('@')[0],
+        currentPage: currentPage || '/',
+        loginTime: now,
+        lastActive: now,
+        isOnline: true,
+      });
+    }
+  }
+
+  setUserOffline(email: string) {
+    if (!email) return;
+    const key = email.trim().toLowerCase();
+    const existing = this.activeSessions.get(key);
+    if (existing) {
+      existing.isOnline = false;
+      this.activeSessions.set(key, existing);
+    }
+  }
+
+  getActiveSessions() {
+    const nowMs = Date.now();
+    const list: Array<{
+      email: string;
+      name: string;
+      currentPage: string;
+      loginTime: string;
+      lastActive: string;
+      isOnline: boolean;
+    }> = [];
+
+    this.activeSessions.forEach((session, key) => {
+      const lastActiveMs = new Date(session.lastActive).getTime();
+      // Mark offline if last heartbeat is older than 30 seconds
+      if (nowMs - lastActiveMs > 30000) {
+        session.isOnline = false;
+      }
+      list.push(session);
+    });
+
+    return list.sort((a, b) => new Date(b.lastActive).getTime() - new Date(a.lastActive).getTime());
+  }
+
   resetToDefaults() {
     this.products = [...initialProducts];
     this.categories = [...initialCategories];
     this.blogs = [...initialBlogs];
     this.reviews = [...initialReviews];
     this.coupons = [...initialCoupons];
+    this.activeSessions.clear();
   }
 }
 

@@ -6,33 +6,62 @@ import Image from 'next/image';
 import { useStore } from '@/lib/storeContext';
 import { initialProducts } from '@/lib/seedData';
 import { Product } from '@/lib/types';
-import { Shield, TrendingUp, DollarSign, ShoppingBag, Users, Plus, Trash2, CheckCircle2, Clock, RefreshCw } from 'lucide-react';
+import {
+  Shield,
+  TrendingUp,
+  DollarSign,
+  ShoppingBag,
+  Users,
+  Plus,
+  Trash2,
+  CheckCircle2,
+  Clock,
+  RefreshCw,
+  Activity,
+  Truck,
+  Package,
+  AlertTriangle,
+  XCircle,
+  Eye,
+  Radio,
+} from 'lucide-react';
 
 export default function AdminDashboardPage() {
   const { currentUser, loginAsDemoAdmin, showToast } = useStore();
   const [productsList, setProductsList] = useState<Product[]>([...initialProducts]);
-  const [activeTab, setActiveTab] = useState<'overview' | 'products' | 'orders' | 'customers'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'activity' | 'orders' | 'customers' | 'products'>('overview');
   const [showAddModal, setShowAddModal] = useState(false);
   const [selectedOrderDetails, setSelectedOrderDetails] = useState<any | null>(null);
 
   const [adminOrders, setAdminOrders] = useState<any[]>([]);
   const [customersList, setCustomersList] = useState<any[]>([]);
-  const [analytics, setAnalytics] = useState<any>(null);
+  const [activeSessions, setActiveSessions] = useState<any[]>([]);
+  const [liveKpis, setLiveKpis] = useState<any>({
+    currentlyOnline: 0,
+    todaysOrders: 0,
+    pendingOrders: 0,
+    ordersInDelivery: 0,
+    completedOrders: 0,
+    todaysRevenue: 0,
+    totalRevenue: 0,
+  });
+  const [isLiveConnected, setIsLiveConnected] = useState(false);
   const [loadingOrders, setLoadingOrders] = useState(false);
 
-  // Fetch real data from APIs
-  const fetchOrders = async () => {
-    setLoadingOrders(true);
+  // Fetch real-time live data from `/api/admin/live`
+  const fetchLiveData = async () => {
     try {
-      const res = await fetch('/api/orders');
+      const res = await fetch('/api/admin/live');
       const data = await res.json();
-      if (res.ok && data.success && Array.isArray(data.orders)) {
-        setAdminOrders(data.orders);
+      if (res.ok && data.success) {
+        setIsLiveConnected(true);
+        if (data.kpis) setLiveKpis(data.kpis);
+        if (Array.isArray(data.activeSessions)) setActiveSessions(data.activeSessions);
+        if (Array.isArray(data.orders)) setAdminOrders(data.orders);
       }
     } catch (e) {
-      console.error('Failed to fetch orders:', e);
-    } finally {
-      setLoadingOrders(false);
+      setIsLiveConnected(false);
+      console.error('Error connecting to live admin stream:', e);
     }
   };
 
@@ -48,23 +77,17 @@ export default function AdminDashboardPage() {
     }
   };
 
-  const fetchAnalytics = async () => {
-    try {
-      const res = await fetch('/api/admin/analytics');
-      const data = await res.json();
-      if (res.ok && data.success && data.metrics) {
-        setAnalytics(data);
-      }
-    } catch (e) {
-      console.error('Failed to fetch analytics:', e);
-    }
-  };
-
+  // Setup periodic 2.5s real-time live streaming loop when admin is logged in
   useEffect(() => {
     if (currentUser?.role === 'admin') {
-      fetchOrders();
+      fetchLiveData();
       fetchCustomers();
-      fetchAnalytics();
+
+      const liveInterval = setInterval(() => {
+        fetchLiveData();
+      }, 2500);
+
+      return () => clearInterval(liveInterval);
     }
   }, [currentUser]);
 
@@ -95,7 +118,7 @@ export default function AdminDashboardPage() {
           <button
             onClick={() => {
               loginAsDemoAdmin();
-              showToast("Admin access granted via demo session!", "success");
+              showToast('Admin access granted via demo session!', 'success');
             }}
             className="inline-block bg-brand-gold hover:bg-amber-400 text-brand-darkGreen font-extrabold text-xs px-6 py-3.5 rounded-button transition-all shadow-gold"
           >
@@ -163,25 +186,13 @@ export default function AdminDashboardPage() {
           prev.map((o) => (o._id === orderId || o.orderNumber === orderId ? { ...o, orderStatus: newStatus } : o))
         );
         showToast(`Order status updated to ${newStatus}`, 'success');
-        fetchAnalytics();
+        fetchLiveData();
       } else {
         showToast(data.message || 'Failed to update order status', 'error');
       }
     } catch (err) {
       showToast('Error connecting to backend server', 'error');
     }
-  };
-
-  const metrics = analytics?.metrics || {
-    totalRevenue: adminOrders.reduce((sum, o) => sum + (o.paymentStatus === 'Paid' ? o.total : 0), 0),
-    todayRevenue: 0,
-    totalOrders: adminOrders.length,
-    pendingOrders: adminOrders.filter((o) => o.orderStatus === 'Pending').length,
-    processingOrders: adminOrders.filter((o) => o.orderStatus === 'Processing').length,
-    shippedOrders: adminOrders.filter((o) => o.orderStatus === 'Shipped').length,
-    deliveredOrders: adminOrders.filter((o) => o.orderStatus === 'Delivered').length,
-    cancelledOrders: adminOrders.filter((o) => o.orderStatus === 'Cancelled').length,
-    totalCustomers: customersList.length,
   };
 
   return (
@@ -200,11 +211,19 @@ export default function AdminDashboardPage() {
               />
             </div>
             <div>
-              <span className="text-[10px] font-bold uppercase tracking-widest text-brand-gold bg-white/10 px-2.5 py-0.5 rounded">
-                Admin Control Center
-              </span>
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-brand-gold bg-white/10 px-2.5 py-0.5 rounded">
+                  Admin Control Center
+                </span>
+                {isLiveConnected && (
+                  <span className="inline-flex items-center gap-1.5 bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 px-2.5 py-0.5 rounded text-[10px] font-extrabold animate-pulse">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399]" />
+                    <span>● LIVE</span>
+                  </span>
+                )}
+              </div>
               <h1 className="font-heading font-extrabold text-xl sm:text-2xl text-white mt-0.5">
-                PrimeBrew Management Console
+                PrimeBrew Real-Time Console
               </h1>
             </div>
           </div>
@@ -212,10 +231,9 @@ export default function AdminDashboardPage() {
           <div className="flex items-center gap-3">
             <button
               onClick={() => {
-                fetchOrders();
+                fetchLiveData();
                 fetchCustomers();
-                fetchAnalytics();
-                showToast('Refreshed real-time admin data', 'info');
+                showToast('Refreshed real-time admin stream', 'info');
               }}
               className="bg-white/10 hover:bg-white/20 text-white font-semibold text-xs px-4 py-3 rounded-button border border-white/20 flex items-center gap-1.5 transition-colors"
             >
@@ -230,91 +248,198 @@ export default function AdminDashboardPage() {
           </div>
         </div>
 
-        {/* Dashboard Navigation */}
+        {/* 6 Real-Time Dashboard KPI Cards */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-8">
+          {/* Card 1: Currently Online */}
+          <div className="bg-white p-4 rounded-card border border-emerald-200 shadow-card">
+            <div className="flex items-center justify-between text-[11px] text-gray-500 mb-1">
+              <span>Currently Online</span>
+              <Radio className="w-4 h-4 text-emerald-500 animate-pulse" />
+            </div>
+            <span className="font-heading font-extrabold text-2xl text-emerald-700">
+              {liveKpis.currentlyOnline || 0}
+            </span>
+            <span className="text-[10px] text-emerald-600 font-bold block mt-0.5">Live Active Users</span>
+          </div>
+
+          {/* Card 2: Today's Orders */}
+          <div className="bg-white p-4 rounded-card border border-brand-mint/30 shadow-card">
+            <div className="flex items-center justify-between text-[11px] text-gray-500 mb-1">
+              <span>Today&apos;s Orders</span>
+              <ShoppingBag className="w-4 h-4 text-brand-green" />
+            </div>
+            <span className="font-heading font-extrabold text-2xl text-brand-darkGreen">
+              {liveKpis.todaysOrders || 0}
+            </span>
+            <span className="text-[10px] text-brand-green font-bold block mt-0.5">Placed Today</span>
+          </div>
+
+          {/* Card 3: Pending Orders */}
+          <div className="bg-white p-4 rounded-card border border-brand-mint/30 shadow-card">
+            <div className="flex items-center justify-between text-[11px] text-gray-500 mb-1">
+              <span>Pending Orders</span>
+              <Clock className="w-4 h-4 text-amber-500" />
+            </div>
+            <span className="font-heading font-extrabold text-2xl text-amber-600">
+              {liveKpis.pendingOrders || 0}
+            </span>
+            <span className="text-[10px] text-amber-600 font-bold block mt-0.5">Awaiting Processing</span>
+          </div>
+
+          {/* Card 4: Orders in Delivery */}
+          <div className="bg-white p-4 rounded-card border border-brand-mint/30 shadow-card">
+            <div className="flex items-center justify-between text-[11px] text-gray-500 mb-1">
+              <span>In Delivery</span>
+              <Truck className="w-4 h-4 text-sky-600" />
+            </div>
+            <span className="font-heading font-extrabold text-2xl text-sky-700">
+              {liveKpis.ordersInDelivery || 0}
+            </span>
+            <span className="text-[10px] text-sky-600 font-bold block mt-0.5">Shipped / In Transit</span>
+          </div>
+
+          {/* Card 5: Completed Orders */}
+          <div className="bg-white p-4 rounded-card border border-brand-mint/30 shadow-card">
+            <div className="flex items-center justify-between text-[11px] text-gray-500 mb-1">
+              <span>Completed</span>
+              <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+            </div>
+            <span className="font-heading font-extrabold text-2xl text-emerald-700">
+              {liveKpis.completedOrders || 0}
+            </span>
+            <span className="text-[10px] text-emerald-600 font-bold block mt-0.5">Delivered Orders</span>
+          </div>
+
+          {/* Card 6: Today's Revenue */}
+          <div className="bg-white p-4 rounded-card border border-brand-mint/30 shadow-card">
+            <div className="flex items-center justify-between text-[11px] text-gray-500 mb-1">
+              <span>Today&apos;s Revenue</span>
+              <DollarSign className="w-4 h-4 text-brand-gold" />
+            </div>
+            <span className="font-heading font-extrabold text-xl text-brand-darkGreen">
+              ₹{liveKpis.todaysRevenue?.toLocaleString('en-IN') || 0}
+            </span>
+            <span className="text-[10px] text-brand-gold font-bold block mt-0.5">Paid Today</span>
+          </div>
+        </div>
+
+        {/* Dashboard Navigation Tabs */}
         <div className="flex gap-2 mb-8 border-b border-gray-200 pb-2 overflow-x-auto text-xs font-bold">
           <button
             onClick={() => setActiveTab('overview')}
-            className={`px-4 py-2.5 rounded-button transition-colors ${activeTab === 'overview' ? 'bg-brand-green text-white shadow-soft' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
+            className={`px-4 py-2.5 rounded-button transition-colors whitespace-nowrap ${activeTab === 'overview' ? 'bg-brand-green text-white shadow-soft' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
           >
-            📊 Dashboard Reports & Overview
+            📊 Reports & Sales Graph
           </button>
+
+          <button
+            onClick={() => setActiveTab('activity')}
+            className={`px-4 py-2.5 rounded-button transition-colors whitespace-nowrap flex items-center gap-1.5 ${activeTab === 'activity' ? 'bg-brand-green text-white shadow-soft' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
+          >
+            <Activity className="w-3.5 h-3.5 text-emerald-400" />
+            <span>🟢 Live Customer Activity ({activeSessions.filter((s) => s.isOnline).length})</span>
+          </button>
+
           <button
             onClick={() => setActiveTab('orders')}
-            className={`px-4 py-2.5 rounded-button transition-colors ${activeTab === 'orders' ? 'bg-brand-green text-white shadow-soft' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
+            className={`px-4 py-2.5 rounded-button transition-colors whitespace-nowrap ${activeTab === 'orders' ? 'bg-brand-green text-white shadow-soft' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
           >
             📦 Track Orders & Logistics ({adminOrders.length})
           </button>
+
           <button
             onClick={() => setActiveTab('customers')}
-            className={`px-4 py-2.5 rounded-button transition-colors ${activeTab === 'customers' ? 'bg-brand-green text-white shadow-soft' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
+            className={`px-4 py-2.5 rounded-button transition-colors whitespace-nowrap ${activeTab === 'customers' ? 'bg-brand-green text-white shadow-soft' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
           >
             👥 Registered Customers ({customersList.length})
           </button>
+
           <button
             onClick={() => setActiveTab('products')}
-            className={`px-4 py-2.5 rounded-button transition-colors ${activeTab === 'products' ? 'bg-brand-green text-white shadow-soft' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
+            className={`px-4 py-2.5 rounded-button transition-colors whitespace-nowrap ${activeTab === 'products' ? 'bg-brand-green text-white shadow-soft' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
           >
             🍵 Product Catalog ({productsList.length})
           </button>
         </div>
 
+        {/* Live Customer Activity Tab */}
+        {activeTab === 'activity' && (
+          <div className="bg-white rounded-card border border-brand-mint/30 shadow-card overflow-hidden space-y-4 p-6">
+            <div className="flex justify-between items-center border-b border-gray-100 pb-3">
+              <div>
+                <h3 className="font-heading font-bold text-base text-brand-darkGreen flex items-center gap-2">
+                  <Activity className="w-5 h-5 text-emerald-500" /> Live Customer Session Monitoring
+                </h3>
+                <p className="text-xs text-gray-500">Real-time status updates without refreshing</p>
+              </div>
+              <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-badge border border-emerald-200">
+                {activeSessions.filter((s) => s.isOnline).length} Active Online
+              </span>
+            </div>
+
+            {activeSessions.length === 0 ? (
+              <div className="py-12 text-center text-xs text-gray-500 space-y-2">
+                <Users className="w-8 h-8 text-gray-400 mx-auto" />
+                <p>No active customer sessions recorded yet.</p>
+                <p className="text-[11px] text-gray-400">Log in as a customer in another tab or window to test live monitoring.</p>
+              </div>
+            ) : (
+              <table className="w-full text-xs text-left">
+                <thead className="bg-brand-beige text-brand-darkGreen font-bold border-b border-brand-mint/20">
+                  <tr>
+                    <th className="p-3.5">Customer Name</th>
+                    <th className="p-3.5">Email Address</th>
+                    <th className="p-3.5">Current Location / Page</th>
+                    <th className="p-3.5">Login Time</th>
+                    <th className="p-3.5">Last Active</th>
+                    <th className="p-3.5 text-right">Status</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {activeSessions.map((s, idx) => (
+                    <tr key={idx} className="hover:bg-brand-cream/40 transition-colors">
+                      <td className="p-3.5 font-bold text-brand-darkGreen">{s.name}</td>
+                      <td className="p-3.5 text-gray-600">{s.email}</td>
+                      <td className="p-3.5">
+                        <span className="font-mono bg-brand-mint/30 text-brand-darkGreen px-2 py-0.5 rounded text-[11px] font-bold">
+                          {s.currentPage}
+                        </span>
+                      </td>
+                      <td className="p-3.5 text-gray-500">
+                        {new Date(s.loginTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      </td>
+                      <td className="p-3.5 text-gray-500">
+                        {new Date(s.lastActive).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+                      </td>
+                      <td className="p-3.5 text-right">
+                        {s.isOnline ? (
+                          <span className="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-700 font-extrabold px-2.5 py-0.5 rounded-badge border border-emerald-200">
+                            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                            Online
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1.5 bg-gray-100 text-gray-500 font-bold px-2.5 py-0.5 rounded-badge border border-gray-200">
+                            <span className="w-2 h-2 rounded-full bg-gray-400" />
+                            Offline
+                          </span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+        )}
+
         {/* Overview Tab */}
         {activeTab === 'overview' && (
           <div className="space-y-8">
-            {/* KPI Cards */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="bg-white p-5 rounded-card border border-brand-mint/30 shadow-card">
-                <div className="flex items-center justify-between text-xs text-gray-500 mb-1">
-                  <span>Total Store Revenue</span>
-                  <DollarSign className="w-4 h-4 text-brand-green" />
-                </div>
-                <span className="font-heading font-extrabold text-2xl text-brand-darkGreen">
-                  ₹{metrics.totalRevenue?.toLocaleString('en-IN') || 0}
-                </span>
-                <span className="text-[10px] text-sky-600 font-bold block mt-1">Live Paid Sales</span>
-              </div>
-
-              <div className="bg-white p-5 rounded-card border border-brand-mint/30 shadow-card">
-                <div className="flex items-center justify-between text-xs text-gray-500 mb-1">
-                  <span>Total Placed Orders</span>
-                  <ShoppingBag className="w-4 h-4 text-brand-green" />
-                </div>
-                <span className="font-heading font-extrabold text-2xl text-brand-darkGreen">
-                  {metrics.totalOrders || 0}
-                </span>
-                <span className="text-[10px] text-brand-gold font-bold block mt-1">
-                  {metrics.processingOrders || 0} Processing • {metrics.shippedOrders || 0} Shipped
-                </span>
-              </div>
-
-              <div className="bg-white p-5 rounded-card border border-brand-mint/30 shadow-card">
-                <div className="flex items-center justify-between text-xs text-gray-500 mb-1">
-                  <span>Registered Customers</span>
-                  <Users className="w-4 h-4 text-sky-600" />
-                </div>
-                <span className="font-heading font-extrabold text-2xl text-sky-700">
-                  {metrics.totalCustomers || customersList.length}
-                </span>
-                <span className="text-[10px] text-sky-600 font-bold block mt-1">Verified User Profiles</span>
-              </div>
-
-              <div className="bg-white p-5 rounded-card border border-brand-mint/30 shadow-card">
-                <div className="flex items-center justify-between text-xs text-gray-500 mb-1">
-                  <span>Delivered Orders</span>
-                  <CheckCircle2 className="w-4 h-4 text-brand-green" />
-                </div>
-                <span className="font-heading font-extrabold text-2xl text-emerald-700">
-                  {metrics.deliveredOrders || 0}
-                </span>
-                <span className="text-[10px] text-emerald-600 font-bold block mt-1">Completed Deliveries</span>
-              </div>
-            </div>
-
             {/* Sales Bar Graph Visual */}
             <div className="bg-white p-6 rounded-card border border-brand-mint/30 shadow-card space-y-4">
               <h3 className="font-heading font-bold text-base text-brand-darkGreen">Revenue & Order Growth Report</h3>
               <div className="h-44 flex items-end gap-3 pt-6 px-4 border-b border-gray-200">
-                {(analytics?.salesGraph || [
+                {[
                   { month: 'Jan', sales: 18500 },
                   { month: 'Feb', sales: 22400 },
                   { month: 'Mar', sales: 28900 },
@@ -322,8 +447,8 @@ export default function AdminDashboardPage() {
                   { month: 'May', sales: 36800 },
                   { month: 'Jun', sales: 42100 },
                   { month: 'Jul', sales: 49500 },
-                  { month: 'Aug', sales: metrics.totalRevenue || 54200 },
-                ]).map((item: any, i: number) => {
+                  { month: 'Aug', sales: liveKpis.totalRevenue || 54200 },
+                ].map((item: any, i: number) => {
                   const maxSales = 60000;
                   const heightPercent = Math.min(100, Math.max(20, Math.round((item.sales / maxSales) * 100)));
                   return (
@@ -345,23 +470,20 @@ export default function AdminDashboardPage() {
         {activeTab === 'orders' && (
           <div className="bg-white rounded-card border border-brand-mint/30 shadow-card overflow-hidden space-y-4 p-6">
             <div className="flex justify-between items-center border-b border-gray-100 pb-3">
-              <h3 className="font-heading font-bold text-base text-brand-darkGreen">Orders Management & Logistics Status</h3>
+              <h3 className="font-heading font-bold text-base text-brand-darkGreen">Orders Management & Real-Time Logistics</h3>
               <span className="text-xs text-gray-500">{adminOrders.length} Orders Recorded</span>
             </div>
 
-            {loadingOrders ? (
-              <div className="py-12 text-center text-xs text-gray-500">Loading orders data...</div>
-            ) : adminOrders.length === 0 ? (
+            {adminOrders.length === 0 ? (
               <div className="py-12 text-center text-xs text-gray-500 space-y-2">
                 <Clock className="w-8 h-8 text-gray-400 mx-auto" />
-                <p>No orders placed yet. Place a test order on `/checkout` to see it here live.</p>
+                <p>No orders placed yet. Place a test order on `/checkout` to see it appear live here.</p>
               </div>
             ) : (
               <div className="space-y-3">
                 {adminOrders.map((ord) => {
                   const customerName = ord.shippingAddress?.fullName || ord.customerName || 'Customer';
                   const customerEmail = ord.shippingAddress?.email || ord.email || '';
-                  const customerPhone = ord.shippingAddress?.phone || ord.phone || '';
                   const fullAddress = ord.shippingAddress
                     ? `${ord.shippingAddress.street}, ${ord.shippingAddress.city}, ${ord.shippingAddress.state} - ${ord.shippingAddress.pincode}`
                     : ord.address || '';
@@ -372,27 +494,32 @@ export default function AdminDashboardPage() {
                         <div>
                           <span className="font-bold text-brand-darkGreen text-sm font-mono">{ord.orderNumber}</span>
                           <p className="text-gray-500">Customer: <strong>{customerName}</strong> ({customerEmail})</p>
+                          <p className="text-[11px] text-gray-400">Placed: {new Date(ord.createdAt).toLocaleString()}</p>
                         </div>
+
                         <div className="flex items-center gap-2">
+                          {/* Complete Order Status Selector */}
                           <select
                             value={ord.orderStatus || 'Processing'}
                             onChange={(e) => handleUpdateOrderStatus(ord._id, e.target.value)}
-                            className="p-1.5 rounded-button border border-gray-300 font-bold bg-white text-brand-darkGreen focus:border-brand-green"
+                            className="p-1.5 rounded-button border border-gray-300 font-bold bg-white text-brand-darkGreen focus:border-brand-green text-xs"
                           >
-                            <option value="Pending">Pending</option>
-                            <option value="Processing">Processing</option>
-                            <option value="Packed">Packed</option>
-                            <option value="Shipped">Shipped</option>
-                            <option value="Out for Delivery">Out for Delivery</option>
-                            <option value="Delivered">Delivered</option>
-                            <option value="Cancelled">Cancelled</option>
+                            <option value="Pending">⏳ Pending</option>
+                            <option value="Confirmed">👍 Confirmed</option>
+                            <option value="Processing">⚙️ Processing</option>
+                            <option value="Packed">📦 Packed</option>
+                            <option value="Shipped">🚚 Shipped</option>
+                            <option value="Out for Delivery">🛵 Out for Delivery</option>
+                            <option value="Delivered">✅ Delivered</option>
+                            <option value="Cancelled">❌ Cancelled</option>
+                            <option value="Failed">⚠️ Failed</option>
                           </select>
 
                           <button
                             onClick={() => setSelectedOrderDetails(ord)}
                             className="bg-brand-darkGreen text-white px-3 py-1.5 rounded-button font-semibold hover:bg-brand-green transition-colors"
                           >
-                            View Full Details
+                            View Details
                           </button>
                         </div>
                       </div>
@@ -423,7 +550,7 @@ export default function AdminDashboardPage() {
         {activeTab === 'customers' && (
           <div className="bg-white rounded-card border border-brand-mint/30 shadow-card overflow-hidden">
             <div className="p-4 border-b border-brand-mint/20 flex justify-between items-center">
-              <h3 className="font-heading font-bold text-base text-brand-darkGreen">Registered Customer Accounts & Analytics</h3>
+              <h3 className="font-heading font-bold text-base text-brand-darkGreen">Registered Customer Accounts</h3>
               <span className="text-xs text-gray-500 font-semibold">{customersList.length} Customer Profiles</span>
             </div>
             <table className="w-full text-xs text-left">
@@ -546,6 +673,28 @@ export default function AdminDashboardPage() {
                   <span className="font-bold text-brand-darkGreen">₹{it.price * it.quantity}</span>
                 </div>
               ))}
+
+              <div className="space-y-1 text-gray-500 border-t border-gray-100 pt-2 text-[11px]">
+                <div className="flex justify-between">
+                  <span>Subtotal</span>
+                  <span>₹{selectedOrderDetails.subtotal}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>GST / Tax</span>
+                  <span>₹{selectedOrderDetails.tax}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Shipping Fee</span>
+                  <span>₹{selectedOrderDetails.shippingFee}</span>
+                </div>
+                {selectedOrderDetails.discount > 0 && (
+                  <div className="flex justify-between text-brand-green">
+                    <span>Discount</span>
+                    <span>-₹{selectedOrderDetails.discount}</span>
+                  </div>
+                )}
+              </div>
+
               <div className="flex justify-between font-bold text-sm text-brand-darkGreen pt-1">
                 <span>Grand Total</span>
                 <span className="text-brand-green">₹{selectedOrderDetails.total}</span>

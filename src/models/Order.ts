@@ -33,7 +33,7 @@ const OrderSchema = new Schema<IOrderDocument>(
       gstin: String,
       companyName: String,
     },
-    paymentMethod: { type: String, default: 'Cash on Delivery' },
+    paymentMethod: { type: String, enum: ['Cash on Delivery', 'COD'], default: 'Cash on Delivery', required: true },
     paymentStatus: { type: String, enum: ['Paid', 'Pending', 'Failed', 'Refunded'], default: 'Pending' },
     orderStatus: {
       type: String,

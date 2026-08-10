@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
+import mongoose from 'mongoose';
 import { inMemoryStore, connectToDatabase } from '@/lib/db';
+import { OrderModel } from '@/models/Order';
 import { verifyAdminToken } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
@@ -16,21 +18,29 @@ export async function GET(request: Request) {
     const activeSessions = inMemoryStore.getActiveSessions();
     const currentlyOnline = activeSessions.filter((s) => s.isOnline).length;
 
-    const todayStr = new Date().toISOString().split('T')[0];
-    const todaysOrders = inMemoryStore.orders.filter((o) => o.createdAt.startsWith(todayStr)).length;
+    let ordersList: any[] = [];
+    if (mongoose.connection.readyState === 1) {
+      ordersList = await OrderModel.find({}).sort({ createdAt: -1 }).lean();
+    }
+    if (ordersList.length === 0) {
+      ordersList = inMemoryStore.orders;
+    }
 
-    const pendingOrders = inMemoryStore.orders.filter((o) => o.orderStatus === 'Pending').length;
-    const ordersInDelivery = inMemoryStore.orders.filter((o) =>
+    const todayStr = new Date().toISOString().split('T')[0];
+    const todaysOrders = ordersList.filter((o) => o.createdAt.startsWith(todayStr)).length;
+
+    const pendingOrders = ordersList.filter((o) => o.orderStatus === 'Pending').length;
+    const ordersInDelivery = ordersList.filter((o) =>
       ['Processing', 'Packed', 'Shipped', 'Out for Delivery'].includes(o.orderStatus)
     ).length;
-    const completedOrders = inMemoryStore.orders.filter((o) => o.orderStatus === 'Delivered').length;
+    const completedOrders = ordersList.filter((o) => o.orderStatus === 'Delivered').length;
 
-    const todaysRevenue = inMemoryStore.orders
-      .filter((o) => o.createdAt.startsWith(todayStr) && o.paymentStatus === 'Paid')
+    const todaysRevenue = ordersList
+      .filter((o) => o.createdAt.startsWith(todayStr) && o.orderStatus !== 'Cancelled')
       .reduce((sum, o) => sum + (o.total || 0), 0);
 
-    const totalRevenue = inMemoryStore.orders
-      .filter((o) => o.paymentStatus === 'Paid')
+    const totalRevenue = ordersList
+      .filter((o) => o.orderStatus !== 'Cancelled')
       .reduce((sum, o) => sum + (o.total || 0), 0);
 
     return NextResponse.json({
@@ -46,7 +56,7 @@ export async function GET(request: Request) {
         totalRevenue,
       },
       activeSessions,
-      orders: inMemoryStore.orders,
+      orders: ordersList,
     });
   } catch (error) {
     return NextResponse.json(

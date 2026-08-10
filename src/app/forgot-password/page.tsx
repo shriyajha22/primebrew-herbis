@@ -3,20 +3,48 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Mail, ArrowLeft, Send, CheckCircle2, ShieldCheck } from 'lucide-react';
+import { Mail, ArrowLeft, Send, CheckCircle2, AlertCircle, RefreshCw } from 'lucide-react';
 import { useStore } from '@/lib/storeContext';
 
 export default function ForgotPasswordPage() {
   const { showToast } = useStore();
   const [email, setEmail] = useState('');
+  const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
+  const [devNotice, setDevNotice] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) return;
 
-    setSubmitted(true);
-    showToast(`Password reset link sent to ${email}`, 'success');
+    setLoading(true);
+    setErrorMsg('');
+    setDevNotice('');
+
+    try {
+      const res = await fetch('/api/auth/forgot-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.success) {
+        setSubmitted(true);
+        showToast(data.message || 'Password reset link dispatched!', 'success');
+      } else {
+        setErrorMsg(data.message || 'Failed to send password reset email.');
+        if (data.devNotice) setDevNotice(data.devNotice);
+        showToast(data.message || 'Password reset failed', 'error');
+      }
+    } catch (err) {
+      setErrorMsg('Failed to connect to authentication server. Please check your connection.');
+      showToast('Connection error', 'error');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -48,6 +76,19 @@ export default function ForgotPasswordPage() {
           </p>
         </div>
 
+        {errorMsg && (
+          <div className="bg-red-50 border border-red-200 text-red-700 p-3.5 rounded-2xl text-xs space-y-1">
+            <div className="flex items-center gap-2 font-bold">
+              <AlertCircle className="w-4 h-4 text-red-600 flex-shrink-0" />
+              <span>Reset Error</span>
+            </div>
+            <p className="text-[11px] leading-relaxed">{errorMsg}</p>
+            {devNotice && (
+              <p className="text-[10px] font-mono text-gray-600 pt-1 border-t border-red-100">{devNotice}</p>
+            )}
+          </div>
+        )}
+
         {submitted ? (
           <div className="bg-sky-50 border border-sky-200 p-6 rounded-2xl text-center space-y-3">
             <div className="w-10 h-10 rounded-full bg-sky-100 text-sky-600 flex items-center justify-center mx-auto">
@@ -55,7 +96,7 @@ export default function ForgotPasswordPage() {
             </div>
             <h3 className="font-heading font-bold text-sm text-sky-900">Check Your Email Inbox</h3>
             <p className="text-xs text-sky-700 font-light leading-relaxed">
-              We sent a password reset link to <strong className="font-bold">{email}</strong>. Please click the link inside to set a new password.
+              We sent a password reset verification link to <strong className="font-bold">{email}</strong>. Please click the link in your email to set a new password.
             </p>
             <button
               onClick={() => setSubmitted(false)}
@@ -75,7 +116,7 @@ export default function ForgotPasswordPage() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="ananya@example.com"
+                  placeholder="customer@example.com"
                   className="w-full pl-11 pr-4 py-3 rounded-2xl bg-brand-cream/40 border border-brand-mint/30 focus:bg-white focus:border-brand-green outline-none font-medium"
                 />
               </div>
@@ -83,10 +124,20 @@ export default function ForgotPasswordPage() {
 
             <button
               type="submit"
-              className="w-full py-3.5 bg-brand-darkGreen hover:bg-brand-green text-white font-bold text-xs rounded-2xl shadow-soft flex items-center justify-center gap-2 transition-colors"
+              disabled={loading}
+              className="w-full py-3.5 bg-brand-darkGreen hover:bg-brand-green text-white font-bold text-xs rounded-2xl shadow-soft flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
             >
-              <Send className="w-4 h-4 text-brand-gold" />
-              <span>Send Reset Instructions</span>
+              {loading ? (
+                <>
+                  <RefreshCw className="w-4 h-4 text-brand-gold animate-spin" />
+                  <span>Verifying & Sending Reset Email...</span>
+                </>
+              ) : (
+                <>
+                  <Send className="w-4 h-4 text-brand-gold" />
+                  <span>Send Reset Instructions</span>
+                </>
+              )}
             </button>
           </form>
         )}

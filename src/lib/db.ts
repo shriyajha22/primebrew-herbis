@@ -147,6 +147,70 @@ class InMemoryStore {
     return list.sort((a, b) => new Date(b.lastActive).getTime() - new Date(a.lastActive).getTime());
   }
 
+  passwordResetTokens = new Map<string, { email: string; token: string; expiresAt: Date; used: boolean }>();
+
+  createPasswordResetToken(email: string): string {
+    const crypto = require('crypto');
+    const token = crypto.randomBytes(32).toString('hex');
+    const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour expiration
+
+    this.passwordResetTokens.set(token, {
+      email: email.trim().toLowerCase(),
+      token,
+      expiresAt,
+      used: false,
+    });
+
+    return token;
+  }
+
+  validatePasswordResetToken(token: string, email: string): { valid: boolean; reason?: string } {
+    if (!token || !email) {
+      return { valid: false, reason: 'Invalid parameters' };
+    }
+
+    const record = this.passwordResetTokens.get(token);
+    if (!record) {
+      return { valid: false, reason: 'Password reset token not found or invalid' };
+    }
+
+    if (record.email.toLowerCase() !== email.trim().toLowerCase()) {
+      return { valid: false, reason: 'Token email mismatch' };
+    }
+
+    if (record.used) {
+      return { valid: false, reason: 'This password reset link has already been used' };
+    }
+
+    if (new Date() > record.expiresAt) {
+      return { valid: false, reason: 'Password reset link has expired. Please request a new one.' };
+    }
+
+    return { valid: true };
+  }
+
+  resetUserPassword(token: string, email: string, newPassword: string): { success: boolean; message: string } {
+    const validation = this.validatePasswordResetToken(token, email);
+    if (!validation.valid) {
+      return { success: false, message: validation.reason || 'Invalid reset token' };
+    }
+
+    // Find user in store
+    const user = this.users.find((u) => u.email.toLowerCase() === email.trim().toLowerCase());
+    if (!user) {
+      return { success: false, message: 'User account not found' };
+    }
+
+    // Mark token as used
+    const record = this.passwordResetTokens.get(token);
+    if (record) {
+      record.used = true;
+      this.passwordResetTokens.set(token, record);
+    }
+
+    return { success: true, message: 'Password updated successfully' };
+  }
+
   resetToDefaults() {
     this.products = [...initialProducts];
     this.categories = [...initialCategories];
@@ -154,6 +218,7 @@ class InMemoryStore {
     this.reviews = [...initialReviews];
     this.coupons = [...initialCoupons];
     this.activeSessions.clear();
+    this.passwordResetTokens.clear();
   }
 }
 

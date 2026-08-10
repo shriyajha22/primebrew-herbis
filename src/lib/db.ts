@@ -254,8 +254,16 @@ let isConnected = false;
 
 export async function connectToDatabase() {
   if (isConnected) return;
+
+  const isProduction = process.env.NODE_ENV === 'production' || process.env.VERCEL === '1';
+
   if (!MONGODB_URI || MONGODB_URI.includes("username:password")) {
-    console.log("Using In-Memory Database Fallback (No live MONGODB_URI detected)");
+    if (isProduction) {
+      throw new Error(
+        "Production Database Error: MONGODB_URI environment variable is missing or unconfigured. Production deployments require a live MongoDB Atlas connection."
+      );
+    }
+    console.log("Local Dev Mode: Using In-Memory Database Fallback");
     return;
   }
 
@@ -266,6 +274,10 @@ export async function connectToDatabase() {
     isConnected = db.connections[0].readyState === 1;
     console.log("Connected to MongoDB Atlas successfully");
   } catch (error) {
-    console.warn("MongoDB connection warning, using in-memory store:", error);
+    if (isProduction) {
+      console.error("Critical Production Error: Unable to connect to MongoDB Atlas:", error);
+      throw new Error("Production Database Error: Failed to connect to MongoDB Atlas. Check database credentials and network access.");
+    }
+    console.warn("MongoDB local connection warning, using in-memory store fallback:", error);
   }
 }

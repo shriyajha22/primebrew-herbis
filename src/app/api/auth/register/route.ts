@@ -1,16 +1,18 @@
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import mongoose from 'mongoose';
 import { inMemoryStore, connectToDatabase } from '@/lib/db';
+import { UserModel } from '@/models/User';
 
 export const dynamic = 'force-dynamic';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'pbh_super_secret_jwt_key_2026_primebrew';
 
 export async function POST(request: Request) {
-  await connectToDatabase();
-
   try {
+    await connectToDatabase();
+
     const body = await request.json();
     const { name, email, phone, password } = body;
 
@@ -36,9 +38,17 @@ export async function POST(request: Request) {
     }
 
     const cleanEmail = email.trim().toLowerCase();
+    const isDbConnected = mongoose.connection.readyState === 1;
 
     // Check if account already exists
-    const existing = inMemoryStore.findUserByEmail(cleanEmail);
+    let existing: any = null;
+    if (isDbConnected) {
+      existing = await UserModel.findOne({ email: cleanEmail });
+    }
+    if (!existing) {
+      existing = inMemoryStore.findUserByEmail(cleanEmail);
+    }
+
     if (existing) {
       return NextResponse.json(
         { success: false, message: 'An account with this email address already exists. Please log in.' },
@@ -49,17 +59,25 @@ export async function POST(request: Request) {
     // Hash password with bcryptjs
     const passwordHash = await bcrypt.hash(password, 10);
 
-    // Save user to database store
-    const newDbUser = inMemoryStore.createUser({
+    const newUserPayload = {
+      _id: `usr-${Date.now()}`,
       name: name.trim(),
       email: cleanEmail,
       phone: phone ? phone.trim() : '',
       passwordHash,
-      role: 'customer',
-      walletBalance: 250, // ₹250 instant cashback signup bonus
-    });
+      role: 'customer' as const,
+      walletBalance: 250,
+      addresses: [],
+      wishlist: [],
+    };
 
-    // Record session activity
+    if (isDbConnected) {
+      const createdUserDoc = await UserModel.create(newUserPayload);
+      newUserPayload._id = createdUserDoc._id.toString();
+    }
+
+    // Save to local in-memory store as fallback
+    const newDbUser = inMemoryStore.createUser(newUserPayload);
     inMemoryStore.recordUserActivity(newDbUser.name, newDbUser.email, '/register');
 
     // Sign JWT token
@@ -78,20 +96,19 @@ export async function POST(request: Request) {
       token,
     });
 
-    // Set HTTP-only, Secure, SameSite session cookie
     response.cookies.set('pbh_token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
-      maxAge: 7 * 24 * 60 * 60, // 7 days
+      maxAge: 7 * 24 * 60 * 60,
       path: '/',
     });
 
     return response;
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error handling customer registration:', error);
     return NextResponse.json(
-      { success: false, message: 'Server error processing registration' },
+      { success: false, message: error.message || 'Server error processing registration' },
       { status: 500 }
     );
   }

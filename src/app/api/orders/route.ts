@@ -1,48 +1,80 @@
 import { NextResponse } from 'next/server';
+import mongoose from 'mongoose';
 import { inMemoryStore, connectToDatabase } from '@/lib/db';
+import { OrderModel } from '@/models/Order';
 import { Order } from '@/lib/types';
 import { verifyAdminToken } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET(request: Request) {
-  await connectToDatabase();
-  const { searchParams } = new URL(request.url);
-  const orderNumber = searchParams.get('orderNumber');
-  const email = searchParams.get('email');
+  try {
+    await connectToDatabase();
+    const { searchParams } = new URL(request.url);
+    const orderNumber = searchParams.get('orderNumber');
+    const email = searchParams.get('email');
 
-  if (orderNumber) {
-    const order = inMemoryStore.orders.find(
-      (o) => o.orderNumber.toLowerCase() === orderNumber.trim().toLowerCase()
-    );
-    if (!order) {
-      return NextResponse.json({ success: false, message: 'Order not found' }, { status: 404 });
+    const isDbConnected = mongoose.connection.readyState === 1;
+
+    if (orderNumber) {
+      let order: any = null;
+      if (isDbConnected) {
+        order = await OrderModel.findOne({ orderNumber: new RegExp(`^${orderNumber.trim()}$`, 'i') }).lean();
+      }
+      if (!order) {
+        order = inMemoryStore.orders.find(
+          (o) => o.orderNumber.toLowerCase() === orderNumber.trim().toLowerCase()
+        );
+      }
+
+      if (!order) {
+        return NextResponse.json({ success: false, message: 'Order not found' }, { status: 404 });
+      }
+      return NextResponse.json({ success: true, order });
     }
-    return NextResponse.json({ success: true, order });
-  }
 
-  if (email) {
-    const filteredOrders = inMemoryStore.orders.filter(
-      (o) => o.shippingAddress?.email?.toLowerCase() === email.trim().toLowerCase()
+    if (email) {
+      let filteredOrders: any[] = [];
+      if (isDbConnected) {
+        filteredOrders = await OrderModel.find({ 'shippingAddress.email': new RegExp(`^${email.trim()}$`, 'i') }).sort({ createdAt: -1 }).lean();
+      }
+      if (filteredOrders.length === 0) {
+        filteredOrders = inMemoryStore.orders.filter(
+          (o) => o.shippingAddress?.email?.toLowerCase() === email.trim().toLowerCase()
+        );
+      }
+      return NextResponse.json({ success: true, orders: filteredOrders });
+    }
+
+    // Require Admin Authorization for storewide order listing
+    const auth = verifyAdminToken(request);
+    if (!auth.isAuthorized) {
+      return auth.errorResponse!;
+    }
+
+    let allOrders: any[] = [];
+    if (isDbConnected) {
+      allOrders = await OrderModel.find({}).sort({ createdAt: -1 }).lean();
+    }
+    if (allOrders.length === 0) {
+      allOrders = inMemoryStore.orders;
+    }
+
+    return NextResponse.json({
+      success: true,
+      orders: allOrders,
+    });
+  } catch (error: any) {
+    return NextResponse.json(
+      { success: false, message: error.message || 'Database query error' },
+      { status: 500 }
     );
-    return NextResponse.json({ success: true, orders: filteredOrders });
   }
-
-  // If no filters are provided, this is a storewide orders listing request which requires Admin Authorization
-  const auth = verifyAdminToken(request);
-  if (!auth.isAuthorized) {
-    return auth.errorResponse!;
-  }
-
-  return NextResponse.json({
-    success: true,
-    orders: inMemoryStore.orders,
-  });
 }
 
 export async function POST(request: Request) {
-  await connectToDatabase();
   try {
+    await connectToDatabase();
     const body = await request.json();
 
     if (!body.items || body.items.length === 0 || !body.shippingAddress) {
@@ -77,6 +109,12 @@ export async function POST(request: Request) {
       estimatedDelivery: '3-5 Business Days',
     };
 
+    // Save to MongoDB if connected
+    if (mongoose.connection.readyState === 1) {
+      await OrderModel.create(newOrder);
+    }
+
+    // Update inMemoryStore as fallback
     inMemoryStore.orders.unshift(newOrder);
 
     return NextResponse.json({
@@ -84,7 +122,10 @@ export async function POST(request: Request) {
       message: 'Order created successfully',
       order: newOrder,
     });
-  } catch (error) {
-    return NextResponse.json({ success: false, message: 'Failed to create order' }, { status: 500 });
+  } catch (error: any) {
+    return NextResponse.json(
+      { success: false, message: error.message || 'Failed to create order' },
+      { status: 500 }
+    );
   }
 }

@@ -1,6 +1,9 @@
 import mongoose from 'mongoose';
 import { initialProducts, initialCategories, initialBlogs, initialReviews, initialCoupons } from './seedData';
 import { Product, Category, Blog, Review, Coupon, User, Order } from './types';
+import { OrderModel } from '@/models/Order';
+import { UserModel } from '@/models/User';
+import { ProductModel } from '@/models/Product';
 
 const MONGODB_URI = process.env.MONGODB_URI;
 
@@ -269,10 +272,29 @@ export async function connectToDatabase() {
 
   try {
     const db = await mongoose.connect(MONGODB_URI, {
+      dbName: 'primebrew',
       bufferCommands: false,
     });
     isConnected = db.connections[0].readyState === 1;
-    console.log("Connected to MongoDB Atlas successfully");
+    console.log("Connected to MongoDB Atlas successfully (Database: primebrew)");
+
+    // Auto-seed initial catalog and orders if collections are currently empty
+    try {
+      const orderCount = await OrderModel.countDocuments();
+      if (orderCount === 0) {
+        await OrderModel.insertMany(inMemoryStore.orders);
+      }
+      const userCount = await UserModel.countDocuments();
+      if (userCount === 0) {
+        await UserModel.insertMany(inMemoryStore.users);
+      }
+      const prodCount = await ProductModel.countDocuments();
+      if (prodCount === 0) {
+        await ProductModel.insertMany(initialProducts);
+      }
+    } catch (sErr) {
+      // Ignore background seed warnings if indexes exist
+    }
   } catch (error) {
     if (isProduction) {
       console.error("Critical Production Error: Unable to connect to MongoDB Atlas:", error);

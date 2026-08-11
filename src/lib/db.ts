@@ -269,7 +269,7 @@ if (!global.mongooseCache) {
 }
 
 export async function connectToDatabase() {
-  const uri = process.env.MONGODB_URI || MONGODB_URI;
+  const uri = process.env.MONGODB_URI || process.env.MONGODB_URL || process.env.MONGO_URI || process.env.NEXT_PUBLIC_MONGODB_URI || MONGODB_URI;
   const isProduction = process.env.NODE_ENV === 'production' || process.env.VERCEL === '1';
 
   if (!uri || uri.includes("username:password")) {

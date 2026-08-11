@@ -206,3 +206,21 @@ textarea:focus-visible {
 .animate-soft-pulse {
   animation: softPulse 3s infinite ease-in-out;
 }
+
+/* Mobile Responsiveness Utilities (320px, 375px, 390px, 414px, 768px, 1024px, 1440px) */
+.mobile-scroll-table {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 640px) {
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  input, select, textarea {
+    font-size: 16px !important; /* Prevents auto-zoom on iOS Safari */
+  }
+}

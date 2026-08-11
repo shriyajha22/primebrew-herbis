@@ -51,7 +51,7 @@ export default function ProductCard({ product }: { product: Product }) {
           </Link>
 
           {/* Quick Action Overlay Buttons */}
-          <div className="absolute inset-x-2 bottom-3 opacity-0 group-hover:opacity-100 transition-all duration-300 flex gap-1.5">
+          <div className="absolute inset-x-2 bottom-3 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-all duration-300 flex gap-1.5 z-10">
             <button
               onClick={() => setShowQuickView(true)}
               className="flex-1 bg-white/95 hover:bg-white active:scale-95 text-brand-darkGreen text-[11px] font-semibold py-1.5 rounded-button backdrop-blur-sm flex items-center justify-center gap-1 shadow-soft hover:shadow-md transition-all"

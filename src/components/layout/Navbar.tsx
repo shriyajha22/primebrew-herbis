@@ -184,17 +184,46 @@ export default function Navbar() {
 
         {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
-          <div className="lg:hidden bg-brand-cream border-b border-brand-mint/30 px-4 pt-2 pb-6 space-y-3">
+          <div className="lg:hidden bg-brand-cream border-b border-brand-mint/30 px-4 pt-3 pb-6 space-y-2 animate-in slide-in-from-top-2">
             {navLinks.map((link) => (
               <Link
                 key={link.name}
                 href={link.href}
                 onClick={() => setMobileMenuOpen(false)}
-                className="block text-base font-medium text-brand-charcoal hover:text-brand-green py-2 px-3 rounded-button hover:bg-brand-beige"
+                className="block text-sm font-semibold text-brand-charcoal hover:text-brand-green py-2.5 px-3 rounded-button hover:bg-brand-beige transition-colors"
               >
                 {link.name}
               </Link>
             ))}
+
+            <div className="pt-3 border-t border-brand-mint/30 flex items-center gap-2">
+              {currentUser ? (
+                <Link
+                  href="/dashboard"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex-1 py-2.5 bg-brand-darkGreen text-white text-xs font-bold rounded-button text-center shadow-soft"
+                >
+                  My Customer Dashboard
+                </Link>
+              ) : (
+                <>
+                  <Link
+                    href="/login"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex-1 py-2.5 bg-brand-green text-white text-xs font-bold rounded-button text-center shadow-soft"
+                  >
+                    Customer Login
+                  </Link>
+                  <Link
+                    href="/register"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex-1 py-2.5 bg-brand-beige text-brand-darkGreen border border-brand-mint/40 text-xs font-bold rounded-button text-center"
+                  >
+                    Register
+                  </Link>
+                </>
+              )}
+            </div>
           </div>
         )}
       </header>

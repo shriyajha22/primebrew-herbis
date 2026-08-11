@@ -141,8 +141,7 @@ export async function POST(request: Request) {
     const orderNumber = `PBH-2026-${randomSuffix}`;
     const trackingNumber = `SR-${Math.floor(100000000 + Math.random() * 900000000)}`;
 
-    const newOrder: Order = {
-      _id: `ord-${uniqueId}`,
+    const orderDocData = {
       orderNumber,
       createdAt: new Date().toISOString(),
       items: body.items,
@@ -161,20 +160,28 @@ export async function POST(request: Request) {
       estimatedDelivery: '3-5 Business Days',
     };
 
-    // Save to MongoDB Atlas
+    let createdOrder: any = null;
     try {
-      await OrderModel.create(newOrder);
+      const doc = await OrderModel.create(orderDocData);
+      if (doc) {
+        createdOrder = doc.toObject ? doc.toObject() : doc;
+        createdOrder._id = doc._id.toString();
+      }
     } catch (dbErr) {
-      console.warn('MongoDB order creation warning:', dbErr);
+      console.warn('MongoDB order creation error:', dbErr);
     }
 
-    // Update inMemoryStore as fallback
-    inMemoryStore.orders.unshift(newOrder);
+    if (!createdOrder) {
+      createdOrder = { _id: `ord-${uniqueId}`, ...orderDocData };
+      inMemoryStore.orders.unshift(createdOrder);
+    } else {
+      inMemoryStore.orders.unshift(createdOrder);
+    }
 
     return NextResponse.json({
       success: true,
       message: 'Order created successfully',
-      order: newOrder,
+      order: createdOrder,
     });
   } catch (error: any) {
     return NextResponse.json(

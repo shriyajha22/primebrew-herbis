@@ -58,8 +58,7 @@ export async function POST(request: Request) {
     // Hash password with bcryptjs
     const passwordHash = await bcrypt.hash(password, 10);
 
-    const newUserPayload = {
-      _id: `usr-${Date.now()}`,
+    const userDocData = {
       name: name.trim(),
       email: cleanEmail,
       phone: phone ? phone.trim() : '',
@@ -70,27 +69,36 @@ export async function POST(request: Request) {
       wishlist: [],
     };
 
+    let createdUser: any = null;
     try {
-      const createdUserDoc = await UserModel.create(newUserPayload);
-      if (createdUserDoc && createdUserDoc._id) {
-        newUserPayload._id = createdUserDoc._id.toString();
+      const doc = await UserModel.create(userDocData);
+      if (doc) {
+        createdUser = doc.toObject ? doc.toObject() : doc;
+        createdUser._id = doc._id.toString();
       }
     } catch (err) {
-      console.warn('MongoDB user creation warning:', err);
+      console.warn('MongoDB user creation error:', err);
     }
 
-    // Save to local in-memory store as fallback
-    const newDbUser = inMemoryStore.createUser(newUserPayload);
-    inMemoryStore.recordUserActivity(newDbUser.name, newDbUser.email, '/register');
+    if (!createdUser) {
+      // Local fallback only if MongoDB is unconfigured
+      const fallbackPayload = { _id: `usr-${Date.now()}`, ...userDocData };
+      createdUser = inMemoryStore.createUser(fallbackPayload);
+    } else {
+      // Sync into memory cache
+      inMemoryStore.createUser(createdUser);
+    }
+
+    inMemoryStore.recordUserActivity(createdUser.name, createdUser.email, '/register');
 
     // Sign JWT token
     const token = jwt.sign(
-      { userId: newDbUser._id, email: newDbUser.email, role: 'customer', name: newDbUser.name },
+      { userId: createdUser._id.toString(), email: createdUser.email, role: 'customer', name: createdUser.name },
       JWT_SECRET,
       { expiresIn: '7d' }
     );
 
-    const safeUser = inMemoryStore.sanitizeUser(newDbUser);
+    const safeUser = inMemoryStore.sanitizeUser(createdUser);
 
     const response = NextResponse.json({
       success: true,

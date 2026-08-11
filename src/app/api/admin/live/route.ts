@@ -19,9 +19,10 @@ export async function GET(request: Request) {
     const currentlyOnline = activeSessions.filter((s) => s.isOnline).length;
 
     let ordersList: any[] = [];
-    if (mongoose.connection.readyState === 1) {
+    try {
       ordersList = await OrderModel.find({}).sort({ createdAt: -1 }).lean();
-    }
+    } catch (err) {}
+
     if (ordersList.length === 0) {
       ordersList = inMemoryStore.orders;
     }

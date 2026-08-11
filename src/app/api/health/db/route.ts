@@ -54,17 +54,20 @@ export async function GET() {
       });
     }
   } catch (err: any) {
-    const msg = err.message || '';
-    if (err.name === 'MongoServerSelectionError' || msg.includes('selection timed out')) {
-      diagnostics.SAFE_ERROR_CATEGORY = 'NETWORK_OR_IP_WHITELIST_BLOCKED';
-    } else if (msg.includes('Authentication failed') || err.code === 18) {
+    const msg = String(err.message || err.name || '');
+    let category = `CONNECTION_EXCEPTION_${err.name || 'UNKNOWN'}`;
+
+    if (err.name === 'MongoServerSelectionError' || msg.toLowerCase().includes('selection timed out') || msg.toLowerCase().includes('etimedout')) {
+      category = 'NETWORK_OR_IP_WHITELIST_BLOCKED';
+    } else if (msg.toLowerCase().includes('authentication failed') || err.code === 18 || msg.toLowerCase().includes('bad auth')) {
       diagnostics.NETWORK_OK = true;
-      diagnostics.SAFE_ERROR_CATEGORY = 'AUTHENTICATION_FAILED_CREDENTIALS_INVALID';
-    } else if (err.name === 'MongoParseError') {
-      diagnostics.SAFE_ERROR_CATEGORY = 'MALFORMED_URI_OR_UNENCODED_CHARACTERS';
-    } else {
-      diagnostics.SAFE_ERROR_CATEGORY = `CONNECTION_EXCEPTION_${err.name || 'UNKNOWN'}`;
+      category = 'AUTHENTICATION_FAILED_CREDENTIALS_INVALID';
+    } else if (err.name === 'MongoParseError' || msg.toLowerCase().includes('scheme')) {
+      category = 'MALFORMED_URI_OR_UNENCODED_CHARACTERS';
     }
+
+    diagnostics.SAFE_ERROR_CATEGORY = category;
+    (diagnostics as any).SAFE_ERROR_DETAILS = msg.replace(/\/\/[^:]+:[^@]+@/, '//***:***@');
   }
 
   return NextResponse.json({ success: false, diagnostics });

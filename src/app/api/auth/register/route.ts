@@ -38,13 +38,12 @@ export async function POST(request: Request) {
     }
 
     const cleanEmail = email.trim().toLowerCase();
-    const isDbConnected = mongoose.connection.readyState === 1;
 
     // Check if account already exists
     let existing: any = null;
-    if (isDbConnected) {
+    try {
       existing = await UserModel.findOne({ email: new RegExp(`^${cleanEmail.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') });
-    }
+    } catch (err) {}
     if (!existing) {
       existing = inMemoryStore.findUserByEmail(cleanEmail);
     }
@@ -71,9 +70,13 @@ export async function POST(request: Request) {
       wishlist: [],
     };
 
-    if (isDbConnected) {
+    try {
       const createdUserDoc = await UserModel.create(newUserPayload);
-      newUserPayload._id = createdUserDoc._id.toString();
+      if (createdUserDoc && createdUserDoc._id) {
+        newUserPayload._id = createdUserDoc._id.toString();
+      }
+    } catch (err) {
+      console.warn('MongoDB user creation warning:', err);
     }
 
     // Save to local in-memory store as fallback

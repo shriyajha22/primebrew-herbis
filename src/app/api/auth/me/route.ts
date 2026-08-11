@@ -51,9 +51,10 @@ export async function GET(request: Request) {
     const cleanEmail = decoded.email.trim().toLowerCase();
     let dbUser: any = null;
 
-    if (mongoose.connection.readyState === 1) {
-      dbUser = await UserModel.findOne({ email: new RegExp(`^${cleanEmail}$`, 'i') }).lean();
-    }
+    try {
+      dbUser = await UserModel.findOne({ email: new RegExp(`^${cleanEmail.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') }).lean();
+    } catch (err) {}
+
     if (!dbUser) {
       dbUser = inMemoryStore.findUserByEmail(cleanEmail);
     }

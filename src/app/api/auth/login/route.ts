@@ -24,12 +24,14 @@ export async function POST(request: Request) {
     }
 
     const cleanEmail = email.trim().toLowerCase();
-    const isDbConnected = mongoose.connection.readyState === 1;
 
     let user: any = null;
-    if (isDbConnected) {
+    try {
       user = await UserModel.findOne({ email: new RegExp(`^${cleanEmail.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') }).lean();
+    } catch (dbErr) {
+      console.warn('MongoDB lookup warning during login:', dbErr);
     }
+
     if (!user) {
       user = inMemoryStore.findUserByEmail(cleanEmail);
     }

@@ -17,14 +17,12 @@ export async function GET(request: Request) {
     const orderNumber = searchParams.get('orderNumber');
     const email = searchParams.get('email');
 
-    const isDbConnected = mongoose.connection.readyState === 1;
-
     // 1. Order Tracking by Order Number (Public / Track Order)
     if (orderNumber) {
       let order: any = null;
-      if (isDbConnected) {
+      try {
         order = await OrderModel.findOne({ orderNumber: new RegExp(`^${orderNumber.trim()}$`, 'i') }).lean();
-      }
+      } catch (err) {}
       if (!order) {
         order = inMemoryStore.orders.find(
           (o) => o.orderNumber.toLowerCase() === orderNumber.trim().toLowerCase()
@@ -80,9 +78,10 @@ export async function GET(request: Request) {
       }
 
       let filteredOrders: any[] = [];
-      if (isDbConnected) {
+      try {
         filteredOrders = await OrderModel.find({ 'shippingAddress.email': new RegExp(`^${cleanEmail}$`, 'i') }).sort({ createdAt: -1 }).lean();
-      }
+      } catch (err) {}
+
       if (filteredOrders.length === 0) {
         filteredOrders = inMemoryStore.orders.filter(
           (o) => o.shippingAddress?.email?.toLowerCase() === cleanEmail
@@ -98,9 +97,10 @@ export async function GET(request: Request) {
     }
 
     let allOrders: any[] = [];
-    if (isDbConnected) {
+    try {
       allOrders = await OrderModel.find({}).sort({ createdAt: -1 }).lean();
-    }
+    } catch (err) {}
+
     if (allOrders.length === 0) {
       allOrders = inMemoryStore.orders;
     }
@@ -161,9 +161,11 @@ export async function POST(request: Request) {
       estimatedDelivery: '3-5 Business Days',
     };
 
-    // Save to MongoDB if connected
-    if (mongoose.connection.readyState === 1) {
+    // Save to MongoDB Atlas
+    try {
       await OrderModel.create(newOrder);
+    } catch (dbErr) {
+      console.warn('MongoDB order creation warning:', dbErr);
     }
 
     // Update inMemoryStore as fallback

@@ -253,31 +253,55 @@ class InMemoryStore {
 
 export const inMemoryStore = new InMemoryStore();
 
-let isConnected = false;
+interface MongooseCache {
+  conn: typeof mongoose | null;
+  promise: Promise<typeof mongoose> | null;
+}
+
+declare global {
+  var mongooseCache: MongooseCache | undefined;
+}
+
+let cached: MongooseCache = global.mongooseCache || { conn: null, promise: null };
+
+if (!global.mongooseCache) {
+  global.mongooseCache = cached;
+}
 
 export async function connectToDatabase() {
-  if (isConnected) return;
-
+  const uri = process.env.MONGODB_URI || MONGODB_URI;
   const isProduction = process.env.NODE_ENV === 'production' || process.env.VERCEL === '1';
 
-  if (!MONGODB_URI || MONGODB_URI.includes("username:password")) {
+  if (!uri || uri.includes("username:password")) {
     if (isProduction) {
       throw new Error(
-        "Production Database Error: MONGODB_URI environment variable is missing or unconfigured. Production deployments require a live MongoDB Atlas connection."
+        "Production Database Error [Missing Environment Variable]: MONGODB_URI is missing or unconfigured in Vercel settings."
       );
     }
     console.log("Local Dev Mode: Using In-Memory Database Fallback");
     return;
   }
 
-  try {
-    const db = await mongoose.connect(MONGODB_URI, {
+  if (cached.conn && mongoose.connection.readyState === 1) {
+    return cached.conn;
+  }
+
+  if (!cached.promise) {
+    const opts = {
       dbName: 'primebrew',
       bufferCommands: false,
-    });
-    isConnected = db.connections[0].readyState === 1;
-    console.log("Connected to MongoDB Atlas successfully (Database: primebrew)");
+      serverSelectionTimeoutMS: 8000,
+    };
 
+    cached.promise = mongoose.connect(uri, opts).then((m) => {
+      console.log("Connected to MongoDB Atlas successfully (Database: primebrew)");
+      return m;
+    });
+  }
+
+  try {
+    cached.conn = await cached.promise;
+    
     // Auto-seed initial catalog and orders if collections are currently empty
     try {
       const orderCount = await OrderModel.countDocuments();
@@ -293,13 +317,27 @@ export async function connectToDatabase() {
         await ProductModel.insertMany(initialProducts);
       }
     } catch (sErr) {
-      // Ignore background seed warnings if indexes exist
+      // Ignore background seed warnings
     }
-  } catch (error) {
+  } catch (error: any) {
+    cached.promise = null;
+    cached.conn = null;
+
+    let category = "Connection Failure";
+    if (error.name === 'MongoParseError' || error.message?.includes('URI')) {
+      category = "Invalid Connection URI Format";
+    } else if (error.name === 'MongoServerSelectionError' || error.message?.includes('selection timed out')) {
+      category = "Network Access Denied / Timeout (Check IP Access List 0.0.0.0/0 in Atlas)";
+    } else if (error.message?.includes('Authentication failed') || error.code === 18) {
+      category = "Authentication Failed (Check Username & Password in MONGODB_URI)";
+    }
+
     if (isProduction) {
-      console.error("Critical Production Error: Unable to connect to MongoDB Atlas:", error);
-      throw new Error("Production Database Error: Failed to connect to MongoDB Atlas. Check database credentials and network access.");
+      console.error(`Critical Production Error [${category}]:`, error);
+      throw new Error(`Production Database Error [${category}]: Unable to connect to MongoDB Atlas.`);
     }
-    console.warn("MongoDB local connection warning, using in-memory store fallback:", error);
+    console.warn(`MongoDB local connection fallback [${category}]:`, error);
   }
+
+  return cached.conn;
 }

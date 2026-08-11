@@ -323,20 +323,34 @@ export async function connectToDatabase() {
     cached.promise = null;
     cached.conn = null;
 
+    const rawMessage = String(error?.message || error?.name || 'Unknown Error');
+    const sanitizedMessage = rawMessage.replace(/\/\/[^:]+:[^@]+@/g, '//***:***@');
+
     let category = "Connection Failure";
-    if (error.name === 'MongoParseError' || error.message?.includes('URI')) {
+    const lowerMsg = rawMessage.toLowerCase();
+    if (error?.name === 'MongoParseError' || lowerMsg.includes('uri') || lowerMsg.includes('scheme')) {
       category = "Invalid Connection URI Format";
-    } else if (error.name === 'MongoServerSelectionError' || error.message?.includes('selection timed out')) {
+    } else if (error?.name === 'MongoServerSelectionError' || lowerMsg.includes('selection timed out') || lowerMsg.includes('etimedout') || lowerMsg.includes('enotfound')) {
       category = "Network Access Denied / Timeout (Check IP Access List 0.0.0.0/0 in Atlas)";
-    } else if (error.message?.includes('Authentication failed') || error.code === 18) {
+    } else if (lowerMsg.includes('authentication failed') || error?.code === 18 || lowerMsg.includes('bad auth')) {
       category = "Authentication Failed (Check Username & Password in MONGODB_URI)";
     }
 
+    const safeDiagnostic = {
+      name: error?.name || 'Error',
+      message: sanitizedMessage,
+      code: error?.code || null,
+      codeName: error?.codeName || null,
+      hasMongoUri: Boolean(process.env.MONGODB_URI || process.env.MONGODB_URL || process.env.MONGO_URI || process.env.NEXT_PUBLIC_MONGODB_URI),
+      connectionState: mongoose.connection.readyState,
+    };
+
+    console.error(`MongoDB connection failed [Category: ${category}]:`, safeDiagnostic);
+
     if (isProduction) {
-      console.error(`Critical Production Error [${category}]:`, error);
-      throw new Error(`Production Database Error [${category}]: Unable to connect to MongoDB Atlas.`);
+      throw new Error(`Production Database Error [${category}]: ${sanitizedMessage}`);
     }
-    console.warn(`MongoDB local connection fallback [${category}]:`, error);
+    console.warn(`MongoDB local connection fallback [${category}]:`, safeDiagnostic);
   }
 
   return cached.conn;

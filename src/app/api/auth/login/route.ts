@@ -28,7 +28,7 @@ export async function POST(request: Request) {
 
     let user: any = null;
     if (isDbConnected) {
-      user = await UserModel.findOne({ email: cleanEmail }).lean();
+      user = await UserModel.findOne({ email: new RegExp(`^${cleanEmail.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') }).lean();
     }
     if (!user) {
       user = inMemoryStore.findUserByEmail(cleanEmail);

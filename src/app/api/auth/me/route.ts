@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
+import mongoose from 'mongoose';
 import { inMemoryStore, connectToDatabase } from '@/lib/db';
+import { UserModel } from '@/models/User';
 
 export const dynamic = 'force-dynamic';
 
@@ -45,8 +47,16 @@ export async function GET(request: Request) {
       );
     }
 
-    // 3. Find user in database
-    const dbUser = inMemoryStore.findUserByEmail(decoded.email);
+    // 3. Find user in MongoDB Atlas or memory store
+    const cleanEmail = decoded.email.trim().toLowerCase();
+    let dbUser: any = null;
+
+    if (mongoose.connection.readyState === 1) {
+      dbUser = await UserModel.findOne({ email: new RegExp(`^${cleanEmail}$`, 'i') }).lean();
+    }
+    if (!dbUser) {
+      dbUser = inMemoryStore.findUserByEmail(cleanEmail);
+    }
 
     if (!dbUser) {
       return NextResponse.json(
@@ -55,7 +65,7 @@ export async function GET(request: Request) {
       );
     }
 
-    const safeUser = inMemoryStore.sanitizeUser(dbUser);
+    const { passwordHash, ...safeUser } = dbUser;
 
     return NextResponse.json({
       success: true,

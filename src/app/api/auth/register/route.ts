@@ -43,7 +43,7 @@ export async function POST(request: Request) {
     // Check if account already exists
     let existing: any = null;
     if (isDbConnected) {
-      existing = await UserModel.findOne({ email: cleanEmail });
+      existing = await UserModel.findOne({ email: new RegExp(`^${cleanEmail.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') });
     }
     if (!existing) {
       existing = inMemoryStore.findUserByEmail(cleanEmail);

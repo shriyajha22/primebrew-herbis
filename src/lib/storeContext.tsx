@@ -32,9 +32,10 @@ interface StoreContextType {
   toggleWishlist: (productId: string) => void;
   isInWishlist: (productId: string) => boolean;
 
-  // Auth
+  // Auth & Addresses
   currentUser: User | null;
   setCurrentUser: (user: User | null) => void;
+  updateUserAddresses: (addresses: any[]) => void;
   loginAsDemoCustomer: () => void;
   loginAsDemoAdmin: () => void;
   logout: () => void;
@@ -198,24 +199,29 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
 
   const isInWishlist = (productId: string) => wishlist.includes(productId);
 
+  const updateUserAddresses = (addresses: any[]) => {
+    if (!currentUser) return;
+    const updatedUser = { ...currentUser, addresses };
+    setCurrentUser(updatedUser);
+    // Sync to local cache
+    try {
+      const storedUsersRaw = localStorage.getItem('pbh_users');
+      const users: User[] = storedUsersRaw ? JSON.parse(storedUsersRaw) : [];
+      const idx = users.findIndex((u) => u.email.toLowerCase() === currentUser.email.toLowerCase());
+      if (idx > -1) {
+        users[idx].addresses = addresses;
+        localStorage.setItem('pbh_users', JSON.stringify(users));
+      }
+    } catch (e) {}
+  };
+
   const loginAsDemoCustomer = () => {
     setCurrentUser({
       _id: "usr-customer",
       name: "Ananya Sharma",
       email: "customer@example.com",
       role: "customer",
-      addresses: [
-        {
-          fullName: "Ananya Sharma",
-          phone: "+91 9876543210",
-          email: "customer@example.com",
-          street: "42 Tea Plantation Road, Green Valley",
-          city: "Bengaluru",
-          state: "Karnataka",
-          pincode: "560001",
-          isDefault: true
-        }
-      ],
+      addresses: [],
       wishlist,
       walletBalance: 250
     });
@@ -268,6 +274,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         isInWishlist,
         currentUser,
         setCurrentUser,
+        updateUserAddresses,
         loginAsDemoCustomer,
         loginAsDemoAdmin,
         logout,

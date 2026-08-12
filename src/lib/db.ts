@@ -29,18 +29,7 @@ class InMemoryStore {
       name: "Ananya Sharma",
       email: "customer@example.com",
       role: "customer",
-      addresses: [
-        {
-          fullName: "Ananya Sharma",
-          phone: "+91 9876543210",
-          email: "customer@example.com",
-          street: "42 Tea Plantation Road, Green Valley",
-          city: "Bengaluru",
-          state: "Karnataka",
-          pincode: "560001",
-          isDefault: true
-        }
-      ],
+      addresses: [],
       wishlist: ["prod-2"],
       walletBalance: 250
     }

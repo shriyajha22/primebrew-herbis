@@ -6,10 +6,10 @@ import Image from 'next/image';
 import confetti from 'canvas-confetti';
 import { useStore } from '@/lib/storeContext';
 import { Address, Order, User } from '@/lib/types';
-import { ShieldCheck, CreditCard, Truck, CheckCircle2, FileText, Download, Building, Lock, UserCheck, LogIn, UserPlus, AlertCircle, Eye, EyeOff, Sparkles } from 'lucide-react';
+import { ShieldCheck, CreditCard, Truck, CheckCircle2, FileText, Download, Building, Lock, UserCheck, LogIn, UserPlus, AlertCircle, Eye, EyeOff, Sparkles, MapPin, Plus } from 'lucide-react';
 
 export default function CheckoutPage() {
-  const { cart, cartSubtotal, cartDiscount, cartShipping, cartTax, cartTotal, clearCart, currentUser, setCurrentUser, logout, showToast } = useStore();
+  const { cart, cartSubtotal, cartDiscount, cartShipping, cartTax, cartTotal, clearCart, currentUser, setCurrentUser, updateUserAddresses, logout, showToast } = useStore();
 
   // Mode: 'guest' | 'login' | 'register'
   const [authMode, setAuthMode] = useState<'guest' | 'login' | 'register'>('guest');
@@ -26,18 +26,23 @@ export default function CheckoutPage() {
     isDefault: true,
   });
 
+  // Save Address Option
+  const [saveAddressToAccount, setSaveAddressToAccount] = useState(false);
+  const [selectedSavedAddressIdx, setSelectedSavedAddressIdx] = useState<number | null>(null);
+
   // Pre-fill if currentUser logs in
   useEffect(() => {
     if (currentUser) {
+      const defaultAddr = currentUser.addresses?.find((a) => a.isDefault) || currentUser.addresses?.[0];
       setAddress((prev) => ({
-        fullName: prev.fullName || currentUser.name || '',
-        phone: prev.phone || currentUser.phone || '',
-        email: prev.email || currentUser.email || '',
-        street: prev.street || currentUser.addresses?.[0]?.street || '',
-        city: prev.city || currentUser.addresses?.[0]?.city || '',
-        state: prev.state || currentUser.addresses?.[0]?.state || '',
-        pincode: prev.pincode || currentUser.addresses?.[0]?.pincode || '',
-        isDefault: true,
+        fullName: prev.fullName || defaultAddr?.fullName || currentUser.name || '',
+        phone: prev.phone || defaultAddr?.phone || currentUser.phone || '',
+        email: prev.email || defaultAddr?.email || currentUser.email || '',
+        street: prev.street || defaultAddr?.street || '',
+        city: prev.city || defaultAddr?.city || '',
+        state: prev.state || defaultAddr?.state || '',
+        pincode: prev.pincode || defaultAddr?.pincode || '',
+        isDefault: Boolean(defaultAddr?.isDefault),
       }));
     }
   }, [currentUser]);
@@ -286,6 +291,30 @@ export default function CheckoutPage() {
         try {
           confetti({ particleCount: 120, spread: 70, origin: { y: 0.6 } });
         } catch (e) {}
+
+        // Optionally save address to customer profile if checkbox checked
+        if (currentUser && saveAddressToAccount && address.street.trim()) {
+          try {
+            const addrRes = await fetch('/api/user/addresses', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                email: currentUser.email,
+                action: 'add',
+                address: {
+                  ...address,
+                  fullName: address.fullName || currentUser.name,
+                  phone: address.phone || currentUser.phone || '',
+                  email: address.email || currentUser.email,
+                },
+              }),
+            });
+            const addrData = await addrRes.json();
+            if (addrRes.ok && addrData.success && Array.isArray(addrData.addresses)) {
+              updateUserAddresses(addrData.addresses);
+            }
+          } catch (aErr) {}
+        }
 
         showToast(`Order ${data.order.orderNumber} Placed Successfully!`, 'success');
       } else {
@@ -688,6 +717,66 @@ export default function CheckoutPage() {
                 <span className="text-[11px] text-gray-400 font-medium">* Required fields</span>
               </div>
 
+              {/* Saved Delivery Addresses Selection Cards */}
+              {currentUser && currentUser.addresses && currentUser.addresses.length > 0 && (
+                <div className="bg-brand-bgBeige p-4 rounded-card border border-brand-mint/30 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-brand-darkGreen flex items-center gap-1.5">
+                      <MapPin className="w-4 h-4 text-brand-green" />
+                      <span>Select Saved Delivery Address:</span>
+                    </span>
+                    <span className="text-[11px] text-brand-green font-semibold">
+                      {currentUser.addresses.length} Saved Address{currentUser.addresses.length > 1 ? 'es' : ''}
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                    {currentUser.addresses.map((addr, idx) => {
+                      const isSelected =
+                        address.street === addr.street &&
+                        address.pincode === addr.pincode &&
+                        address.fullName === addr.fullName;
+                      return (
+                        <div
+                          key={idx}
+                          onClick={() => {
+                            setAddress({
+                              fullName: addr.fullName || currentUser.name,
+                              phone: addr.phone || currentUser.phone || '',
+                              email: addr.email || currentUser.email,
+                              street: addr.street || '',
+                              city: addr.city || '',
+                              state: addr.state || '',
+                              pincode: addr.pincode || '',
+                              isDefault: Boolean(addr.isDefault),
+                            });
+                            setSelectedSavedAddressIdx(idx);
+                            showToast(`Selected saved address for ${addr.fullName}`, 'info');
+                          }}
+                          className={`p-3 rounded-card border cursor-pointer transition-all ${
+                            isSelected
+                              ? 'bg-white border-brand-green ring-2 ring-brand-green/30 shadow-soft'
+                              : 'bg-white/80 border-gray-200 hover:border-brand-green/50'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="font-bold text-brand-darkGreen truncate">{addr.fullName}</span>
+                            {addr.isDefault && (
+                              <span className="bg-brand-mint/30 text-brand-darkGreen text-[9px] font-bold px-1.5 py-0.5 rounded">
+                                Default
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-[11px] text-gray-600 line-clamp-2">
+                            {addr.street}, {addr.city}, {addr.state} - {addr.pincode}
+                          </p>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
                 {/* 1. Full Name */}
                 <div>
@@ -841,6 +930,22 @@ export default function CheckoutPage() {
                   />
                   {errors.pincode && <p className="text-red-500 text-[11px] mt-1">{errors.pincode}</p>}
                 </div>
+
+                {/* Save Address Option for Logged-In Customers */}
+                {currentUser && (
+                  <div className="sm:col-span-2 pt-2 border-t border-gray-100 flex items-center gap-2 text-xs">
+                    <input
+                      type="checkbox"
+                      id="chkSaveCheckoutAddress"
+                      checked={saveAddressToAccount}
+                      onChange={(e) => setSaveAddressToAccount(e.target.checked)}
+                      className="rounded border-gray-300 text-brand-green focus:ring-brand-green h-4 w-4 cursor-pointer"
+                    />
+                    <label htmlFor="chkSaveCheckoutAddress" className="text-brand-darkGreen font-semibold cursor-pointer select-none">
+                      Save this delivery address to my account for future 1-click orders
+                    </label>
+                  </div>
+                )}
               </div>
             </div>
 

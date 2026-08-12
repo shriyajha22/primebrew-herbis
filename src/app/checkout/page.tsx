@@ -248,6 +248,7 @@ export default function CheckoutPage() {
         items: cart.map((c) => ({
           productId: c.product._id,
           productName: c.product.name,
+          productImage: c.product.images[0],
           image: c.product.images[0],
           weight: c.selectedWeight,
           quantity: c.quantity,

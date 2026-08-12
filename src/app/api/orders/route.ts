@@ -136,6 +136,15 @@ export async function POST(request: Request) {
       );
     }
 
+    const formattedItems = body.items.map((item: any) => ({
+      productId: String(item.productId || item._id || 'prod-unknown'),
+      productName: String(item.productName || item.name || 'Herbal Tea'),
+      productImage: String(item.productImage || item.image || item.images?.[0] || '/images/logo.png'),
+      price: Number(item.price || item.unitPrice) || 0,
+      weight: String(item.weight || item.selectedWeight || '30 Tea Bags'),
+      quantity: Number(item.quantity) || 1,
+    }));
+
     const uniqueId = Date.now();
     const randomSuffix = Math.floor(1000 + Math.random() * 9000);
     const orderNumber = `PBH-2026-${randomSuffix}`;
@@ -144,9 +153,21 @@ export async function POST(request: Request) {
     const orderDocData = {
       orderNumber,
       createdAt: new Date().toISOString(),
-      items: body.items,
-      shippingAddress: body.shippingAddress,
-      gstInvoice: body.gstInvoice,
+      items: formattedItems,
+      shippingAddress: {
+        fullName: String(body.shippingAddress.fullName || '').trim(),
+        phone: String(body.shippingAddress.phone || '').trim(),
+        email: String(body.shippingAddress.email || '').trim().toLowerCase(),
+        street: String(body.shippingAddress.street || '').trim(),
+        city: String(body.shippingAddress.city || '').trim(),
+        state: String(body.shippingAddress.state || '').trim(),
+        pincode: String(body.shippingAddress.pincode || '').trim(),
+        isDefault: Boolean(body.shippingAddress.isDefault),
+      },
+      gstInvoice: body.gstInvoice ? {
+        gstin: String(body.gstInvoice.gstin || ''),
+        companyName: String(body.gstInvoice.companyName || ''),
+      } : undefined,
       paymentMethod: 'Cash on Delivery',
       paymentStatus: 'Pending',
       orderStatus: 'Processing',
@@ -160,15 +181,33 @@ export async function POST(request: Request) {
       estimatedDelivery: '3-5 Business Days',
     };
 
+    console.log('Order creation request received at /api/orders', {
+      itemCount: formattedItems.length,
+      hasShippingAddress: Boolean(body.shippingAddress),
+      hasEmail: Boolean(body.shippingAddress?.email),
+      paymentMethod: 'Cash on Delivery',
+    });
+
     let createdOrder: any = null;
     try {
+      console.log('Attempting OrderModel.create() in MongoDB Atlas...');
       const doc = await OrderModel.create(orderDocData);
       if (doc) {
         createdOrder = doc.toObject ? doc.toObject() : doc;
         createdOrder._id = doc._id.toString();
+        console.log('✅ Order created successfully in MongoDB Atlas primebrew.orders', {
+          orderId: createdOrder._id,
+          orderNumber: createdOrder.orderNumber,
+        });
       }
-    } catch (dbErr) {
-      console.warn('MongoDB order creation error:', dbErr);
+    } catch (dbErr: any) {
+      console.error('❌ OrderModel.create() failed in MongoDB Atlas:', {
+        name: dbErr?.name,
+        message: dbErr?.message ? String(dbErr.message).replace(/\/\/[^:]+:[^@]+@/g, '//***:***@') : '',
+        code: dbErr?.code || null,
+        codeName: dbErr?.codeName || null,
+        errors: dbErr?.errors ? Object.keys(dbErr.errors) : [],
+      });
     }
 
     if (!createdOrder) {

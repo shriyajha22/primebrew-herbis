@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { X, Star, ShoppingBag, Heart, Check, Leaf, Shield } from 'lucide-react';
+import { X, ShoppingBag, Heart, Check, Leaf, Shield } from 'lucide-react';
 import { Product } from '@/lib/types';
 import { useStore } from '@/lib/storeContext';
 
@@ -66,17 +66,6 @@ export default function QuickViewModal({
 
             <h2 className="font-heading font-bold text-xl text-brand-darkGreen">{product.name}</h2>
             <p className="text-xs text-gray-500 leading-relaxed">{product.subtitle}</p>
-
-            {/* Rating */}
-            <div className="flex items-center gap-2 text-xs">
-              <div className="flex text-amber-400">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-3.5 h-3.5 fill-amber-400" />
-                ))}
-              </div>
-              <span className="font-bold text-brand-darkGreen">{product.rating}</span>
-              <span className="text-gray-400">({product.reviewCount} customer reviews)</span>
-            </div>
 
             {/* Price */}
             <div className="flex items-baseline gap-2 pt-1 border-t border-gray-100">
@@ -195,7 +184,7 @@ export default function QuickViewModal({
               onClick={onClose}
               className="block text-center text-xs font-semibold text-brand-darkGreen hover:text-brand-green underline"
             >
-              View Full Product Page & Customer Reviews →
+              View Full Product Details →
             </Link>
           </div>
         </div>

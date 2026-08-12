@@ -53,9 +53,7 @@ export const initialProducts: Product[] = [
     isBestSeller: true,
     isNewArrival: false,
     images: [
-      "/images/blue-tea.jpg",
-      "/images/blue-tea-cup.png",
-      "/images/blue-tea-flowers.png"
+      "/images/blue-tea.jpg"
     ],
     weightVariants: [
       { weight: "30 Tea Bags", price: 249, mrp: 349 },
@@ -115,9 +113,7 @@ export const initialProducts: Product[] = [
     isBestSeller: true,
     isNewArrival: false,
     images: [
-      "/images/blue-tea-elaichi.jpg",
-      "/images/blue-tea-cup.png",
-      "/images/blue-tea-flowers.png"
+      "/images/blue-tea-elaichi.jpg"
     ],
     weightVariants: [
       { weight: "30 Tea Bags", price: 299, mrp: 399 },
@@ -179,9 +175,7 @@ export const initialProducts: Product[] = [
     isBestSeller: false,
     isNewArrival: true,
     images: [
-      "/images/blue-tea-ginger-cinnamon.jpg",
-      "/images/blue-tea-cup.png",
-      "/images/blue-tea-flowers.png"
+      "/images/blue-tea-ginger-cinnamon.jpg"
     ],
     weightVariants: [
       { weight: "30 Tea Bags", price: 349, mrp: 449 },
@@ -246,9 +240,7 @@ export const initialProducts: Product[] = [
     isBestSeller: true,
     isNewArrival: false,
     images: [
-      "/images/guava-jamun-neem.jpg",
-      "/images/blue-tea-flowers.png",
-      "/images/blue-tea-cup.png"
+      "/images/guava-jamun-neem.jpg"
     ],
     weightVariants: [
       { weight: "30 Tea Bags", price: 425, mrp: 549 },
@@ -312,9 +304,7 @@ export const initialProducts: Product[] = [
     isBestSeller: true,
     isNewArrival: false,
     images: [
-      "/images/ayurvedic-kashayam.jpg",
-      "/images/blue-tea-flowers.png",
-      "/images/blue-tea-cup.png"
+      "/images/ayurvedic-kashayam.jpg"
     ],
     weightVariants: [
       { weight: "30 Tea Bags", price: 380, mrp: 499 },

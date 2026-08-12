@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Heart, Star, ShoppingBag, Eye, Timer } from 'lucide-react';
+import { Heart, ShoppingBag, Eye, Timer } from 'lucide-react';
 import { Product } from '@/lib/types';
 import { useStore } from '@/lib/storeContext';
 import BrewingGuideModal from './BrewingGuideModal';
@@ -71,16 +71,11 @@ export default function ProductCard({ product }: { product: Product }) {
         {/* Product Content Details */}
         <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
           <div>
-            {/* Category Name & Rating */}
+            {/* Category Name */}
             <div className="flex items-center justify-between text-[11px] text-gray-500 mb-1">
               <span className="font-medium text-brand-green uppercase tracking-wider text-[10px]">
                 {product.categoryName}
               </span>
-              <div className="flex items-center gap-1 text-amber-500 font-bold">
-                <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
-                <span>{product.rating}</span>
-                <span className="text-gray-400 font-normal">({product.reviewCount})</span>
-              </div>
             </div>
 
             {/* Product Title */}

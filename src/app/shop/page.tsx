@@ -71,8 +71,6 @@ function ShopContent() {
     filteredProducts.sort((a, b) => a.price - b.price);
   } else if (sortOption === 'price-high') {
     filteredProducts.sort((a, b) => b.price - a.price);
-  } else if (sortOption === 'rating') {
-    filteredProducts.sort((a, b) => b.rating - a.rating);
   } else if (sortOption === 'newest') {
     filteredProducts.sort((a, b) => (b.isNewArrival ? 1 : -1));
   } else {
@@ -156,7 +154,6 @@ function ShopContent() {
                 <option value="featured">Featured & Bestsellers</option>
                 <option value="price-low">Price: Low to High</option>
                 <option value="price-high">Price: High to Low</option>
-                <option value="rating">Highest Rated</option>
                 <option value="newest">New Arrivals</option>
               </select>
             </div>

@@ -209,7 +209,7 @@ export default function HomePage() {
           </div>
 
           {/* 4 Feature Cards Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className="bg-brand-bgBeige p-6 rounded-card border border-brand-mint/30 shadow-soft text-center space-y-3">
               <div className="w-12 h-12 rounded-full bg-brand-green/10 text-brand-green flex items-center justify-center mx-auto">
                 <Leaf className="w-6 h-6" />
@@ -248,26 +248,6 @@ export default function HomePage() {
               <p className="text-xs text-brand-mediumGrey font-light leading-relaxed">
                 Free express courier shipping across India on orders above ₹799 with real-time tracking.
               </p>
-            </div>
-          </div>
-
-          {/* Modest Realistic Startup Metrics Bar */}
-          <div className="bg-brand-darkGreen text-white rounded-card p-6 sm:p-8 shadow-premium grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-            <div>
-              <span className="font-heading font-extrabold text-2xl sm:text-3xl text-brand-gold block">10+</span>
-              <span className="text-xs text-brand-mint/90 font-medium">Curated Herbal Blends</span>
-            </div>
-            <div>
-              <span className="font-heading font-extrabold text-2xl sm:text-3xl text-brand-gold block">500+</span>
-              <span className="text-xs text-brand-mint/90 font-medium">Orders Fulfilled</span>
-            </div>
-            <div>
-              <span className="font-heading font-extrabold text-2xl sm:text-3xl text-brand-gold block">100+</span>
-              <span className="text-xs text-brand-mint/90 font-medium">Happy Customers</span>
-            </div>
-            <div>
-              <span className="font-heading font-extrabold text-2xl sm:text-3xl text-brand-gold block">100%</span>
-              <span className="text-xs text-brand-mint/90 font-medium">Single-Estate Sourced</span>
             </div>
           </div>
         </div>

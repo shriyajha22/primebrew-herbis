@@ -6,9 +6,9 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import ProductCard from '@/components/shop/ProductCard';
 import BrewingGuideModal from '@/components/shop/BrewingGuideModal';
-import { initialProducts, initialReviews } from '@/lib/seedData';
+import { initialProducts } from '@/lib/seedData';
 import { useStore } from '@/lib/storeContext';
-import { Star, Heart, ShoppingBag, Timer, ShieldCheck, Truck, RefreshCw, CheckCircle2, ChevronRight, Share2, Sparkles, MessageSquare, ThumbsUp, Leaf, Moon, Activity, Coffee, Shield, Check, Flower2, Sparkle } from 'lucide-react';
+import { Heart, ShoppingBag, Timer, ShieldCheck, Truck, RefreshCw, CheckCircle2, ChevronRight, Share2, Sparkles, Leaf, Moon, Activity, Coffee, Shield, Check, Flower2, Sparkle } from 'lucide-react';
 
 export default function ProductDetailPage({ params }: { params: { slug: string } }) {
   const { slug } = params;
@@ -20,18 +20,10 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
       (slug === 'ayur-tea' && p._id === 'prod-5')
   );
   const { addToCart, toggleWishlist, isInWishlist, showToast } = useStore();
-  const [selectedImage, setSelectedImage] = useState(0);
   const [selectedWeight, setSelectedWeight] = useState(product?.weightVariants?.[0]?.weight || "30 Tea Bags");
   const [quantity, setQuantity] = useState(1);
-  const [activeTab, setActiveTab] = useState<'ingredients' | 'benefits' | 'brewing' | 'nutrition' | 'reviews'>('ingredients');
+  const [activeTab, setActiveTab] = useState<'ingredients' | 'benefits' | 'brewing' | 'nutrition'>('ingredients');
   const [showBrewingGuide, setShowBrewingGuide] = useState(false);
-
-  // New review form states
-  const [reviewName, setReviewName] = useState('');
-  const [reviewTitle, setReviewTitle] = useState('');
-  const [reviewComment, setReviewComment] = useState('');
-  const [reviewRating, setReviewRating] = useState(5);
-  const [reviewsList, setReviewsList] = useState(initialReviews.filter((r) => r.productId === product?._id || true));
 
   if (!product) {
     return notFound();
@@ -43,30 +35,6 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
   const isWishlisted = isInWishlist(product._id);
 
   const relatedProducts = initialProducts.filter((p) => p._id !== product._id).slice(0, 4);
-
-  const handleAddReview = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!reviewName || !reviewComment) return;
-
-    const newRev = {
-      _id: `rev-${Date.now()}`,
-      productId: product._id,
-      userName: reviewName,
-      userAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
-      rating: reviewRating,
-      title: reviewTitle || 'Great Herbal Blend',
-      comment: reviewComment,
-      date: 'Just now',
-      verifiedBuyer: true,
-      helpfulCount: 0,
-    };
-
-    setReviewsList([newRev, ...reviewsList]);
-    setReviewName('');
-    setReviewTitle('');
-    setReviewComment('');
-    showToast('Thank you! Your customer review has been published.', 'success');
-  };
 
   const handleShare = () => {
     if (navigator.clipboard) {
@@ -95,7 +63,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
           <div className="space-y-4">
             <div className="relative aspect-square rounded-image overflow-hidden bg-brand-beige border border-brand-mint/20 shadow-soft">
               <Image
-                src={product.images[selectedImage] || product.images[0]}
+                src={product.images[0]}
                 alt={
                   product.slug === 'authentic-ayurvedic-kashayam' || product._id === 'prod-5' || product.slug === 'ayur-tea'
                     ? "PrimeBrew Herbis Authentic Ayurvedic Kashayam made with traditional herbs, Ginger, Cinnamon, Black Pepper, Cardamom, and Coriander."
@@ -126,21 +94,6 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
                 <Share2 className="w-4 h-4" />
               </button>
             </div>
-
-            {/* Thumbnail selector */}
-            <div className="flex gap-3 overflow-x-auto pb-1">
-              {product.images.map((img, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setSelectedImage(idx)}
-                  className={`relative w-20 h-20 rounded-card overflow-hidden flex-shrink-0 border-2 transition-all ${
-                    selectedImage === idx ? 'border-brand-green scale-105 shadow-soft' : 'border-transparent opacity-70 hover:opacity-100'
-                  }`}
-                >
-                  <Image src={img} alt="" fill className="object-cover" />
-                </button>
-              ))}
-            </div>
           </div>
 
           {/* Right Product Buy Information */}
@@ -160,15 +113,8 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
                 {product.subtitle}
               </p>
 
-              {/* Rating Summary */}
+              {/* Stock Status */}
               <div className="flex items-center gap-3 text-xs pt-1">
-                <div className="flex text-amber-400">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-4 h-4 fill-amber-400" />
-                  ))}
-                </div>
-                <span className="font-bold text-brand-darkGreen">{product.rating} / 5.0</span>
-                <span className="text-gray-400">({product.reviewCount} customer reviews)</span>
                 <span className="text-sky-700 font-bold bg-sky-50 px-2 py-0.5 rounded-badge text-[11px]">
                   In Stock ({product.stock} units left)
                 </span>
@@ -523,7 +469,6 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
               { key: 'benefits', label: '✨ Health Benefits' },
               { key: 'brewing', label: '☕ Brewing Ritual' },
               { key: 'nutrition', label: '📊 Nutrition Facts' },
-              { key: 'reviews', label: `💬 Customer Reviews (${reviewsList.length})` },
             ].map((tab) => (
               <button
                 key={tab.key}
@@ -628,95 +573,6 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
                     </tr>
                   </tbody>
                 </table>
-              </div>
-            )}
-
-            {activeTab === 'reviews' && (
-              <div className="space-y-8">
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                  {/* Reviews List */}
-                  <div className="lg:col-span-2 space-y-4">
-                    <h3 className="font-heading font-bold text-lg text-brand-darkGreen">Customer Reviews</h3>
-                    {reviewsList.map((rev) => (
-                      <div key={rev._id} className="p-4 rounded-card border border-brand-mint/30 bg-brand-cream/50 space-y-2">
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <div className="flex text-amber-400">
-                              {[...Array(rev.rating)].map((_, i) => (
-                                <Star key={i} className="w-3.5 h-3.5 fill-amber-400" />
-                              ))}
-                            </div>
-                            <h4 className="font-bold text-xs text-brand-darkGreen mt-1">{rev.title}</h4>
-                          </div>
-                          <span className="text-[10px] text-gray-400">{rev.date}</span>
-                        </div>
-                        <p className="text-xs text-gray-600 font-light">{rev.comment}</p>
-                        <div className="flex items-center justify-between text-[10px] text-gray-400 pt-2 border-t border-gray-100">
-                          <span className="font-semibold text-brand-darkGreen flex items-center gap-1">
-                            <CheckCircle2 className="w-3 h-3 text-sky-600" /> {rev.userName} (Verified Buyer)
-                          </span>
-                          <button className="flex items-center gap-1 hover:text-brand-green">
-                            <ThumbsUp className="w-3 h-3" /> Helpful ({rev.helpfulCount})
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Add Review Form */}
-                  <div className="bg-brand-beige p-5 rounded-card border border-brand-mint/40 h-fit space-y-4">
-                    <h4 className="font-heading font-bold text-sm text-brand-darkGreen">Write a Review</h4>
-                    <form onSubmit={handleAddReview} className="space-y-3">
-                      <div>
-                        <label className="text-[11px] font-semibold text-gray-600 block mb-1">Rating</label>
-                        <select
-                          value={reviewRating}
-                          onChange={(e) => setReviewRating(Number(e.target.value))}
-                          className="w-full text-xs p-2 rounded-input border border-gray-300"
-                        >
-                          <option value="5">⭐⭐⭐⭐⭐ 5 Stars (Excellent)</option>
-                          <option value="4">⭐⭐⭐⭐ 4 Stars (Good)</option>
-                          <option value="3">⭐⭐⭐ 3 Stars (Average)</option>
-                        </select>
-                      </div>
-                      <div>
-                        <input
-                          type="text"
-                          placeholder="Your Name"
-                          value={reviewName}
-                          onChange={(e) => setReviewName(e.target.value)}
-                          required
-                          className="w-full text-xs p-2 rounded-input border border-gray-300"
-                        />
-                      </div>
-                      <div>
-                        <input
-                          type="text"
-                          placeholder="Review Headline"
-                          value={reviewTitle}
-                          onChange={(e) => setReviewTitle(e.target.value)}
-                          className="w-full text-xs p-2 rounded-input border border-gray-300"
-                        />
-                      </div>
-                      <div>
-                        <textarea
-                          placeholder="Describe your taste experience & results..."
-                          value={reviewComment}
-                          onChange={(e) => setReviewComment(e.target.value)}
-                          rows={3}
-                          required
-                          className="w-full text-xs p-2 rounded-input border border-gray-300"
-                        />
-                      </div>
-                      <button
-                        type="submit"
-                        className="w-full bg-brand-green text-white text-xs font-bold py-2.5 rounded-button hover:bg-brand-darkGreen transition-colors"
-                      >
-                        Submit Customer Review
-                      </button>
-                    </form>
-                  </div>
-                </div>
               </div>
             )}
           </div>

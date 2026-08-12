@@ -14,7 +14,6 @@ export async function GET(request: Request) {
   const benefit = searchParams.get('benefit') || '';
   const minPrice = Number(searchParams.get('minPrice')) || 0;
   const maxPrice = Number(searchParams.get('maxPrice')) || 10000;
-  const minRating = Number(searchParams.get('minRating')) || 0;
   const sort = searchParams.get('sort') || 'featured';
 
   let filtered = [...inMemoryStore.products];
@@ -46,17 +45,11 @@ export async function GET(request: Request) {
     filtered = filtered.filter((p) => p.price >= minPrice && p.price <= maxPrice);
   }
 
-  if (minRating > 0) {
-    filtered = filtered.filter((p) => p.rating >= minRating);
-  }
-
   // Sorting
   if (sort === 'price-low') {
     filtered.sort((a, b) => a.price - b.price);
   } else if (sort === 'price-high') {
     filtered.sort((a, b) => b.price - a.price);
-  } else if (sort === 'rating') {
-    filtered.sort((a, b) => b.rating - a.rating);
   } else if (sort === 'newest') {
     filtered.sort((a, b) => (b.isNewArrival ? 1 : 0) - (a.isNewArrival ? 1 : 0));
   } else {

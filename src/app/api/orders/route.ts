@@ -11,6 +11,27 @@ export const dynamic = 'force-dynamic';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'pbh_super_secret_jwt_key_2026_primebrew';
 
+const normalizeOrder = (order: any) => {
+  if (!order) return order;
+  const items = (order.items || []).map((it: any) => {
+    const resolvedImg = getOrderItemImage(it);
+    return {
+      ...it,
+      productImage: resolvedImg,
+      image: resolvedImg,
+    };
+  });
+  return {
+    ...order,
+    items,
+  };
+};
+
+const normalizeOrders = (orders: any[]) => {
+  if (!Array.isArray(orders)) return orders;
+  return orders.map(normalizeOrder);
+};
+
 export async function GET(request: Request) {
   try {
     await connectToDatabase();
@@ -33,7 +54,7 @@ export async function GET(request: Request) {
       if (!order) {
         return NextResponse.json({ success: false, message: 'Order not found' }, { status: 404 });
       }
-      return NextResponse.json({ success: true, order });
+      return NextResponse.json({ success: true, order: normalizeOrder(order) });
     }
 
     // 2. Customer Order History by Email (Protected with Customer Cross-Account Isolation)
@@ -88,7 +109,7 @@ export async function GET(request: Request) {
           (o) => o.shippingAddress?.email?.toLowerCase() === cleanEmail
         );
       }
-      return NextResponse.json({ success: true, orders: filteredOrders });
+      return NextResponse.json({ success: true, orders: normalizeOrders(filteredOrders) });
     }
 
     // 3. Storewide Orders Listing (Requires Admin Authorization)
@@ -108,7 +129,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json({
       success: true,
-      orders: allOrders,
+      orders: normalizeOrders(allOrders),
     });
   } catch (error: any) {
     return NextResponse.json(
@@ -225,7 +246,7 @@ export async function POST(request: Request) {
     return NextResponse.json({
       success: true,
       message: 'Order created successfully',
-      order: createdOrder,
+      order: normalizeOrder(createdOrder),
     });
   } catch (error: any) {
     return NextResponse.json(

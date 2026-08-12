@@ -539,28 +539,34 @@ export const initialCoupons: Coupon[] = [
 export const getOrderItemImage = (item: any): string => {
   if (!item) return '/images/logo.png';
 
-  if (item.productImage && typeof item.productImage === 'string' && item.productImage.trim() !== '') {
+  const cleanId = String(item.productId || item._id || '').trim();
+  const cleanName = String(item.productName || item.name || '').trim().toLowerCase();
+
+  // 1. Prioritize catalog lookup by productId or productName to resolve assigned image
+  if (cleanId || cleanName) {
+    const found = initialProducts.find((p) => {
+      if (cleanId && p._id === cleanId) return true;
+      if (!cleanName) return false;
+      const pName = p.name.trim().toLowerCase();
+      return pName === cleanName || pName.includes(cleanName) || cleanName.includes(pName);
+    });
+
+    if (found && found.images && found.images[0]) {
+      return found.images[0];
+    }
+  }
+
+  // 2. Fallback to item stored fields if not found in catalog
+  if (item.productImage && typeof item.productImage === 'string' && item.productImage.trim() !== '' && !item.productImage.includes('logo.png')) {
     return item.productImage.trim();
   }
 
-  if (item.image && typeof item.image === 'string' && item.image.trim() !== '') {
+  if (item.image && typeof item.image === 'string' && item.image.trim() !== '' && !item.image.includes('logo.png')) {
     return item.image.trim();
   }
 
   if (item.images && Array.isArray(item.images) && item.images[0]) {
     return item.images[0];
-  }
-
-  if (item.productId || item.productName) {
-    const cleanId = String(item.productId || '').trim();
-    const cleanName = String(item.productName || '').trim().toLowerCase();
-
-    const found = initialProducts.find(
-      (p) => p._id === cleanId || (p.name && p.name.trim().toLowerCase() === cleanName)
-    );
-    if (found && found.images && found.images[0]) {
-      return found.images[0];
-    }
   }
 
   return '/images/logo.png';

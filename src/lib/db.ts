@@ -1,9 +1,9 @@
 import mongoose from 'mongoose';
 import { initialProducts, initialCategories, initialBlogs, initialReviews, initialCoupons } from './seedData';
 import { Product, Category, Blog, Review, Coupon, User, Order } from './types';
-import { OrderModel } from '../models/Order';
-import { UserModel } from '../models/User';
-import { ProductModel } from '../models/Product';
+import { OrderModel } from '@/models/Order';
+import { UserModel } from '@/models/User';
+import { ProductModel } from '@/models/Product';
 
 const MONGODB_URI = process.env.MONGODB_URI;
 

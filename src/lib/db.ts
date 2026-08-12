@@ -43,6 +43,7 @@ class InMemoryStore {
         {
           productId: "prod-1",
           productName: "Blue Tea",
+          productImage: "/images/blue-tea.jpg",
           image: "/images/blue-tea.jpg",
           weight: "30 Tea Bags",
           quantity: 2,

@@ -5,6 +5,7 @@ import { inMemoryStore, connectToDatabase } from '@/lib/db';
 import { OrderModel } from '@/models/Order';
 import { Order } from '@/lib/types';
 import { verifyAdminToken } from '@/lib/auth';
+import { getOrderItemImage } from '@/lib/seedData';
 
 export const dynamic = 'force-dynamic';
 
@@ -136,14 +137,18 @@ export async function POST(request: Request) {
       );
     }
 
-    const formattedItems = body.items.map((item: any) => ({
-      productId: String(item.productId || item._id || 'prod-unknown'),
-      productName: String(item.productName || item.name || 'Herbal Tea'),
-      productImage: String(item.productImage || item.image || item.images?.[0] || '/images/logo.png'),
-      price: Number(item.price || item.unitPrice) || 0,
-      weight: String(item.weight || item.selectedWeight || '30 Tea Bags'),
-      quantity: Number(item.quantity) || 1,
-    }));
+    const formattedItems = body.items.map((item: any) => {
+      const itemImg = getOrderItemImage(item);
+      return {
+        productId: String(item.productId || item._id || 'prod-unknown'),
+        productName: String(item.productName || item.name || 'Herbal Tea'),
+        productImage: itemImg,
+        image: itemImg,
+        price: Number(item.price || item.unitPrice) || 0,
+        weight: String(item.weight || item.selectedWeight || '30 Tea Bags'),
+        quantity: Number(item.quantity) || 1,
+      };
+    });
 
     const uniqueId = Date.now();
     const randomSuffix = Math.floor(1000 + Math.random() * 9000);

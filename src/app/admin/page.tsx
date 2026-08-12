@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useStore } from '@/lib/storeContext';
-import { initialProducts } from '@/lib/seedData';
+import { initialProducts, getOrderItemImage } from '@/lib/seedData';
 import { Product } from '@/lib/types';
 import {
   Shield,
@@ -707,12 +707,23 @@ export default function AdminDashboardPage() {
 
             <div className="space-y-2 border-t border-gray-100 pt-2">
               <p className="font-bold text-brand-darkGreen">Purchased Items:</p>
-              {(selectedOrderDetails.items || []).map((it: any, idx: number) => (
-                <div key={idx} className="flex justify-between border-b border-gray-100 pb-1">
-                  <span>{it.quantity}x {it.productName} ({it.weight})</span>
-                  <span className="font-bold text-brand-darkGreen">₹{it.price * it.quantity}</span>
-                </div>
-              ))}
+              {(selectedOrderDetails.items || []).map((it: any, idx: number) => {
+                const itemImg = getOrderItemImage(it);
+                return (
+                  <div key={idx} className="flex items-center justify-between border-b border-gray-100 pb-2">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded bg-brand-beige relative overflow-hidden flex-shrink-0 border border-gray-200">
+                        <Image src={itemImg} alt={it.productName || 'Herbal Tea'} fill className="object-cover" />
+                      </div>
+                      <div>
+                        <p className="font-bold text-brand-darkGreen">{it.productName}</p>
+                        <p className="text-gray-500 text-[11px]">{it.quantity}x {it.weight}</p>
+                      </div>
+                    </div>
+                    <span className="font-bold text-brand-darkGreen">₹{it.price * it.quantity}</span>
+                  </div>
+                );
+              })}
 
               <div className="space-y-1 text-gray-500 border-t border-gray-100 pt-2 text-[11px]">
                 <div className="flex justify-between">

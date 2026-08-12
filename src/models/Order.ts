@@ -7,6 +7,7 @@ const OrderItemSchema = new Schema({
   productId: { type: String, required: true },
   productName: { type: String, required: true },
   productImage: { type: String, required: true },
+  image: { type: String },
   price: { type: Number, required: true },
   weight: { type: String, required: true },
   quantity: { type: Number, required: true },

@@ -119,7 +119,8 @@ export interface Order {
   items: {
     productId: string;
     productName: string;
-    image: string;
+    productImage?: string;
+    image?: string;
     weight: string;
     quantity: number;
     price: number;

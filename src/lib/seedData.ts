@@ -535,3 +535,33 @@ export const initialCoupons: Coupon[] = [
     expiryDate: "2026-12-31"
   }
 ];
+
+export const getOrderItemImage = (item: any): string => {
+  if (!item) return '/images/logo.png';
+
+  if (item.productImage && typeof item.productImage === 'string' && item.productImage.trim() !== '') {
+    return item.productImage.trim();
+  }
+
+  if (item.image && typeof item.image === 'string' && item.image.trim() !== '') {
+    return item.image.trim();
+  }
+
+  if (item.images && Array.isArray(item.images) && item.images[0]) {
+    return item.images[0];
+  }
+
+  if (item.productId || item.productName) {
+    const cleanId = String(item.productId || '').trim();
+    const cleanName = String(item.productName || '').trim().toLowerCase();
+
+    const found = initialProducts.find(
+      (p) => p._id === cleanId || (p.name && p.name.trim().toLowerCase() === cleanName)
+    );
+    if (found && found.images && found.images[0]) {
+      return found.images[0];
+    }
+  }
+
+  return '/images/logo.png';
+};

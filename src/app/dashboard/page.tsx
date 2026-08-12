@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import { useStore } from '@/lib/storeContext';
-import { initialProducts } from '@/lib/seedData';
+import { initialProducts, getOrderItemImage } from '@/lib/seedData';
 import { ShoppingBag, Heart, MapPin, Wallet, Shield, Plus, Edit3, Trash2, CheckCircle2, AlertCircle } from 'lucide-react';
 
 function DashboardContent() {
@@ -339,17 +339,20 @@ function DashboardContent() {
 
                       {/* Items */}
                       <div className="space-y-2 pt-1">
-                        {(ord.items || []).map((it: any, idx: number) => (
-                          <div key={idx} className="flex items-center gap-3 text-xs">
-                            <div className="w-12 h-12 rounded bg-brand-beige relative overflow-hidden flex-shrink-0">
-                              <Image src={it.image || '/images/blue-tea.jpg'} alt={it.productName} fill className="object-cover" />
+                        {(ord.items || []).map((it: any, idx: number) => {
+                          const itemImg = getOrderItemImage(it);
+                          return (
+                            <div key={idx} className="flex items-center gap-3 text-xs">
+                              <div className="w-12 h-12 rounded bg-brand-beige relative overflow-hidden flex-shrink-0 border border-brand-mint/30">
+                                <Image src={itemImg} alt={it.productName || 'Herbal Tea'} fill className="object-cover" />
+                              </div>
+                              <div>
+                                <h4 className="font-bold text-brand-darkGreen">{it.productName}</h4>
+                                <p className="text-gray-500">Quantity: {it.quantity} x {it.weight} • ₹{it.price}</p>
+                              </div>
                             </div>
-                            <div>
-                              <h4 className="font-bold text-brand-darkGreen">{it.productName}</h4>
-                              <p className="text-gray-500">Quantity: {it.quantity} x {it.weight} • ₹{it.price}</p>
-                            </div>
-                          </div>
-                        ))}
+                          );
+                        })}
                       </div>
                     </div>
                   ))

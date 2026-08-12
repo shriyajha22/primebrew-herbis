@@ -240,6 +240,15 @@ class InMemoryStore {
     return safeUser;
   }
 
+  deleteUser(idOrEmail: string): boolean {
+    if (!idOrEmail) return false;
+    const target = idOrEmail.trim().toLowerCase();
+    const initialLen = this.users.length;
+    this.users = this.users.filter((u) => u._id !== idOrEmail && u.email.toLowerCase() !== target);
+    this.activeSessions.delete(target);
+    return this.users.length < initialLen;
+  }
+
   resetToDefaults() {
     this.products = [...initialProducts];
     this.categories = [...initialCategories];

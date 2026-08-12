@@ -48,6 +48,10 @@ export default function AdminDashboardPage() {
   const [isLiveConnected, setIsLiveConnected] = useState(false);
   const [loadingOrders, setLoadingOrders] = useState(false);
 
+  // Customer deletion state
+  const [customerToDelete, setCustomerToDelete] = useState<{ id: string; name: string; email: string } | null>(null);
+  const [isDeletingCustomer, setIsDeletingCustomer] = useState(false);
+
   // Fetch real-time live data from `/api/admin/live`
   const fetchLiveData = async () => {
     try {
@@ -74,6 +78,31 @@ export default function AdminDashboardPage() {
       }
     } catch (e) {
       console.error('Failed to fetch customers:', e);
+    }
+  };
+
+  const handleConfirmDeleteCustomer = async () => {
+    if (!customerToDelete) return;
+    setIsDeletingCustomer(true);
+    try {
+      const res = await fetch(`/api/admin/customers/${encodeURIComponent(customerToDelete.id)}`, {
+        method: 'DELETE',
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setCustomersList((prev) =>
+          prev.filter((c) => c._id !== customerToDelete.id && c.email.toLowerCase() !== customerToDelete.email.toLowerCase())
+        );
+        showToast('Customer deleted successfully.', 'success');
+        setCustomerToDelete(null);
+        fetchCustomers();
+      } else {
+        showToast(data.message || 'Failed to delete customer profile.', 'error');
+      }
+    } catch (err: any) {
+      showToast('Error connecting to backend server to delete customer.', 'error');
+    } finally {
+      setIsDeletingCustomer(false);
     }
   };
 
@@ -561,16 +590,27 @@ export default function AdminDashboardPage() {
                   <th className="p-4">Phone</th>
                   <th className="p-4">Orders Placed</th>
                   <th className="p-4">Total Spent</th>
+                  <th className="p-4 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {customersList.map((c, i) => (
-                  <tr key={i} className="hover:bg-brand-cream/40">
+                  <tr key={c._id || i} className="hover:bg-brand-cream/40">
                     <td className="p-4 font-bold text-brand-darkGreen">{c.name}</td>
                     <td className="p-4 text-gray-600">{c.email}</td>
                     <td className="p-4 font-mono">{c.phone || 'N/A'}</td>
                     <td className="p-4 font-bold text-brand-green">{c.ordersCount || 0} orders</td>
                     <td className="p-4 font-bold text-sky-700">₹{c.totalSpent?.toFixed(2) || '0.00'}</td>
+                    <td className="p-4 text-right">
+                      <button
+                        onClick={() => setCustomerToDelete({ id: c._id, name: c.name, email: c.email })}
+                        className="inline-flex items-center gap-1.5 text-red-600 hover:text-red-800 hover:bg-red-50 border border-red-200 px-3 py-1.5 rounded-button text-xs font-semibold transition-colors"
+                        title="Delete Customer Profile"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                        <span>Delete Customer</span>
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -778,6 +818,57 @@ export default function AdminDashboardPage() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+      {/* Customer Deletion Confirmation Modal */}
+      {customerToDelete && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-modal shadow-premium w-full max-w-md p-6 space-y-4 text-xs">
+            <div className="flex items-center gap-3 border-b border-gray-100 pb-3 text-red-600">
+              <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center border border-red-200 flex-shrink-0">
+                <AlertTriangle className="w-5 h-5 text-red-600" />
+              </div>
+              <div>
+                <h3 className="font-heading font-extrabold text-base text-brand-darkGreen">Confirm Customer Deletion</h3>
+                <p className="text-[11px] text-red-600 font-semibold">Irreversible Administrative Action</p>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <p className="text-xs text-gray-700 font-medium leading-relaxed">
+                Are you sure you want to permanently delete this customer? This action cannot be undone.
+              </p>
+
+              <div className="bg-brand-beige p-3.5 rounded-card border border-brand-mint/30 text-gray-700 space-y-1">
+                <p>Name: <strong className="text-brand-darkGreen">{customerToDelete.name}</strong></p>
+                <p>Email: <strong className="text-brand-darkGreen">{customerToDelete.email}</strong></p>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-end gap-3 pt-3 border-t border-gray-100">
+              <button
+                onClick={() => setCustomerToDelete(null)}
+                disabled={isDeletingCustomer}
+                className="px-4 py-2 rounded-button bg-gray-100 text-gray-700 font-semibold hover:bg-gray-200 transition-colors disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirmDeleteCustomer}
+                disabled={isDeletingCustomer}
+                className="px-4 py-2 rounded-button bg-red-600 hover:bg-red-700 text-white font-bold transition-colors shadow-soft disabled:opacity-50 flex items-center gap-1.5"
+              >
+                {isDeletingCustomer ? (
+                  <span>Deleting Customer...</span>
+                ) : (
+                  <>
+                    <Trash2 className="w-3.5 h-3.5" />
+                    <span>Permanently Delete Customer</span>
+                  </>
+                )}
+              </button>
+            </div>
           </div>
         </div>
       )}

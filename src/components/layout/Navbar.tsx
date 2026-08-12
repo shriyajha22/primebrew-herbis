@@ -10,7 +10,7 @@ import SearchModal from './SearchModal';
 
 export default function Navbar() {
   const pathname = usePathname();
-  const { cart, wishlist, currentUser, isCartOpen, setIsCartOpen, loginAsDemoCustomer, loginAsDemoAdmin, logout } = useStore();
+  const { cart, wishlist, currentUser, isCartOpen, setIsCartOpen, loginAsDemoAdmin, logout } = useStore();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');

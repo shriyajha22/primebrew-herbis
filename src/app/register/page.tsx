@@ -92,7 +92,7 @@ export default function CustomerRegisterPage() {
                 required
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
-                placeholder="Ananya Sharma"
+                placeholder="Priya Sharma"
                 className="w-full pl-11 pr-4 py-3 rounded-2xl bg-brand-cream/40 border border-brand-mint/30 focus:bg-white focus:border-brand-green outline-none font-medium"
               />
             </div>
@@ -107,7 +107,7 @@ export default function CustomerRegisterPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="ananya@example.com"
+                placeholder="priya@example.com"
                 className="w-full pl-11 pr-4 py-3 rounded-2xl bg-brand-cream/40 border border-brand-mint/30 focus:bg-white focus:border-brand-green outline-none font-medium"
               />
             </div>

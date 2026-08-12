@@ -120,7 +120,7 @@ export default function ContactPage() {
                   <label className="font-semibold text-gray-600 block mb-1">Your Full Name</label>
                   <input
                     type="text"
-                    placeholder="Ananya Sharma"
+                    placeholder="Priya Sharma"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     required
@@ -131,7 +131,7 @@ export default function ContactPage() {
                   <label className="font-semibold text-gray-600 block mb-1">Email Address</label>
                   <input
                     type="email"
-                    placeholder="ananya@example.com"
+                    placeholder="priya@example.com"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     required

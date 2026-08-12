@@ -9,7 +9,7 @@ import { useStore } from '@/lib/storeContext';
 
 export default function CustomerLoginPage() {
   const router = useRouter();
-  const { loginAsDemoCustomer, setCurrentUser, showToast } = useStore();
+  const { setCurrentUser, showToast } = useStore();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -84,7 +84,7 @@ export default function CustomerLoginPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="ananya@example.com"
+                placeholder="you@example.com"
                 className="w-full pl-11 pr-4 py-3 rounded-2xl bg-brand-cream/40 border border-brand-mint/30 focus:bg-white focus:border-brand-green outline-none font-medium"
               />
             </div>

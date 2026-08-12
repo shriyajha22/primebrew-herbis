@@ -36,7 +36,6 @@ interface StoreContextType {
   currentUser: User | null;
   setCurrentUser: (user: User | null) => void;
   updateUserAddresses: (addresses: any[]) => void;
-  loginAsDemoCustomer: () => void;
   loginAsDemoAdmin: () => void;
   logout: () => void;
 
@@ -269,20 +268,6 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     } catch (e) {}
   };
 
-  const loginAsDemoCustomer = () => {
-    const demoUser: User = {
-      _id: "usr-customer",
-      name: "Ananya Sharma",
-      email: "customer@example.com",
-      role: "customer",
-      addresses: [],
-      wishlist: [],
-      walletBalance: 250
-    };
-    handleSetCurrentUser(demoUser);
-    showToast("Logged in as Customer (Ananya Sharma)", "success");
-  };
-
   const loginAsDemoAdmin = () => {
     const adminUser: User = {
       _id: "usr-admin",
@@ -306,11 +291,26 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     setCurrentUser(null);
     setCart([]);
     setWishlist([]);
+
     try {
       localStorage.removeItem('pbh_cart');
       localStorage.removeItem('pbh_wishlist');
+      localStorage.removeItem('pbh_orders');
+      localStorage.removeItem('pbh_users');
+
+      // Purge any user-specific local storage keys
+      Object.keys(localStorage).forEach((key) => {
+        if (key.startsWith('pbh_cart_') || key.startsWith('pbh_wishlist_')) {
+          localStorage.removeItem(key);
+        }
+      });
     } catch (e) {}
+
     showToast("Logged out successfully", "info");
+
+    if (typeof window !== 'undefined') {
+      window.location.href = '/';
+    }
   };
 
   return (
@@ -337,7 +337,6 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         currentUser,
         setCurrentUser: handleSetCurrentUser,
         updateUserAddresses,
-        loginAsDemoCustomer,
         loginAsDemoAdmin,
         logout,
         isCartOpen,

@@ -12,7 +12,7 @@ function DashboardContent() {
   const searchParams = useSearchParams();
   const initialTab = (searchParams.get('tab') as any) || 'orders';
 
-  const { currentUser, wishlist, toggleWishlist, addToCart, logout, loginAsDemoCustomer, updateUserAddresses, showToast } = useStore();
+  const { currentUser, wishlist, toggleWishlist, addToCart, logout, updateUserAddresses, showToast } = useStore();
   const [activeTab, setActiveTab] = useState<'orders' | 'wishlist' | 'addresses' | 'wallet' | 'settings'>(initialTab);
   const [customerOrders, setCustomerOrders] = useState<any[]>([]);
   const [loadingOrders, setLoadingOrders] = useState(false);
@@ -207,15 +207,23 @@ function DashboardContent() {
         <div className="space-y-2">
           <h2 className="font-heading font-extrabold text-2xl text-brand-darkGreen">Customer Account Required</h2>
           <p className="text-xs text-gray-500 leading-relaxed">
-            Please log in or click below to access your saved orders, delivery addresses, tea wallet, and wishlist.
+            Please log in or create an account to access your saved orders, delivery addresses, tea wallet, and wishlist.
           </p>
         </div>
-        <button
-          onClick={loginAsDemoCustomer}
-          className="bg-brand-green hover:bg-brand-darkGreen text-white font-extrabold text-xs px-6 py-3.5 rounded-button transition-all shadow-soft w-full"
-        >
-          ⚡ Access Demo Customer Dashboard (Ananya Sharma)
-        </button>
+        <div className="flex flex-col sm:flex-row gap-3 pt-2">
+          <Link
+            href="/login"
+            className="flex-1 bg-brand-green hover:bg-brand-darkGreen text-white font-extrabold text-xs px-6 py-3 rounded-button transition-all shadow-soft text-center"
+          >
+            Log In to Account
+          </Link>
+          <Link
+            href="/register"
+            className="flex-1 bg-white border border-brand-mint/40 text-brand-darkGreen hover:bg-brand-beige font-extrabold text-xs px-6 py-3 rounded-button transition-all text-center"
+          >
+            Create Account
+          </Link>
+        </div>
       </div>
     );
   }

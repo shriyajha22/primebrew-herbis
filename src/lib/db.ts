@@ -23,15 +23,6 @@ class InMemoryStore {
       addresses: [],
       wishlist: [],
       walletBalance: 500
-    },
-    {
-      _id: "usr-customer",
-      name: "Ananya Sharma",
-      email: "customer@example.com",
-      role: "customer",
-      addresses: [],
-      wishlist: [],
-      walletBalance: 250
     }
   ];
   orders: Order[] = [
@@ -51,9 +42,9 @@ class InMemoryStore {
         }
       ],
       shippingAddress: {
-        fullName: "Ananya Sharma",
+        fullName: "Priya Sharma",
         phone: "+91 9876543210",
-        email: "customer@example.com",
+        email: "priya@example.com",
         street: "42 Tea Plantation Road, Green Valley",
         city: "Bengaluru",
         state: "Karnataka",

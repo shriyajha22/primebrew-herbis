@@ -62,30 +62,69 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [toasts, setToasts] = useState<Toast[]>([]);
 
-  // Local storage persistence for cart & wishlist, and server cookie verification for auth
-  useEffect(() => {
-    try {
-      const savedCart = localStorage.getItem('pbh_cart');
-      if (savedCart) setCart(JSON.parse(savedCart));
+  // Helper to load user-specific Cart & Wishlist
+  const syncUserCartAndWishlist = (user: User | null) => {
+    if (user && user.email) {
+      const keyEmail = user.email.toLowerCase();
+      // Load Customer Cart
+      try {
+        const savedCart = localStorage.getItem(`pbh_cart_${keyEmail}`);
+        setCart(savedCart ? JSON.parse(savedCart) : []);
+      } catch (e) {
+        setCart([]);
+      }
 
-      const savedWishlist = localStorage.getItem('pbh_wishlist');
-      if (savedWishlist) setWishlist(JSON.parse(savedWishlist));
-    } catch (e) {
-      console.error(e);
+      // Load Customer Wishlist
+      try {
+        const savedWishlist = localStorage.getItem(`pbh_wishlist_${keyEmail}`);
+        const userWishlist = user.wishlist || (savedWishlist ? JSON.parse(savedWishlist) : []);
+        setWishlist(Array.isArray(userWishlist) ? userWishlist : []);
+      } catch (e) {
+        setWishlist([]);
+      }
+    } else {
+      // Logout / Unauthenticated reset
+      setCart([]);
+      setWishlist([]);
+      try {
+        localStorage.removeItem('pbh_cart');
+        localStorage.removeItem('pbh_wishlist');
+      } catch (e) {}
     }
+  };
 
-    // Verify server session from HTTP-only cookie
+  const handleSetCurrentUser = (user: User | null) => {
+    setCurrentUser(user);
+    syncUserCartAndWishlist(user);
+  };
+
+  // Verify server session from HTTP-only cookie on mount
+  useEffect(() => {
     fetch('/api/auth/me')
       .then((res) => res.json())
       .then((data) => {
         if (data.success && data.user) {
-          setCurrentUser(data.user);
+          handleSetCurrentUser(data.user);
+        } else {
+          // Ensure guest starts with clean empty state
+          setCart([]);
+          setWishlist([]);
         }
       })
       .catch((e) => {
-        console.error('Error verifying auth session:', e);
+        setCart([]);
+        setWishlist([]);
       });
   }, []);
+
+  // Save cart changes to customer-specific storage
+  useEffect(() => {
+    if (currentUser?.email) {
+      try {
+        localStorage.setItem(`pbh_cart_${currentUser.email.toLowerCase()}`, JSON.stringify(cart));
+      } catch (e) {}
+    }
+  }, [cart, currentUser]);
 
   const showToast = (message: string, type: 'success' | 'info' | 'error' = 'success') => {
     const id = Date.now().toString();
@@ -187,13 +226,28 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const toggleWishlist = (productId: string) => {
     setWishlist((prev) => {
       const exists = prev.includes(productId);
+      const updated = exists ? prev.filter((id) => id !== productId) : [...prev, productId];
+
       if (exists) {
         showToast('Removed from Wishlist', 'info');
-        return prev.filter((id) => id !== productId);
       } else {
         showToast('Added to Wishlist', 'success');
-        return [...prev, productId];
       }
+
+      if (currentUser?.email) {
+        const keyEmail = currentUser.email.toLowerCase();
+        try {
+          localStorage.setItem(`pbh_wishlist_${keyEmail}`, JSON.stringify(updated));
+        } catch (e) {}
+
+        fetch('/api/user/wishlist', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: currentUser.email, wishlist: updated }),
+        }).catch((e) => {});
+      }
+
+      return updated;
     });
   };
 
@@ -216,20 +270,21 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   };
 
   const loginAsDemoCustomer = () => {
-    setCurrentUser({
+    const demoUser: User = {
       _id: "usr-customer",
       name: "Ananya Sharma",
       email: "customer@example.com",
       role: "customer",
       addresses: [],
-      wishlist,
+      wishlist: [],
       walletBalance: 250
-    });
+    };
+    handleSetCurrentUser(demoUser);
     showToast("Logged in as Customer (Ananya Sharma)", "success");
   };
 
   const loginAsDemoAdmin = () => {
-    setCurrentUser({
+    const adminUser: User = {
       _id: "usr-admin",
       name: "PrimeBrew Admin",
       email: "Contact.primebrew@gmail.com",
@@ -237,7 +292,8 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       addresses: [],
       wishlist: [],
       walletBalance: 1000
-    });
+    };
+    handleSetCurrentUser(adminUser);
     showToast("Logged in as Admin (PrimeBrew Admin)", "success");
   };
 
@@ -248,6 +304,12 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       console.error('Logout API error:', e);
     }
     setCurrentUser(null);
+    setCart([]);
+    setWishlist([]);
+    try {
+      localStorage.removeItem('pbh_cart');
+      localStorage.removeItem('pbh_wishlist');
+    } catch (e) {}
     showToast("Logged out successfully", "info");
   };
 
@@ -273,7 +335,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         toggleWishlist,
         isInWishlist,
         currentUser,
-        setCurrentUser,
+        setCurrentUser: handleSetCurrentUser,
         updateUserAddresses,
         loginAsDemoCustomer,
         loginAsDemoAdmin,

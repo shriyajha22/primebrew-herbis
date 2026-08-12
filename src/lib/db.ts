@@ -21,7 +21,7 @@ class InMemoryStore {
       email: "Contact.primebrew@gmail.com",
       role: "admin",
       addresses: [],
-      wishlist: ["prod-1", "prod-2"],
+      wishlist: [],
       walletBalance: 500
     },
     {
@@ -30,7 +30,7 @@ class InMemoryStore {
       email: "customer@example.com",
       role: "customer",
       addresses: [],
-      wishlist: ["prod-2"],
+      wishlist: [],
       walletBalance: 250
     }
   ];

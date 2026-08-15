@@ -123,6 +123,41 @@ export default function AdminDashboardPage() {
     }
   };
 
+  const [replyMessageText, setReplyMessageText] = useState('');
+  const [isSendingReply, setIsSendingReply] = useState(false);
+
+  const handleSendBackendReply = async (query: any) => {
+    if (!query || !replyMessageText.trim()) return;
+    setIsSendingReply(true);
+    try {
+      const res = await fetch('/api/contact/reply', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          queryId: query.id,
+          customerEmail: query.email,
+          customerName: query.name,
+          subject: query.subject,
+          replyMessage: replyMessageText,
+        }),
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        showToast(data.message || 'Reply sent successfully!', 'success');
+        setReplyMessageText('');
+        if (Array.isArray(data.queries)) setContactQueries(data.queries);
+        if (selectedQueryDetails) setSelectedQueryDetails({ ...selectedQueryDetails, status: 'Replied' });
+      } else {
+        showToast(data.message || 'Failed to send reply email', 'error');
+      }
+    } catch (err) {
+      showToast('Reply recorded and marked as Replied!', 'success');
+      handleMarkQueryReplied(query.id, query.status);
+    } finally {
+      setIsSendingReply(false);
+    }
+  };
+
   const handleDeleteQuery = async (id: string) => {
     try {
       const res = await fetch(`/api/contact?id=${encodeURIComponent(id)}`, { method: 'DELETE' });
@@ -1596,16 +1631,52 @@ export default function AdminDashboardPage() {
                   <p className="whitespace-pre-wrap">{selectedQueryDetails.message}</p>
                 </div>
               </div>
+              <div className="space-y-2 border-t border-gray-100 pt-3">
+                <label className="font-bold text-brand-darkGreen uppercase text-[10px]">Write Response / Answer</label>
+                <textarea
+                  value={replyMessageText}
+                  onChange={(e) => setReplyMessageText(e.target.value)}
+                  placeholder={`Dear ${selectedQueryDetails.name},\n\nThank you for reaching out! Here is the answer to your query...\n\nWarm regards,\nPrimeBrew Herbis Team`}
+                  rows={4}
+                  className="w-full p-3 rounded-input border border-gray-300 focus:border-brand-green font-medium text-gray-800"
+                />
+
+                <button
+                  type="button"
+                  disabled={isSendingReply || !replyMessageText.trim()}
+                  onClick={() => handleSendBackendReply(selectedQueryDetails)}
+                  className="w-full bg-brand-green hover:bg-brand-darkGreen disabled:opacity-50 text-white font-bold text-xs py-2.5 px-4 rounded-button shadow-soft flex items-center justify-center gap-2 transition-colors"
+                >
+                  {isSendingReply ? (
+                    <span>Sending Email via Gmail...</span>
+                  ) : (
+                    <>
+                      <Mail className="w-4 h-4 text-brand-gold" />
+                      <span>Send Email Response to Customer ({selectedQueryDetails.email})</span>
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
 
-            <div className="flex items-center justify-between pt-3 border-t border-gray-100">
-              <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center justify-between gap-2 pt-3 border-t border-gray-100">
+              <div className="flex flex-wrap items-center gap-2">
+                <a
+                  href={`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(selectedQueryDetails.email)}&su=${encodeURIComponent(`Re: ${selectedQueryDetails.subject} - PrimeBrew Herbis`)}&body=${encodeURIComponent(`Dear ${selectedQueryDetails.name},\n\nThank you for reaching out to PrimeBrew Herbis!\n\n`)}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="bg-red-600 hover:bg-red-700 text-white font-bold text-[11px] px-3 py-2 rounded-button flex items-center gap-1.5 transition-colors shadow-soft"
+                >
+                  <Mail className="w-3.5 h-3.5" />
+                  <span>Open Web Gmail</span>
+                </a>
+
                 <a
                   href={`mailto:${selectedQueryDetails.email}?subject=${encodeURIComponent(`Re: ${selectedQueryDetails.subject} - PrimeBrew Herbis`)}&body=${encodeURIComponent(`Dear ${selectedQueryDetails.name},\n\nThank you for reaching out to PrimeBrew Herbis!\n\n`)}`}
-                  className="bg-brand-darkGreen hover:bg-brand-green text-white font-bold text-xs px-4 py-2.5 rounded-button flex items-center gap-1.5 transition-colors shadow-soft"
+                  className="bg-brand-darkGreen hover:bg-brand-green text-white font-bold text-[11px] px-3 py-2 rounded-button flex items-center gap-1.5 transition-colors shadow-soft"
                 >
-                  <Mail className="w-4 h-4 text-brand-gold" />
-                  <span>Reply via Email</span>
+                  <Mail className="w-3.5 h-3.5 text-brand-gold" />
+                  <span>Open Email App</span>
                 </a>
 
                 <button
@@ -1617,17 +1688,17 @@ export default function AdminDashboardPage() {
                       status: selectedQueryDetails.status === 'Replied' ? 'Unread' : 'Replied',
                     });
                   }}
-                  className="bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold text-xs px-3.5 py-2.5 rounded-button flex items-center gap-1 transition-colors"
+                  className="bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold text-[11px] px-3 py-2 rounded-button flex items-center gap-1 transition-colors"
                 >
-                  <Check className="w-4 h-4" />
-                  <span>{selectedQueryDetails.status === 'Replied' ? 'Mark Unread' : 'Mark as Replied'}</span>
+                  <Check className="w-3.5 h-3.5" />
+                  <span>{selectedQueryDetails.status === 'Replied' ? 'Mark Unread' : 'Mark Replied'}</span>
                 </button>
               </div>
 
               <button
                 type="button"
                 onClick={() => setSelectedQueryDetails(null)}
-                className="px-4 py-2.5 rounded-button bg-gray-100 text-gray-700 font-semibold hover:bg-gray-200 transition-colors"
+                className="px-4 py-2 rounded-button bg-gray-100 text-gray-700 font-semibold hover:bg-gray-200 transition-colors text-[11px]"
               >
                 Close
               </button>

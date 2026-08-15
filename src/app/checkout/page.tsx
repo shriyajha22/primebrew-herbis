@@ -150,7 +150,6 @@ export default function CheckoutPage() {
       const data = await res.json();
 
       if (res.ok && data.success && data.order) {
-        setCompletedOrder(data.order);
         clearCart();
 
         // Save order to localStorage as local fallback

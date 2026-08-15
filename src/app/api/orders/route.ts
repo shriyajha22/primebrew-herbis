@@ -120,12 +120,6 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    // 1. Mandatory Customer Authentication Check
-    const auth = verifyCustomerToken(request);
-    if (!auth.isAuthorized || !auth.user) {
-      return auth.errorResponse!;
-    }
-
     await connectToDatabase();
     const body = await request.json();
 
@@ -142,6 +136,12 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
+
+    // Optional Customer Authentication check (supports guest & logged in users)
+    const auth = verifyCustomerToken(request);
+    const userId = auth.isAuthorized && auth.user ? auth.user.userId : `guest-${Date.now()}`;
+    const customerEmail = (auth.isAuthorized && auth.user ? auth.user.email : body.shippingAddress?.email || '').trim().toLowerCase();
+    const customerName = (body.shippingAddress?.fullName || (auth.isAuthorized && auth.user ? auth.user.name : '') || 'Customer').trim();
 
     const formattedItems = body.items.map((item: any) => {
       const itemImg = getOrderItemImage(item);
@@ -162,14 +162,14 @@ export async function POST(request: Request) {
     const trackingNumber = `SR-${Math.floor(100000000 + Math.random() * 900000000)}`;
 
     const orderDocData = {
-      userId: auth.user.userId,
+      userId,
       orderNumber,
       createdAt: new Date().toISOString(),
       items: formattedItems,
       shippingAddress: {
-        fullName: String(body.shippingAddress.fullName || auth.user.name || '').trim(),
+        fullName: customerName,
         phone: String(body.shippingAddress.phone || '').trim(),
-        email: auth.user.email.trim().toLowerCase(),
+        email: customerEmail,
         street: String(body.shippingAddress.street || '').trim(),
         city: String(body.shippingAddress.city || '').trim(),
         state: String(body.shippingAddress.state || '').trim(),
@@ -193,9 +193,9 @@ export async function POST(request: Request) {
       estimatedDelivery: '3-5 Business Days',
     };
 
-    console.log('Authenticated order creation request received at /api/orders', {
-      userId: auth.user.userId,
-      email: auth.user.email,
+    console.log('Order creation request received at /api/orders', {
+      userId,
+      email: customerEmail,
       itemCount: formattedItems.length,
       hasShippingAddress: Boolean(body.shippingAddress),
       paymentMethod: 'Cash on Delivery',

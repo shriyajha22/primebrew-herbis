@@ -220,60 +220,7 @@ export default function CheckoutPage() {
     }
   };
 
-  // Check authentication status and redirect if unauthenticated
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
 
-    const stored = localStorage.getItem('pbh_user_session');
-    if (currentUser || stored) return;
-
-    const timer = setTimeout(() => {
-      if (!currentUser && !localStorage.getItem('pbh_user_session')) {
-        router.push('/login?redirect=/checkout&message=Please login or create an account to place your order.');
-      }
-    }, 800);
-
-    return () => clearTimeout(timer);
-  }, [currentUser, router]);
-
-  const hasSessionCache = typeof window !== 'undefined' && Boolean(localStorage.getItem('pbh_user_session'));
-
-  if (!currentUser && !hasSessionCache && !completedOrder) {
-    return (
-      <div className="py-16 bg-brand-cream min-h-[80vh] flex items-center justify-center px-4">
-        <div className="bg-white rounded-card border border-brand-mint/40 shadow-premium p-8 max-w-lg w-full text-center space-y-6">
-          <div className="w-16 h-16 bg-amber-50 text-amber-600 rounded-full flex items-center justify-center mx-auto border border-amber-200">
-            <Lock className="w-8 h-8" />
-          </div>
-          <div className="space-y-2">
-            <span className="bg-amber-100 text-amber-800 text-[10px] font-extrabold uppercase px-3 py-1 rounded-badge">
-              Authentication Required
-            </span>
-            <h2 className="font-heading font-extrabold text-2xl text-brand-darkGreen">
-              Please login or create an account to place your order.
-            </h2>
-            <p className="text-xs text-gray-500 leading-relaxed">
-              PrimeBrew Herbis requires a verified customer account to ensure secure order processing, live shipment tracking, and instant cashback rewards.
-            </p>
-          </div>
-          <div className="flex flex-col sm:flex-row gap-3 pt-2">
-            <Link
-              href="/login?redirect=/checkout&message=Please login or create an account to place your order."
-              className="flex-1 bg-brand-darkGreen hover:bg-brand-green text-white font-extrabold text-xs px-6 py-3.5 rounded-button shadow-soft transition-all text-center"
-            >
-              Log In to Account
-            </Link>
-            <Link
-              href="/register?redirect=/checkout&message=Please login or create an account to place your order."
-              className="flex-1 bg-brand-green hover:bg-brand-darkGreen text-white font-extrabold text-xs px-6 py-3.5 rounded-button shadow-soft transition-all text-center"
-            >
-              Create Account
-            </Link>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   if (completedOrder) {
     return (

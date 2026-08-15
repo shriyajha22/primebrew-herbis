@@ -63,8 +63,9 @@ export default function AdminDashboardPage() {
   const [isDeletingCustomer, setIsDeletingCustomer] = useState(false);
 
   // Real-time notifications state & tracking ref
-  const [adminAlerts, setAdminAlerts] = useState<{ id: string; type: 'order_placed' | 'order_cancelled'; message: string; timestamp: string }[]>([]);
+  const [adminAlerts, setAdminAlerts] = useState<{ id: string; type: 'order_placed' | 'order_cancelled' | 'query_received'; message: string; timestamp: string }[]>([]);
   const prevOrdersRef = React.useRef<Map<string, string>>(new Map());
+  const prevQueriesRef = React.useRef<Set<string>>(new Set());
 
   // Web Audio chime helper
   const playAlertChime = (type: 'order_placed' | 'order_cancelled') => {
@@ -100,7 +101,29 @@ export default function AdminDashboardPage() {
       const res = await fetch('/api/contact');
       const data = await res.json();
       if (res.ok && data.success && Array.isArray(data.queries)) {
-        setContactQueries(data.queries);
+        const fetchedQueries: any[] = data.queries;
+        setContactQueries(fetchedQueries);
+
+        const currentSet = prevQueriesRef.current;
+        fetchedQueries.forEach((q) => {
+          if (!currentSet.has(q.id)) {
+            if (currentSet.size > 0) {
+              const alertMsg = `📩 New Customer Query from ${q.name}: "${q.subject}"`;
+              showToast(alertMsg, 'success');
+              playAlertChime('order_placed');
+              setAdminAlerts((prev) => [
+                {
+                  id: `alert-query-${Date.now()}-${Math.random()}`,
+                  type: 'query_received',
+                  message: alertMsg,
+                  timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+                },
+                ...prev.slice(0, 19),
+              ]);
+            }
+            currentSet.add(q.id);
+          }
+        });
       }
     } catch (e) {}
   };

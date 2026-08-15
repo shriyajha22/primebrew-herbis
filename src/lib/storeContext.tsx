@@ -56,7 +56,17 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const [appliedCoupon, setAppliedCoupon] = useState<Coupon | null>(null);
   const [giftWrap, setGiftWrap] = useState(false);
   const [wishlist, setWishlist] = useState<string[]>([]);
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [currentUser, setCurrentUser] = useState<User | null>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const stored = localStorage.getItem('pbh_user_session');
+        return stored ? JSON.parse(stored) : null;
+      } catch (e) {
+        return null;
+      }
+    }
+    return null;
+  });
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [toasts, setToasts] = useState<Toast[]>([]);
@@ -111,6 +121,15 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
 
   const handleSetCurrentUser = (user: User | null) => {
     setCurrentUser(user);
+    if (typeof window !== 'undefined') {
+      try {
+        if (user) {
+          localStorage.setItem('pbh_user_session', JSON.stringify(user));
+        } else {
+          localStorage.removeItem('pbh_user_session');
+        }
+      } catch (e) {}
+    }
     syncUserCartAndWishlist(user);
   };
 
@@ -121,24 +140,12 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       .then((data) => {
         if (data.success && data.user) {
           handleSetCurrentUser(data.user);
-        } else {
-          // Unauthenticated guest: load guest cart
-          try {
-            const guestCart = localStorage.getItem('pbh_cart_guest');
-            if (guestCart) {
-              setCart(JSON.parse(guestCart));
-            }
-          } catch (e) {}
+        } else if (data.status === 401 || data.message?.includes('Unauthenticated')) {
+          // Only clear if server explicitly rejects token
+          // handleSetCurrentUser(null);
         }
       })
-      .catch((e) => {
-        try {
-          const guestCart = localStorage.getItem('pbh_cart_guest');
-          if (guestCart) {
-            setCart(JSON.parse(guestCart));
-          }
-        } catch (e) {}
-      });
+      .catch((e) => {});
   }, []);
 
   // Save cart changes to customer-specific storage

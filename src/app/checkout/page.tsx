@@ -222,17 +222,22 @@ export default function CheckoutPage() {
 
   // Check authentication status and redirect if unauthenticated
   useEffect(() => {
-    if (!currentUser && typeof window !== 'undefined') {
-      const timer = setTimeout(() => {
-        if (!currentUser) {
-          router.push('/login?redirect=/checkout&message=Please login or create an account to place your order.');
-        }
-      }, 300);
-      return () => clearTimeout(timer);
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('pbh_user_session');
+      if (!currentUser && !stored) {
+        const timer = setTimeout(() => {
+          if (!currentUser && !localStorage.getItem('pbh_user_session')) {
+            router.push('/login?redirect=/checkout&message=Please login or create an account to place your order.');
+          }
+        }, 800);
+        return () => clearTimeout(timer);
+      }
     }
   }, [currentUser, router]);
 
-  if (!currentUser && !completedOrder) {
+  const hasSessionCache = typeof window !== 'undefined' && Boolean(localStorage.getItem('pbh_user_session'));
+
+  if (!currentUser && !hasSessionCache && !completedOrder) {
     return (
       <div className="py-16 bg-brand-cream min-h-[80vh] flex items-center justify-center px-4">
         <div className="bg-white rounded-card border border-brand-mint/40 shadow-premium p-8 max-w-lg w-full text-center space-y-6">

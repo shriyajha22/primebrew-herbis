@@ -459,61 +459,6 @@ export default function AdminDashboardPage() {
     }
   };
 
-  const handleSimulateNewOrder = async () => {
-    const testNames = ['Vikram Malhotra', 'Priya Sharma', 'Rahul Verma', 'Sneha Patel', 'Anish Kapoor'];
-    const randomName = testNames[Math.floor(Math.random() * testNames.length)];
-    const testItems = [
-      { productId: 'prod-1', productName: 'Blue Tea (Butterfly Pea)', weight: '30 Tea Bags', quantity: 2, price: 249 },
-      { productId: 'prod-2', productName: 'Chamomile Relaxing Tea', weight: '50g Loose Leaf', quantity: 1, price: 299 },
-    ];
-
-    try {
-      const res = await fetch('/api/orders', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          items: testItems,
-          shippingAddress: {
-            fullName: randomName,
-            phone: '9876543210',
-            email: `${randomName.toLowerCase().replace(/\s+/g, '.')}@example.com`,
-            street: '123 MG Road, Suite 4',
-            city: 'New Delhi',
-            state: 'Delhi',
-            pincode: '110001',
-          },
-          paymentMethod: 'Cash on Delivery',
-          subtotal: 797,
-          discount: 50,
-          shippingFee: 0,
-          tax: 37.35,
-          total: 784.35,
-        }),
-      });
-
-      const data = await res.json();
-      if (res.ok && data.success && data.order) {
-        const ord = data.order;
-        const alertMsg = `🛒 New Order #${ord.orderNumber} placed by ${randomName} for ₹${ord.total}`;
-        showToast(alertMsg, 'success');
-        playAlertChime('order_placed');
-        setAdminAlerts((prev) => [
-          {
-            id: `alert-${Date.now()}-${Math.random()}`,
-            type: 'order_placed',
-            message: alertMsg,
-            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
-          },
-          ...prev.slice(0, 19),
-        ]);
-        fetchLiveData();
-      }
-    } catch (e) {
-      showToast('Triggered sample new order notification', 'success');
-      playAlertChime('order_placed');
-    }
-  };
-
   return (
     <div className="py-12 bg-brand-cream min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -548,13 +493,6 @@ export default function AdminDashboardPage() {
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
-            <button
-              onClick={handleSimulateNewOrder}
-              className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-4 py-3 rounded-button shadow-soft flex items-center gap-2 transition-all animate-pulse"
-            >
-              <Bell className="w-4 h-4 text-brand-gold" />
-              <span>Trigger New Order Alert</span>
-            </button>
             <button
               onClick={() => setActiveTab('queries')}
               className="bg-brand-mint/30 hover:bg-brand-mint/50 text-white font-bold text-xs px-4 py-3 rounded-button border border-brand-mint/50 flex items-center gap-2 transition-colors relative"

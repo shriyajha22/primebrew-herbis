@@ -38,6 +38,7 @@ export default function AdminDashboardPage() {
   const [activeTab, setActiveTab] = useState<'overview' | 'activity' | 'orders' | 'customers' | 'products' | 'queries'>('overview');
   const [showAddModal, setShowAddModal] = useState(false);
   const [selectedOrderDetails, setSelectedOrderDetails] = useState<any | null>(null);
+  const [selectedQueryDetails, setSelectedQueryDetails] = useState<any | null>(null);
 
   const [adminOrders, setAdminOrders] = useState<any[]>([]);
   const [customersList, setCustomersList] = useState<any[]>([]);
@@ -399,7 +400,19 @@ export default function AdminDashboardPage() {
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
+            <button
+              onClick={() => setActiveTab('queries')}
+              className="bg-brand-mint/30 hover:bg-brand-mint/50 text-white font-bold text-xs px-4 py-3 rounded-button border border-brand-mint/50 flex items-center gap-2 transition-colors relative"
+            >
+              <MessageSquare className="w-4 h-4 text-brand-gold" />
+              <span>Customer Queries</span>
+              {contactQueries.filter((q) => q.status === 'Unread').length > 0 && (
+                <span className="bg-amber-500 text-white text-[10px] font-extrabold px-2 py-0.5 rounded-full animate-bounce">
+                  {contactQueries.filter((q) => q.status === 'Unread').length} New
+                </span>
+              )}
+            </button>
             <button
               onClick={() => {
                 fetchLiveData();
@@ -643,6 +656,14 @@ export default function AdminDashboardPage() {
 
                     <div className="flex items-center justify-between pt-1">
                       <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => setSelectedQueryDetails(q)}
+                          className="bg-brand-gold text-brand-darkGreen font-bold text-[11px] px-3.5 py-1.5 rounded-button flex items-center gap-1.5 hover:bg-white transition-colors shadow-gold"
+                        >
+                          <Eye className="w-3.5 h-3.5 text-brand-darkGreen" />
+                          <span>View Query Info</span>
+                        </button>
+
                         <a
                           href={`mailto:${q.email}?subject=${encodeURIComponent(`Re: ${q.subject} - PrimeBrew Herbis`)}&body=${encodeURIComponent(`Dear ${q.name},\n\nThank you for reaching out to PrimeBrew Herbis!\n\n`)}`}
                           className="bg-brand-darkGreen hover:bg-brand-green text-white font-bold text-[11px] px-3.5 py-1.5 rounded-button flex items-center gap-1.5 transition-colors"
@@ -1412,6 +1433,92 @@ export default function AdminDashboardPage() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* View Customer Query Details Modal Popup */}
+      {selectedQueryDetails && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-modal shadow-premium w-full max-w-lg p-6 space-y-4 text-xs">
+            <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+              <div className="flex items-center gap-2">
+                <div className="w-9 h-9 rounded-full bg-brand-mint/30 flex items-center justify-center text-brand-darkGreen">
+                  <MessageSquare className="w-5 h-5 text-brand-green" />
+                </div>
+                <div>
+                  <h3 className="font-heading font-extrabold text-base text-brand-darkGreen">
+                    Customer Query Info
+                  </h3>
+                  <p className="text-[11px] text-gray-500 font-mono">Query ID: {selectedQueryDetails.id}</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setSelectedQueryDetails(null)}
+                className="text-gray-400 hover:text-gray-700 text-lg font-bold p-1"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="space-y-3">
+              <div className="bg-brand-beige p-3.5 rounded-card border border-brand-mint/30 space-y-1.5 text-gray-700">
+                <p>Customer Name: <strong className="text-gray-900 font-bold">{selectedQueryDetails.name}</strong></p>
+                <p>Email Address: <a href={`mailto:${selectedQueryDetails.email}`} className="text-brand-green font-bold hover:underline">{selectedQueryDetails.email}</a></p>
+                {selectedQueryDetails.phone && <p>Phone Number: <a href={`tel:${selectedQueryDetails.phone}`} className="text-brand-darkGreen font-mono font-bold hover:underline">{selectedQueryDetails.phone}</a></p>}
+                <p>Submitted On: <strong className="text-gray-800">{new Date(selectedQueryDetails.createdAt).toLocaleString()}</strong></p>
+                <p>Current Status: <span className={`font-bold px-2 py-0.5 rounded text-[10px] ${
+                  selectedQueryDetails.status === 'Unread' ? 'bg-amber-100 text-amber-900 border border-amber-300' : 'bg-emerald-100 text-emerald-900 border border-emerald-300'
+                }`}>{selectedQueryDetails.status}</span></p>
+              </div>
+
+              <div className="space-y-1">
+                <label className="font-bold text-brand-darkGreen uppercase text-[10px]">Subject</label>
+                <p className="font-bold text-gray-900 text-sm bg-gray-50 p-2.5 rounded border border-gray-200">{selectedQueryDetails.subject}</p>
+              </div>
+
+              <div className="space-y-1">
+                <label className="font-bold text-brand-darkGreen uppercase text-[10px]">Customer Message</label>
+                <div className="bg-gray-50 p-3 rounded border border-gray-200 text-gray-800 font-medium leading-relaxed max-h-48 overflow-y-auto">
+                  <p className="whitespace-pre-wrap">{selectedQueryDetails.message}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+              <div className="flex items-center gap-2">
+                <a
+                  href={`mailto:${selectedQueryDetails.email}?subject=${encodeURIComponent(`Re: ${selectedQueryDetails.subject} - PrimeBrew Herbis`)}&body=${encodeURIComponent(`Dear ${selectedQueryDetails.name},\n\nThank you for reaching out to PrimeBrew Herbis!\n\n`)}`}
+                  className="bg-brand-darkGreen hover:bg-brand-green text-white font-bold text-xs px-4 py-2.5 rounded-button flex items-center gap-1.5 transition-colors shadow-soft"
+                >
+                  <Mail className="w-4 h-4 text-brand-gold" />
+                  <span>Reply via Email</span>
+                </a>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    handleMarkQueryReplied(selectedQueryDetails.id, selectedQueryDetails.status);
+                    setSelectedQueryDetails({
+                      ...selectedQueryDetails,
+                      status: selectedQueryDetails.status === 'Replied' ? 'Unread' : 'Replied',
+                    });
+                  }}
+                  className="bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold text-xs px-3.5 py-2.5 rounded-button flex items-center gap-1 transition-colors"
+                >
+                  <Check className="w-4 h-4" />
+                  <span>{selectedQueryDetails.status === 'Replied' ? 'Mark Unread' : 'Mark as Replied'}</span>
+                </button>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setSelectedQueryDetails(null)}
+                className="px-4 py-2.5 rounded-button bg-gray-100 text-gray-700 font-semibold hover:bg-gray-200 transition-colors"
+              >
+                Close
+              </button>
+            </div>
           </div>
         </div>
       )}

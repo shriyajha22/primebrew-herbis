@@ -150,6 +150,7 @@ export default function CheckoutPage() {
       const data = await res.json();
 
       if (res.ok && data.success && data.order) {
+        setCompletedOrder(data.order);
         clearCart();
 
         // Save order to localStorage as local fallback
@@ -188,7 +189,12 @@ export default function CheckoutPage() {
         }
 
         showToast(`Order ${data.order.orderNumber} Placed Successfully!`, 'success');
-        router.push(`/order-confirmation?orderId=${encodeURIComponent(data.order._id)}&orderNumber=${encodeURIComponent(data.order.orderNumber)}`);
+        const targetUrl = `/order-confirmation?orderId=${encodeURIComponent(data.order._id)}&orderNumber=${encodeURIComponent(data.order.orderNumber)}`;
+        if (typeof window !== 'undefined') {
+          window.location.href = targetUrl;
+        } else {
+          router.push(targetUrl);
+        }
       } else {
         showToast(data.message || 'Failed to place order. Please try again.', 'error');
       }

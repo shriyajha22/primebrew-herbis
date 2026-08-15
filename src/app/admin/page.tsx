@@ -32,7 +32,7 @@ import {
 } from 'lucide-react';
 
 export default function AdminDashboardPage() {
-  const { currentUser, loginAsDemoAdmin, showToast } = useStore();
+  const { currentUser, showToast } = useStore();
   const [productsList, setProductsList] = useState<Product[]>([...initialProducts]);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [editingOrder, setEditingOrder] = useState<any | null>(null);
@@ -280,15 +280,6 @@ export default function AdminDashboardPage() {
           <Link href="/admin/login" className="inline-block bg-brand-darkGreen hover:bg-brand-green text-white font-bold text-xs px-6 py-3.5 rounded-button transition-colors shadow-soft">
             Log In via Admin Login Portal
           </Link>
-          <button
-            onClick={() => {
-              loginAsDemoAdmin();
-              showToast('Admin access granted via demo session!', 'success');
-            }}
-            className="inline-block bg-brand-gold hover:bg-amber-400 text-brand-darkGreen font-extrabold text-xs px-6 py-3.5 rounded-button transition-all shadow-gold"
-          >
-            ⚡ Instant Demo Admin Access
-          </button>
           <Link href="/" className="text-xs text-gray-500 hover:text-brand-green font-semibold pt-1">
             ← Return to Main Storefront
           </Link>

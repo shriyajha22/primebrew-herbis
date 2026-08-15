@@ -400,7 +400,7 @@ export default function AdminDashboardPage() {
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex items-center gap-3">
             <button
               onClick={() => setActiveTab('queries')}
               className="bg-brand-mint/30 hover:bg-brand-mint/50 text-white font-bold text-xs px-4 py-3 rounded-button border border-brand-mint/50 flex items-center gap-2 transition-colors relative"

@@ -222,17 +222,18 @@ export default function CheckoutPage() {
 
   // Check authentication status and redirect if unauthenticated
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem('pbh_user_session');
-      if (!currentUser && !stored) {
-        const timer = setTimeout(() => {
-          if (!currentUser && !localStorage.getItem('pbh_user_session')) {
-            router.push('/login?redirect=/checkout&message=Please login or create an account to place your order.');
-          }
-        }, 800);
-        return () => clearTimeout(timer);
+    if (typeof window === 'undefined') return;
+
+    const stored = localStorage.getItem('pbh_user_session');
+    if (currentUser || stored) return;
+
+    const timer = setTimeout(() => {
+      if (!currentUser && !localStorage.getItem('pbh_user_session')) {
+        router.push('/login?redirect=/checkout&message=Please login or create an account to place your order.');
       }
-    }
+    }, 800);
+
+    return () => clearTimeout(timer);
   }, [currentUser, router]);
 
   const hasSessionCache = typeof window !== 'undefined' && Boolean(localStorage.getItem('pbh_user_session'));

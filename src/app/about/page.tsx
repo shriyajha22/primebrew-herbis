@@ -70,7 +70,7 @@ export default function AboutPage() {
         {/* Certifications */}
         <div className="bg-brand-darkGreen text-white p-10 rounded-card shadow-premium space-y-6 text-center mt-16">
           <h2 className="font-heading font-bold text-2xl text-white">Our Quality & Sustainability Promise</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 text-xs text-brand-beige">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-xs text-brand-beige">
             <div className="p-4 bg-white/10 rounded-card border border-white/10">
               <ShieldCheck className="w-8 h-8 text-brand-gold mx-auto mb-2" />
               <h4 className="font-bold text-white">100% Farm Fresh</h4>
@@ -78,10 +78,6 @@ export default function AboutPage() {
             <div className="p-4 bg-white/10 rounded-card border border-white/10">
               <Heart className="w-8 h-8 text-brand-gold mx-auto mb-2" />
               <h4 className="font-bold text-white">Women-Founded</h4>
-            </div>
-            <div className="p-4 bg-white/10 rounded-card border border-white/10">
-              <Award className="w-8 h-8 text-brand-gold mx-auto mb-2" />
-              <h4 className="font-bold text-white">FSSAI Certified</h4>
             </div>
             <div className="p-4 bg-white/10 rounded-card border border-white/10">
               <CheckCircle2 className="w-8 h-8 text-brand-gold mx-auto mb-2" />

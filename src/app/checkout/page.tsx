@@ -49,9 +49,7 @@ export default function CheckoutPage() {
   // Validation Errors
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  // GST & Payment states
-  const [wantGstInvoice, setWantGstInvoice] = useState(false);
-  const [gstDetails, setGstDetails] = useState({ companyName: '', gstin: '' });
+  // Payment & Order states
   const paymentMethod = 'Cash on Delivery';
   const [isProcessing, setIsProcessing] = useState(false);
   const [completedOrder, setCompletedOrder] = useState<Order | null>(null);
@@ -97,15 +95,6 @@ export default function CheckoutPage() {
       newErrors.pincode = 'Pincode must be exactly 6 digits.';
     }
 
-    if (wantGstInvoice) {
-      if (!gstDetails.companyName.trim()) {
-        newErrors.companyName = 'Company name is required for GST invoice.';
-      }
-      if (!gstDetails.gstin.trim()) {
-        newErrors.gstin = 'GSTIN number is required.';
-      }
-    }
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -132,7 +121,6 @@ export default function CheckoutPage() {
           price: c.unitPrice,
         })),
         shippingAddress: address,
-        gstInvoice: wantGstInvoice ? gstDetails : undefined,
         paymentMethod,
         subtotal: cartSubtotal,
         discount: cartDiscount,
@@ -623,49 +611,7 @@ export default function CheckoutPage() {
               </div>
             </div>
 
-            {/* GST Invoice Option */}
-            <div className="bg-white rounded-card border border-brand-mint/30 shadow-card p-6 space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 font-heading font-bold text-sm text-brand-darkGreen">
-                  <Building className="w-4 h-4 text-brand-green" /> GST Business Invoice (Optional)
-                </div>
-                <input
-                  type="checkbox"
-                  checked={wantGstInvoice}
-                  onChange={(e) => setWantGstInvoice(e.target.checked)}
-                  className="w-4 h-4 accent-brand-green cursor-pointer"
-                />
-              </div>
 
-              {wantGstInvoice && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs pt-2 border-t border-gray-100">
-                  <div>
-                    <label className="font-semibold text-gray-600 block mb-1">Registered Company Name</label>
-                    <input
-                      type="text"
-                      placeholder="e.g. Acme Organic Foods Pvt Ltd"
-                      value={gstDetails.companyName}
-                      onChange={(e) => setGstDetails({ ...gstDetails, companyName: e.target.value })}
-                      required={wantGstInvoice}
-                      className="w-full p-2.5 rounded-input border border-gray-300"
-                    />
-                    {errors.companyName && <p className="text-red-500 text-[11px] mt-1">{errors.companyName}</p>}
-                  </div>
-                  <div>
-                    <label className="font-semibold text-gray-600 block mb-1">GSTIN Number</label>
-                    <input
-                      type="text"
-                      placeholder="29AAAAA0000A1Z5"
-                      value={gstDetails.gstin}
-                      onChange={(e) => setGstDetails({ ...gstDetails, gstin: e.target.value })}
-                      required={wantGstInvoice}
-                      className="w-full p-2.5 rounded-input border border-gray-300"
-                    />
-                    {errors.gstin && <p className="text-red-500 text-[11px] mt-1">{errors.gstin}</p>}
-                  </div>
-                </div>
-              )}
-            </div>
 
             {/* Payment Method - COD Only */}
             <div className="bg-white rounded-card border border-brand-mint/30 shadow-card p-6 space-y-4">

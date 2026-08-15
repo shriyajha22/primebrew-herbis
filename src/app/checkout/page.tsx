@@ -138,7 +138,6 @@ export default function CheckoutPage() {
       const data = await res.json();
 
       if (res.ok && data.success && data.order) {
-        setCompletedOrder(data.order);
         clearCart();
 
         // Save order to localStorage as local fallback
@@ -178,11 +177,7 @@ export default function CheckoutPage() {
 
         showToast(`Order ${data.order.orderNumber} Placed Successfully!`, 'success');
         const targetUrl = `/order-confirmation?orderId=${encodeURIComponent(data.order._id)}&orderNumber=${encodeURIComponent(data.order.orderNumber)}`;
-        if (typeof window !== 'undefined') {
-          window.location.href = targetUrl;
-        } else {
-          router.push(targetUrl);
-        }
+        router.replace(targetUrl);
       } else {
         showToast(data.message || 'Failed to place order. Please try again.', 'error');
       }
@@ -216,122 +211,7 @@ export default function CheckoutPage() {
 
 
 
-  if (completedOrder) {
-    return (
-      <div className="py-12 bg-brand-cream min-h-screen">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-white rounded-card border border-brand-mint/30 shadow-premium p-8 space-y-6">
-            <div className="text-center space-y-2 border-b border-gray-100 pb-6">
-              <div className="w-16 h-16 bg-sky-100 text-sky-600 rounded-full flex items-center justify-center mx-auto mb-2">
-                <CheckCircle2 className="w-10 h-10" />
-              </div>
-              <span className="text-xs font-bold uppercase tracking-widest text-amber-700 bg-amber-50 border border-amber-200 px-3 py-1 rounded-badge">
-                Order Confirmed (Cash on Delivery)
-              </span>
-              <h1 className="font-heading font-extrabold text-2xl sm:text-3xl text-brand-darkGreen">
-                Your order has been placed successfully!
-              </h1>
-              <p className="text-xs text-gray-500">
-                Order Number: <strong className="text-brand-darkGreen font-mono">{completedOrder.orderNumber}</strong> • Date: <strong className="text-brand-darkGreen">{new Date(completedOrder.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</strong>
-              </p>
-            </div>
 
-            {/* Order Details Invoice View */}
-            <div className="bg-brand-beige p-5 rounded-card border border-brand-mint/30 text-xs space-y-4">
-              <div className="flex justify-between items-center border-b border-gray-200 pb-3">
-                <div className="flex items-center gap-3">
-                  <Image
-                    src="/images/logo.png"
-                    alt="PrimeBrew Herbis Logo"
-                    width={140}
-                    height={40}
-                    className="h-9 w-auto object-contain"
-                  />
-                  <div>
-                    <h3 className="font-bold text-brand-darkGreen">Official Tax Invoice</h3>
-                    <p className="text-[11px] text-gray-500">Farm to Cup. Nature in Every Sip.</p>
-                  </div>
-                </div>
-                <button
-                  onClick={handlePrintInvoice}
-                  className="bg-brand-darkGreen text-white text-xs font-semibold px-3.5 py-2 rounded-button flex items-center gap-1.5 hover:bg-brand-green transition-colors"
-                >
-                  <Download className="w-4 h-4" /> Print / Save Invoice
-                </button>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-gray-600">
-                <div>
-                  <p className="font-bold text-brand-darkGreen">Customer & Delivery Details:</p>
-                  <p className="font-semibold text-gray-800">{completedOrder.shippingAddress.fullName}</p>
-                  <p>{completedOrder.shippingAddress.street}</p>
-                  <p>{completedOrder.shippingAddress.city}, {completedOrder.shippingAddress.state} - {completedOrder.shippingAddress.pincode}</p>
-                  <p>Phone: <span className="font-mono text-gray-800">{completedOrder.shippingAddress.phone}</span></p>
-                  <p>Email: <span className="text-gray-800">{completedOrder.shippingAddress.email}</span></p>
-                </div>
-                <div>
-                  <p className="font-bold text-brand-darkGreen">Shipment & Payment Info:</p>
-                  <p>Order Status: <strong className="text-sky-700 bg-sky-50 px-2 py-0.5 rounded text-[11px] font-bold">{completedOrder.orderStatus}</strong></p>
-                  <p>Payment Method: <strong className="text-amber-800 font-bold">Cash on Delivery (COD)</strong></p>
-                  <p>Payment Status: <strong className="text-amber-700 font-bold">Pending Collection on Delivery</strong></p>
-                  <p>Courier Partner: <strong>{completedOrder.courierName}</strong></p>
-                  <p>AWB Number: <strong className="font-mono text-brand-green">{completedOrder.trackingNumber}</strong></p>
-                  <p>Est. Delivery: <strong>{completedOrder.estimatedDelivery}</strong></p>
-                </div>
-              </div>
-
-              {completedOrder.gstInvoice && (
-                <div className="bg-sky-50 p-2.5 rounded border border-sky-200 text-sky-900">
-                  <p className="font-bold">GST B2B Tax Invoice Issued:</p>
-                  <p>Company: {completedOrder.gstInvoice.companyName} | GSTIN: {completedOrder.gstInvoice.gstin}</p>
-                </div>
-              )}
-
-              {/* Items List */}
-              <div className="space-y-3 pt-3 border-t border-gray-200">
-                <p className="font-bold text-brand-darkGreen">Ordered Products ({completedOrder.items.length}):</p>
-                {completedOrder.items.map((item, i) => (
-                  <div key={i} className="flex justify-between items-center text-xs bg-white p-2.5 rounded border border-gray-100">
-                    <div className="flex items-center gap-3">
-                      {item.productImage && (
-                        <div className="w-10 h-10 relative rounded overflow-hidden bg-gray-50 flex-shrink-0">
-                          <Image src={item.productImage} alt={item.productName} fill className="object-cover" />
-                        </div>
-                      )}
-                      <div>
-                        <p className="font-bold text-brand-darkGreen">{item.productName}</p>
-                        <p className="text-gray-500 text-[11px]">Variant: {item.weight} • Qty: {item.quantity}</p>
-                      </div>
-                    </div>
-                    <span className="font-bold text-brand-darkGreen font-mono">₹{item.price * item.quantity}</span>
-                  </div>
-                ))}
-                <div className="pt-2 border-t border-gray-200 flex justify-between font-bold text-brand-darkGreen">
-                  <span>Total Amount Payable (Cash on Delivery)</span>
-                  <span className="text-brand-green text-base">₹{completedOrder.total}</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex flex-col sm:flex-row gap-3">
-              <Link
-                href="/dashboard?tab=orders"
-                className="flex-1 bg-brand-darkGreen hover:bg-brand-green text-white font-bold text-xs py-3.5 rounded-button text-center transition-colors shadow-soft"
-              >
-                View My Order
-              </Link>
-              <Link
-                href="/shop"
-                className="flex-1 bg-brand-beige text-brand-darkGreen font-semibold text-xs py-3.5 rounded-button hover:bg-brand-mint/30 text-center border border-brand-mint/30"
-              >
-                Continue Shopping
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
 
   return (

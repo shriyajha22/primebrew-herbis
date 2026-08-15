@@ -9,7 +9,7 @@ import { Product } from '@/lib/types';
 import {
   Shield,
   TrendingUp,
-  DollarSign,
+  IndianRupee,
   ShoppingBag,
   Users,
   Plus,
@@ -24,11 +24,13 @@ import {
   XCircle,
   Eye,
   Radio,
+  Pencil,
 } from 'lucide-react';
 
 export default function AdminDashboardPage() {
   const { currentUser, loginAsDemoAdmin, showToast } = useStore();
   const [productsList, setProductsList] = useState<Product[]>([...initialProducts]);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [activeTab, setActiveTab] = useState<'overview' | 'activity' | 'orders' | 'customers' | 'products'>('overview');
   const [showAddModal, setShowAddModal] = useState(false);
   const [selectedOrderDetails, setSelectedOrderDetails] = useState<any | null>(null);
@@ -197,6 +199,15 @@ export default function AdminDashboardPage() {
     showToast(`New product "${created.name}" created!`, 'success');
   };
 
+  const handleSaveEditProduct = () => {
+    if (!editingProduct) return;
+    setProductsList((prev) =>
+      prev.map((p) => (p._id === editingProduct._id ? editingProduct : p))
+    );
+    showToast(`Product "${editingProduct.name}" updated successfully!`, 'success');
+    setEditingProduct(null);
+  };
+
   const handleDeleteProduct = (id: string) => {
     setProductsList(productsList.filter((p) => p._id !== id));
     showToast('Product removed from catalog', 'info');
@@ -343,7 +354,7 @@ export default function AdminDashboardPage() {
           <div className="bg-white p-4 rounded-card border border-brand-mint/30 shadow-card">
             <div className="flex items-center justify-between text-[11px] text-gray-500 mb-1">
               <span>Today&apos;s Revenue</span>
-              <DollarSign className="w-4 h-4 text-brand-gold" />
+              <IndianRupee className="w-4 h-4 text-brand-gold" />
             </div>
             <span className="font-heading font-extrabold text-xl text-brand-darkGreen">
               ₹{liveKpis.todaysRevenue?.toLocaleString('en-IN') || 0}
@@ -649,7 +660,8 @@ export default function AdminDashboardPage() {
                 <tr>
                   <th className="p-4">Product Name</th>
                   <th className="p-4">Category</th>
-                  <th className="p-4">Price</th>
+                  <th className="p-4">Price / MRP</th>
+                  <th className="p-4">Packaging Unit</th>
                   <th className="p-4">Stock</th>
                   <th className="p-4 text-right">Actions</th>
                 </tr>
@@ -658,7 +670,7 @@ export default function AdminDashboardPage() {
                 {productsList.map((p) => (
                   <tr key={p._id} className="hover:bg-brand-cream/40">
                     <td className="p-4 flex items-center gap-3">
-                      <div className="w-10 h-10 rounded bg-brand-beige relative overflow-hidden flex-shrink-0">
+                      <div className="w-10 h-10 rounded bg-brand-beige relative overflow-hidden flex-shrink-0 border border-gray-200">
                         <Image src={p.images[0]} alt="" fill className="object-cover" />
                       </div>
                       <div>
@@ -666,21 +678,38 @@ export default function AdminDashboardPage() {
                         <span className="text-[10px] text-gray-400">SKU: {p.sku}</span>
                       </div>
                     </td>
-                    <td className="p-4 uppercase font-semibold text-brand-green">{p.categoryName}</td>
-                    <td className="p-4 font-bold">₹{p.price}</td>
+                    <td className="p-4 uppercase font-semibold text-brand-green">{p.categoryName || p.category}</td>
+                    <td className="p-4 font-bold">
+                      ₹{p.price} <span className="text-[11px] text-gray-400 line-through font-normal">₹{p.mrp}</span>
+                    </td>
+                    <td className="p-4">
+                      <span className="bg-brand-mint/30 text-brand-darkGreen px-2.5 py-1 rounded text-[11px] font-semibold border border-brand-mint/40">
+                        {p.weightVariants?.[0]?.weight || '30 Tea Bags'}
+                      </span>
+                    </td>
                     <td className="p-4 font-bold">
                       <span className={p.stock < 50 ? 'text-amber-600 font-extrabold' : 'text-sky-600'}>
                         {p.stock} units
                       </span>
                     </td>
                     <td className="p-4 text-right">
-                      <button
-                        onClick={() => handleDeleteProduct(p._id)}
-                        className="text-red-600 hover:bg-red-50 p-2 rounded-button"
-                        title="Delete Product"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
+                      <div className="flex items-center justify-end gap-2">
+                        <button
+                          onClick={() => setEditingProduct(p)}
+                          className="inline-flex items-center gap-1 bg-brand-beige hover:bg-brand-mint/40 text-brand-darkGreen border border-brand-mint/40 px-2.5 py-1.5 rounded-button text-xs font-semibold transition-colors"
+                          title="Edit Product & Unit"
+                        >
+                          <Pencil className="w-3.5 h-3.5 text-brand-green" />
+                          <span>Edit</span>
+                        </button>
+                        <button
+                          onClick={() => handleDeleteProduct(p._id)}
+                          className="text-red-600 hover:bg-red-50 p-1.5 rounded-button transition-colors"
+                          title="Delete Product"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -927,6 +956,185 @@ export default function AdminDashboardPage() {
                 )}
               </button>
             </div>
+          </div>
+        </div>
+      )}
+      {/* Edit Product Modal */}
+      {editingProduct && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-modal shadow-premium w-full max-w-lg p-6 space-y-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center border-b border-gray-200 pb-3">
+              <div>
+                <h3 className="font-heading font-extrabold text-lg text-brand-darkGreen">Edit Herbal Product & Unit</h3>
+                <p className="text-xs text-gray-500">SKU: {editingProduct.sku}</p>
+              </div>
+              <button
+                onClick={() => setEditingProduct(null)}
+                className="text-gray-400 hover:text-gray-700 font-bold text-base px-2"
+              >
+                ✕
+              </button>
+            </div>
+
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleSaveEditProduct();
+              }}
+              className="space-y-3 text-xs"
+            >
+              <div>
+                <label className="font-semibold text-gray-600 block mb-1">Product Title</label>
+                <input
+                  type="text"
+                  value={editingProduct.name}
+                  onChange={(e) => setEditingProduct({ ...editingProduct, name: e.target.value })}
+                  required
+                  className="w-full p-2.5 rounded-input border border-gray-300 focus:border-brand-green"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="font-semibold text-gray-600 block mb-1">Category</label>
+                  <select
+                    value={editingProduct.category}
+                    onChange={(e) =>
+                      setEditingProduct({
+                        ...editingProduct,
+                        category: e.target.value,
+                        categoryName: e.target.value.replace('-', ' ').toUpperCase(),
+                      })
+                    }
+                    className="w-full p-2.5 rounded-input border border-gray-300 focus:border-brand-green"
+                  >
+                    <option value="blue-tea">Blue Tea</option>
+                    <option value="wellness-tea">Wellness Tea</option>
+                    <option value="ayurvedic-tea">Ayurvedic Tea</option>
+                    <option value="detox-tea">Detox Tea</option>
+                    <option value="immunity-tea">Immunity Tea</option>
+                    <option value="sleep-tea">Sleep Tea</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="font-semibold text-gray-600 block mb-1">Packaging Unit / Weight</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. 30 Tea Bags, 50g Loose Leaf"
+                    value={editingProduct.weightVariants?.[0]?.weight || '30 Tea Bags'}
+                    onChange={(e) => {
+                      const newWeight = e.target.value;
+                      const updatedVariants = editingProduct.weightVariants?.length
+                        ? [{ ...editingProduct.weightVariants[0], weight: newWeight }]
+                        : [{ weight: newWeight, price: editingProduct.price, mrp: editingProduct.mrp }];
+                      setEditingProduct({
+                        ...editingProduct,
+                        subtitle: `Artisanal Organic Herbal Blend (${newWeight})`,
+                        weightVariants: updatedVariants,
+                      });
+                    }}
+                    required
+                    className="w-full p-2.5 rounded-input border border-gray-300 focus:border-brand-green"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-3 gap-3">
+                <div>
+                  <label className="font-semibold text-gray-600 block mb-1">Selling Price (₹)</label>
+                  <input
+                    type="number"
+                    value={editingProduct.price}
+                    onChange={(e) => {
+                      const val = Number(e.target.value);
+                      const mrp = editingProduct.mrp || val;
+                      const disc = mrp > val ? Math.round(((mrp - val) / mrp) * 100) : 0;
+                      setEditingProduct({
+                        ...editingProduct,
+                        price: val,
+                        discountPercentage: disc,
+                      });
+                    }}
+                    required
+                    className="w-full p-2.5 rounded-input border border-gray-300 focus:border-brand-green"
+                  />
+                </div>
+
+                <div>
+                  <label className="font-semibold text-gray-600 block mb-1">MRP (₹)</label>
+                  <input
+                    type="number"
+                    value={editingProduct.mrp}
+                    onChange={(e) => {
+                      const mrpVal = Number(e.target.value);
+                      const price = editingProduct.price;
+                      const disc = mrpVal > price ? Math.round(((mrpVal - price) / mrpVal) * 100) : 0;
+                      setEditingProduct({
+                        ...editingProduct,
+                        mrp: mrpVal,
+                        discountPercentage: disc,
+                      });
+                    }}
+                    required
+                    className="w-full p-2.5 rounded-input border border-gray-300 focus:border-brand-green"
+                  />
+                </div>
+
+                <div>
+                  <label className="font-semibold text-gray-600 block mb-1">Stock Units</label>
+                  <input
+                    type="number"
+                    value={editingProduct.stock}
+                    onChange={(e) =>
+                      setEditingProduct({
+                        ...editingProduct,
+                        stock: Number(e.target.value),
+                        inStock: Number(e.target.value) > 0,
+                      })
+                    }
+                    required
+                    className="w-full p-2.5 rounded-input border border-gray-300 focus:border-brand-green"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="font-semibold text-gray-600 block mb-1">Product Subtitle / Tagline</label>
+                <input
+                  type="text"
+                  value={editingProduct.subtitle || ''}
+                  onChange={(e) => setEditingProduct({ ...editingProduct, subtitle: e.target.value })}
+                  className="w-full p-2.5 rounded-input border border-gray-300 focus:border-brand-green"
+                />
+              </div>
+
+              <div>
+                <label className="font-semibold text-gray-600 block mb-1">Full Description</label>
+                <textarea
+                  value={editingProduct.description || ''}
+                  onChange={(e) => setEditingProduct({ ...editingProduct, description: e.target.value })}
+                  rows={3}
+                  className="w-full p-2.5 rounded-input border border-gray-300 focus:border-brand-green"
+                />
+              </div>
+
+              <div className="flex gap-2 pt-3 border-t border-gray-100">
+                <button
+                  type="submit"
+                  className="flex-1 bg-brand-green text-white font-bold py-2.5 rounded-button hover:bg-brand-darkGreen transition-colors shadow-soft"
+                >
+                  Save Product Changes
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setEditingProduct(null)}
+                  className="px-4 bg-gray-200 text-gray-700 font-bold py-2.5 rounded-button hover:bg-gray-300 transition-colors"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

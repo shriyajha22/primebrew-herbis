@@ -206,18 +206,26 @@ export default function AdminDashboardPage() {
         if (Array.isArray(data.activeSessions)) setActiveSessions(data.activeSessions);
 
         if (Array.isArray(data.orders)) {
-          const newOrders = data.orders;
+          // Strict filter to eliminate any leftover simulator or dummy test orders
+          const genuineOrders = data.orders.filter((ord: any) => {
+            const name = (ord.shippingAddress?.fullName || ord.customerName || '').toLowerCase();
+            const email = (ord.shippingAddress?.email || ord.email || '').toLowerCase();
+            const isDummyName = ['rahul verma', 'vikram malhotra', 'sneha patel', 'anish kapoor'].some((dn) => name.includes(dn));
+            const isDummyEmail = email.includes('example.com') || email.includes('test');
+            return !isDummyName && !isDummyEmail;
+          });
+
           const currentMap = prevOrdersRef.current;
 
           // Only trigger notifications after initial load (when map already initialized)
           if (currentMap.size > 0) {
-            newOrders.forEach((ord: any) => {
+            genuineOrders.forEach((ord: any) => {
               const orderIdKey = ord._id || ord.orderNumber;
               const prevStatus = currentMap.get(orderIdKey);
               const name = ord.shippingAddress?.fullName || ord.customerName || 'Customer';
 
               if (!prevStatus) {
-                // New Order Placed!
+                // Real Genuine Order Placed!
                 const alertMsg = `🛒 New Order #${ord.orderNumber} placed by ${name} for ₹${ord.total}`;
                 showToast(alertMsg, 'success');
                 playAlertChime('order_placed');
@@ -231,7 +239,7 @@ export default function AdminDashboardPage() {
                   ...prev.slice(0, 19),
                 ]);
               } else if (prevStatus !== 'Cancelled' && ord.orderStatus === 'Cancelled') {
-                // Order Cancelled!
+                // Genuine Order Cancelled!
                 const alertMsg = `❌ Order #${ord.orderNumber} was CANCELLED by ${ord.cancelledBy || 'Customer'}`;
                 showToast(alertMsg, 'error');
                 playAlertChime('order_cancelled');
@@ -250,11 +258,11 @@ export default function AdminDashboardPage() {
 
           // Update ref map
           const newMap = new Map<string, string>();
-          newOrders.forEach((ord: any) => {
+          genuineOrders.forEach((ord: any) => {
             newMap.set(ord._id || ord.orderNumber, ord.orderStatus || 'Processing');
           });
           prevOrdersRef.current = newMap;
-          setAdminOrders(newOrders);
+          setAdminOrders(genuineOrders);
         }
       }
     } catch (e) {
@@ -302,6 +310,23 @@ export default function AdminDashboardPage() {
 
   // Setup periodic 2.5s real-time live streaming loop when admin is logged in
   useEffect(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const stored = localStorage.getItem('pbh_orders');
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          const cleaned = parsed.filter((ord: any) => {
+            const name = (ord.shippingAddress?.fullName || ord.customerName || '').toLowerCase();
+            const email = (ord.shippingAddress?.email || ord.email || '').toLowerCase();
+            const isDummyName = ['rahul verma', 'vikram malhotra', 'sneha patel', 'anish kapoor'].some((dn) => name.includes(dn));
+            const isDummyEmail = email.includes('example.com') || email.includes('test');
+            return !isDummyName && !isDummyEmail;
+          });
+          localStorage.setItem('pbh_orders', JSON.stringify(cleaned));
+        }
+      } catch (e) {}
+    }
+
     if (currentUser?.role === 'admin') {
       fetchLiveData();
       fetchCustomers();

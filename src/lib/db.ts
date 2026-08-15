@@ -25,45 +25,7 @@ class InMemoryStore {
       walletBalance: 500
     }
   ];
-  orders: Order[] = [
-    {
-      _id: "ord-1001",
-      orderNumber: "PBH-2026-9812",
-      createdAt: "2026-08-03T10:15:00Z",
-      items: [
-        {
-          productId: "prod-1",
-          productName: "Blue Tea",
-          productImage: "/images/blue-tea.jpg",
-          image: "/images/blue-tea.jpg",
-          weight: "30 Tea Bags",
-          quantity: 2,
-          price: 249
-        }
-      ],
-      shippingAddress: {
-        fullName: "Priya Sharma",
-        phone: "+91 9876543210",
-        email: "priya@example.com",
-        street: "42 Tea Plantation Road, Green Valley",
-        city: "Bengaluru",
-        state: "Karnataka",
-        pincode: "560001",
-        isDefault: true
-      },
-      paymentMethod: "Cash on Delivery",
-      paymentStatus: "Pending",
-      orderStatus: "Shipped",
-      trackingNumber: "SR-884920194",
-      courierName: "Shiprocket Express",
-      subtotal: 498,
-      discount: 50,
-      shippingFee: 0,
-      tax: 22.4,
-      total: 470.4,
-      estimatedDelivery: "August 6, 2026"
-    }
-  ];
+  orders: Order[] = [];
 
   contactQueries: {
     id: string;

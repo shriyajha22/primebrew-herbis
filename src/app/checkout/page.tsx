@@ -189,6 +189,7 @@ export default function CheckoutPage() {
         }
 
         showToast(`Order ${data.order.orderNumber} Placed Successfully!`, 'success');
+        router.push(`/order-confirmation?orderId=${encodeURIComponent(data.order._id)}&orderNumber=${encodeURIComponent(data.order.orderNumber)}`);
       } else {
         showToast(data.message || 'Failed to place order. Please try again.', 'error');
       }

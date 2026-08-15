@@ -25,6 +25,7 @@ import {
   Eye,
   Radio,
   Pencil,
+  Bell,
 } from 'lucide-react';
 
 export default function AdminDashboardPage() {
@@ -54,6 +55,39 @@ export default function AdminDashboardPage() {
   const [customerToDelete, setCustomerToDelete] = useState<{ id: string; name: string; email: string } | null>(null);
   const [isDeletingCustomer, setIsDeletingCustomer] = useState(false);
 
+  // Real-time notifications state & tracking ref
+  const [adminAlerts, setAdminAlerts] = useState<{ id: string; type: 'order_placed' | 'order_cancelled'; message: string; timestamp: string }[]>([]);
+  const prevOrdersRef = React.useRef<Map<string, string>>(new Map());
+
+  // Web Audio chime helper
+  const playAlertChime = (type: 'order_placed' | 'order_cancelled') => {
+    try {
+      const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioContext) return;
+      const ctx = new AudioContext();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      if (type === 'order_placed') {
+        osc.frequency.setValueAtTime(587.33, ctx.currentTime);
+        osc.frequency.setValueAtTime(880, ctx.currentTime + 0.15);
+        gain.gain.setValueAtTime(0.1, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+        osc.start(ctx.currentTime);
+        osc.stop(ctx.currentTime + 0.4);
+      } else {
+        osc.frequency.setValueAtTime(440, ctx.currentTime);
+        osc.frequency.setValueAtTime(293.66, ctx.currentTime + 0.15);
+        gain.gain.setValueAtTime(0.12, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+        osc.start(ctx.currentTime);
+        osc.stop(ctx.currentTime + 0.5);
+      }
+    } catch (e) {}
+  };
+
   // Fetch real-time live data from `/api/admin/live`
   const fetchLiveData = async () => {
     try {
@@ -63,7 +97,58 @@ export default function AdminDashboardPage() {
         setIsLiveConnected(true);
         if (data.kpis) setLiveKpis(data.kpis);
         if (Array.isArray(data.activeSessions)) setActiveSessions(data.activeSessions);
-        if (Array.isArray(data.orders)) setAdminOrders(data.orders);
+
+        if (Array.isArray(data.orders)) {
+          const newOrders = data.orders;
+          const currentMap = prevOrdersRef.current;
+
+          // Only trigger notifications after initial load (when map already initialized)
+          if (currentMap.size > 0) {
+            newOrders.forEach((ord: any) => {
+              const orderIdKey = ord._id || ord.orderNumber;
+              const prevStatus = currentMap.get(orderIdKey);
+              const name = ord.shippingAddress?.fullName || ord.customerName || 'Customer';
+
+              if (!prevStatus) {
+                // New Order Placed!
+                const alertMsg = `🛒 New Order #${ord.orderNumber} placed by ${name} for ₹${ord.total}`;
+                showToast(alertMsg, 'success');
+                playAlertChime('order_placed');
+                setAdminAlerts((prev) => [
+                  {
+                    id: `alert-${Date.now()}-${Math.random()}`,
+                    type: 'order_placed',
+                    message: alertMsg,
+                    timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+                  },
+                  ...prev.slice(0, 19),
+                ]);
+              } else if (prevStatus !== 'Cancelled' && ord.orderStatus === 'Cancelled') {
+                // Order Cancelled!
+                const alertMsg = `❌ Order #${ord.orderNumber} was CANCELLED by ${ord.cancelledBy || 'Customer'}`;
+                showToast(alertMsg, 'error');
+                playAlertChime('order_cancelled');
+                setAdminAlerts((prev) => [
+                  {
+                    id: `alert-${Date.now()}-${Math.random()}`,
+                    type: 'order_cancelled',
+                    message: alertMsg,
+                    timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+                  },
+                  ...prev.slice(0, 19),
+                ]);
+              }
+            });
+          }
+
+          // Update ref map
+          const newMap = new Map<string, string>();
+          newOrders.forEach((ord: any) => {
+            newMap.set(ord._id || ord.orderNumber, ord.orderStatus || 'Processing');
+          });
+          prevOrdersRef.current = newMap;
+          setAdminOrders(newOrders);
+        }
       }
     } catch (e) {
       setIsLiveConnected(false);
@@ -287,6 +372,39 @@ export default function AdminDashboardPage() {
             </button>
           </div>
         </div>
+
+        {/* Real-Time Order Placement & Cancellation Live Feed Banner */}
+        {adminAlerts.length > 0 && (
+          <div className="bg-white rounded-card border border-brand-mint/40 p-4 mb-6 shadow-card space-y-2">
+            <div className="flex items-center justify-between border-b border-gray-100 pb-2">
+              <span className="text-xs font-extrabold text-brand-darkGreen flex items-center gap-2">
+                <Bell className="w-4 h-4 text-amber-500 animate-bounce" />
+                <span>Real-Time Order & Cancellation Notifications ({adminAlerts.length})</span>
+              </span>
+              <button
+                onClick={() => setAdminAlerts([])}
+                className="text-[11px] font-bold text-gray-400 hover:text-gray-700"
+              >
+                Clear Notifications
+              </button>
+            </div>
+            <div className="space-y-1.5 max-h-36 overflow-y-auto pr-1 text-xs">
+              {adminAlerts.map((alt) => (
+                <div
+                  key={alt.id}
+                  className={`p-2.5 rounded-button flex items-center justify-between border ${
+                    alt.type === 'order_cancelled'
+                      ? 'bg-red-50 text-red-900 border-red-200'
+                      : 'bg-emerald-50 text-emerald-900 border-emerald-200'
+                  }`}
+                >
+                  <span className="font-semibold">{alt.message}</span>
+                  <span className="text-[10px] opacity-75 font-mono">{alt.timestamp}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* 6 Real-Time Dashboard KPI Cards */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-8">

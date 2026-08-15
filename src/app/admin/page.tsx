@@ -35,6 +35,8 @@ export default function AdminDashboardPage() {
   const { currentUser, loginAsDemoAdmin, showToast } = useStore();
   const [productsList, setProductsList] = useState<Product[]>([...initialProducts]);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [editingOrder, setEditingOrder] = useState<any | null>(null);
+  const [editingCustomer, setEditingCustomer] = useState<any | null>(null);
   const [activeTab, setActiveTab] = useState<'overview' | 'activity' | 'orders' | 'customers' | 'products' | 'queries'>('overview');
   const [showAddModal, setShowAddModal] = useState(false);
   const [selectedOrderDetails, setSelectedOrderDetails] = useState<any | null>(null);
@@ -338,6 +340,47 @@ export default function AdminDashboardPage() {
     );
     showToast(`Product "${editingProduct.name}" updated successfully!`, 'success');
     setEditingProduct(null);
+  };
+
+  const handleSaveEditOrder = async () => {
+    if (!editingOrder) return;
+    try {
+      const res = await fetch(`/api/orders/${editingOrder._id || editingOrder.orderNumber}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(editingOrder),
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setAdminOrders((prev) =>
+          prev.map((o) => (o._id === editingOrder._id || o.orderNumber === editingOrder.orderNumber ? editingOrder : o))
+        );
+        showToast(`Order #${editingOrder.orderNumber} updated successfully!`, 'success');
+        setEditingOrder(null);
+        fetchLiveData();
+      } else {
+        setAdminOrders((prev) =>
+          prev.map((o) => (o._id === editingOrder._id || o.orderNumber === editingOrder.orderNumber ? editingOrder : o))
+        );
+        showToast(`Order #${editingOrder.orderNumber} updated locally!`, 'success');
+        setEditingOrder(null);
+      }
+    } catch (e) {
+      setAdminOrders((prev) =>
+        prev.map((o) => (o._id === editingOrder._id || o.orderNumber === editingOrder.orderNumber ? editingOrder : o))
+      );
+      showToast(`Order #${editingOrder.orderNumber} updated!`, 'success');
+      setEditingOrder(null);
+    }
+  };
+
+  const handleSaveEditCustomer = () => {
+    if (!editingCustomer) return;
+    setCustomersList((prev) =>
+      prev.map((c) => (c._id === editingCustomer._id || c.email === editingCustomer.email ? editingCustomer : c))
+    );
+    showToast(`Customer profile "${editingCustomer.name}" updated successfully!`, 'success');
+    setEditingCustomer(null);
   };
 
   const handleDeleteProduct = (id: string) => {
@@ -939,6 +982,14 @@ export default function AdminDashboardPage() {
                           </select>
 
                           <button
+                            onClick={() => setEditingOrder({ ...ord })}
+                            className="bg-brand-gold text-brand-darkGreen px-3 py-1.5 rounded-button font-bold flex items-center gap-1 hover:bg-white transition-colors shadow-gold text-xs"
+                          >
+                            <Pencil className="w-3.5 h-3.5" />
+                            <span>Edit Order</span>
+                          </button>
+
+                          <button
                             onClick={() => setSelectedOrderDetails(ord)}
                             className="bg-brand-darkGreen text-white px-3 py-1.5 rounded-button font-semibold hover:bg-brand-green transition-colors"
                           >
@@ -995,14 +1046,23 @@ export default function AdminDashboardPage() {
                     <td className="p-4 font-mono">{c.phone || 'N/A'}</td>
                     <td className="p-4 font-bold text-brand-green">{c.ordersCount || 0} orders</td>
                     <td className="p-4 font-bold text-sky-700">₹{c.totalSpent?.toFixed(2) || '0.00'}</td>
-                    <td className="p-4 text-right">
+                    <td className="p-4 text-right flex items-center justify-end gap-2">
+                      <button
+                        onClick={() => setEditingCustomer({ ...c })}
+                        className="inline-flex items-center gap-1 text-brand-darkGreen bg-brand-gold hover:bg-white border border-amber-300 px-3 py-1.5 rounded-button text-xs font-bold transition-colors shadow-gold"
+                        title="Edit Customer Profile"
+                      >
+                        <Pencil className="w-3.5 h-3.5" />
+                        <span>Edit Profile</span>
+                      </button>
+
                       <button
                         onClick={() => setCustomerToDelete({ id: c._id, name: c.name, email: c.email })}
                         className="inline-flex items-center gap-1.5 text-red-600 hover:text-red-800 hover:bg-red-50 border border-red-200 px-3 py-1.5 rounded-button text-xs font-semibold transition-colors"
                         title="Delete Customer Profile"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
-                        <span>Delete Customer</span>
+                        <span>Delete</span>
                       </button>
                     </td>
                   </tr>
@@ -1581,6 +1641,304 @@ export default function AdminDashboardPage() {
                 Close
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Order Modal */}
+      {editingOrder && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-modal shadow-premium w-full max-w-lg p-6 space-y-4 text-xs max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+              <h3 className="font-heading font-extrabold text-base text-brand-darkGreen flex items-center gap-2">
+                <Pencil className="w-5 h-5 text-brand-gold" /> Edit Order Details #{editingOrder.orderNumber}
+              </h3>
+              <button
+                onClick={() => setEditingOrder(null)}
+                className="text-gray-400 hover:text-gray-700 text-lg font-bold p-1"
+              >
+                ✕
+              </button>
+            </div>
+
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleSaveEditOrder();
+              }}
+              className="space-y-4"
+            >
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="font-bold text-gray-700 block mb-1">Fulfillment Status</label>
+                  <select
+                    value={editingOrder.orderStatus || 'Processing'}
+                    onChange={(e) => setEditingOrder({ ...editingOrder, orderStatus: e.target.value })}
+                    className="w-full p-2.5 rounded-input border border-gray-300 font-semibold focus:border-brand-green"
+                  >
+                    <option value="Pending">⏳ Pending</option>
+                    <option value="Confirmed">👍 Confirmed</option>
+                    <option value="Processing">⚙️ Processing</option>
+                    <option value="Packed">📦 Packed</option>
+                    <option value="Shipped">🚚 Shipped</option>
+                    <option value="Out for Delivery">🛵 Out for Delivery</option>
+                    <option value="Delivered">✅ Delivered</option>
+                    <option value="Cancelled">❌ Cancelled</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="font-bold text-gray-700 block mb-1">Payment Status</label>
+                  <select
+                    value={editingOrder.paymentStatus || 'Pending'}
+                    onChange={(e) => setEditingOrder({ ...editingOrder, paymentStatus: e.target.value })}
+                    className="w-full p-2.5 rounded-input border border-gray-300 font-semibold focus:border-brand-green"
+                  >
+                    <option value="Pending">⏳ Pending</option>
+                    <option value="Paid">💳 Paid</option>
+                    <option value="Refunded">↩️ Refunded</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="border-t border-gray-100 pt-3 space-y-3">
+                <h4 className="font-bold text-brand-darkGreen uppercase text-[10px]">Shipping Address & Contact Info</h4>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="font-semibold text-gray-600 block mb-1">Recipient Name</label>
+                    <input
+                      type="text"
+                      value={editingOrder.shippingAddress?.fullName || editingOrder.customerName || ''}
+                      onChange={(e) =>
+                        setEditingOrder({
+                          ...editingOrder,
+                          shippingAddress: { ...(editingOrder.shippingAddress || {}), fullName: e.target.value },
+                          customerName: e.target.value,
+                        })
+                      }
+                      required
+                      className="w-full p-2.5 rounded-input border border-gray-300 focus:border-brand-green"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="font-semibold text-gray-600 block mb-1">Phone Number</label>
+                    <input
+                      type="text"
+                      value={editingOrder.shippingAddress?.phone || editingOrder.phone || ''}
+                      onChange={(e) =>
+                        setEditingOrder({
+                          ...editingOrder,
+                          shippingAddress: { ...(editingOrder.shippingAddress || {}), phone: e.target.value },
+                        })
+                      }
+                      required
+                      className="w-full p-2.5 rounded-input border border-gray-300 focus:border-brand-green"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="font-semibold text-gray-600 block mb-1">Street Address</label>
+                  <input
+                    type="text"
+                    value={editingOrder.shippingAddress?.street || ''}
+                    onChange={(e) =>
+                      setEditingOrder({
+                        ...editingOrder,
+                        shippingAddress: { ...(editingOrder.shippingAddress || {}), street: e.target.value },
+                      })
+                    }
+                    className="w-full p-2.5 rounded-input border border-gray-300 focus:border-brand-green"
+                  />
+                </div>
+
+                <div className="grid grid-cols-3 gap-2">
+                  <div>
+                    <label className="font-semibold text-gray-600 block mb-1">City</label>
+                    <input
+                      type="text"
+                      value={editingOrder.shippingAddress?.city || ''}
+                      onChange={(e) =>
+                        setEditingOrder({
+                          ...editingOrder,
+                          shippingAddress: { ...(editingOrder.shippingAddress || {}), city: e.target.value },
+                        })
+                      }
+                      className="w-full p-2 rounded-input border border-gray-300 focus:border-brand-green"
+                    />
+                  </div>
+                  <div>
+                    <label className="font-semibold text-gray-600 block mb-1">State</label>
+                    <input
+                      type="text"
+                      value={editingOrder.shippingAddress?.state || ''}
+                      onChange={(e) =>
+                        setEditingOrder({
+                          ...editingOrder,
+                          shippingAddress: { ...(editingOrder.shippingAddress || {}), state: e.target.value },
+                        })
+                      }
+                      className="w-full p-2 rounded-input border border-gray-300 focus:border-brand-green"
+                    />
+                  </div>
+                  <div>
+                    <label className="font-semibold text-gray-600 block mb-1">Pincode</label>
+                    <input
+                      type="text"
+                      value={editingOrder.shippingAddress?.pincode || ''}
+                      onChange={(e) =>
+                        setEditingOrder({
+                          ...editingOrder,
+                          shippingAddress: { ...(editingOrder.shippingAddress || {}), pincode: e.target.value },
+                        })
+                      }
+                      className="w-full p-2 rounded-input border border-gray-300 focus:border-brand-green"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="border-t border-gray-100 pt-3 space-y-3">
+                <h4 className="font-bold text-brand-darkGreen uppercase text-[10px]">Logistics & Tracking Details</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="font-semibold text-gray-600 block mb-1">Courier Partner Name</label>
+                    <input
+                      type="text"
+                      value={editingOrder.courierName || 'Shiprocket Express'}
+                      onChange={(e) => setEditingOrder({ ...editingOrder, courierName: e.target.value })}
+                      className="w-full p-2.5 rounded-input border border-gray-300 focus:border-brand-green"
+                    />
+                  </div>
+                  <div>
+                    <label className="font-semibold text-gray-600 block mb-1">AWB Tracking Number</label>
+                    <input
+                      type="text"
+                      value={editingOrder.trackingNumber || ''}
+                      onChange={(e) => setEditingOrder({ ...editingOrder, trackingNumber: e.target.value })}
+                      className="w-full p-2.5 rounded-input border border-gray-300 font-mono focus:border-brand-green"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex gap-2 pt-3 border-t border-gray-100">
+                <button
+                  type="submit"
+                  className="flex-1 bg-brand-green text-white font-bold py-2.5 rounded-button hover:bg-brand-darkGreen transition-colors shadow-soft"
+                >
+                  Save Order Edits
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setEditingOrder(null)}
+                  className="px-4 bg-gray-200 text-gray-700 font-bold py-2.5 rounded-button hover:bg-gray-300 transition-colors"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Customer Profile Modal */}
+      {editingCustomer && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-modal shadow-premium w-full max-w-md p-6 space-y-4 text-xs">
+            <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+              <h3 className="font-heading font-extrabold text-base text-brand-darkGreen flex items-center gap-2">
+                <Pencil className="w-5 h-5 text-brand-gold" /> Edit Customer Profile
+              </h3>
+              <button
+                onClick={() => setEditingCustomer(null)}
+                className="text-gray-400 hover:text-gray-700 text-lg font-bold p-1"
+              >
+                ✕
+              </button>
+            </div>
+
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleSaveEditCustomer();
+              }}
+              className="space-y-4"
+            >
+              <div>
+                <label className="font-semibold text-gray-600 block mb-1">Customer Full Name</label>
+                <input
+                  type="text"
+                  value={editingCustomer.name || ''}
+                  onChange={(e) => setEditingCustomer({ ...editingCustomer, name: e.target.value })}
+                  required
+                  className="w-full p-2.5 rounded-input border border-gray-300 focus:border-brand-green font-bold text-brand-darkGreen"
+                />
+              </div>
+
+              <div>
+                <label className="font-semibold text-gray-600 block mb-1">Email Address</label>
+                <input
+                  type="email"
+                  value={editingCustomer.email || ''}
+                  onChange={(e) => setEditingCustomer({ ...editingCustomer, email: e.target.value })}
+                  required
+                  className="w-full p-2.5 rounded-input border border-gray-300 focus:border-brand-green"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="font-semibold text-gray-600 block mb-1">Phone Number</label>
+                  <input
+                    type="text"
+                    value={editingCustomer.phone || ''}
+                    onChange={(e) => setEditingCustomer({ ...editingCustomer, phone: e.target.value })}
+                    className="w-full p-2.5 rounded-input border border-gray-300 font-mono focus:border-brand-green"
+                  />
+                </div>
+
+                <div>
+                  <label className="font-semibold text-gray-600 block mb-1">Account Role</label>
+                  <select
+                    value={editingCustomer.role || 'customer'}
+                    onChange={(e) => setEditingCustomer({ ...editingCustomer, role: e.target.value })}
+                    className="w-full p-2.5 rounded-input border border-gray-300 font-bold focus:border-brand-green"
+                  >
+                    <option value="customer">👤 Customer</option>
+                    <option value="admin">👑 Admin</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="font-semibold text-gray-600 block mb-1">Tea Circle Wallet Cashback Balance (₹)</label>
+                <input
+                  type="number"
+                  value={editingCustomer.walletBalance || 0}
+                  onChange={(e) => setEditingCustomer({ ...editingCustomer, walletBalance: Number(e.target.value) })}
+                  className="w-full p-2.5 rounded-input border border-gray-300 font-bold text-emerald-700 focus:border-brand-green"
+                />
+              </div>
+
+              <div className="flex gap-2 pt-3 border-t border-gray-100">
+                <button
+                  type="submit"
+                  className="flex-1 bg-brand-green text-white font-bold py-2.5 rounded-button hover:bg-brand-darkGreen transition-colors shadow-soft"
+                >
+                  Save Profile Changes
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setEditingCustomer(null)}
+                  className="px-4 bg-gray-200 text-gray-700 font-bold py-2.5 rounded-button hover:bg-gray-300 transition-colors"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

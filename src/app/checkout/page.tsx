@@ -3,18 +3,17 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import confetti from 'canvas-confetti';
 import { useStore } from '@/lib/storeContext';
 import { Address, Order, User } from '@/lib/types';
-import { ShieldCheck, CreditCard, Truck, CheckCircle2, FileText, Download, Building, Lock, UserCheck, LogIn, UserPlus, AlertCircle, Eye, EyeOff, Sparkles, MapPin, Plus } from 'lucide-react';
+import { ShieldCheck, CreditCard, Truck, CheckCircle2, FileText, Download, Building, Lock, UserCheck, AlertCircle, Sparkles, MapPin } from 'lucide-react';
 
 export default function CheckoutPage() {
+  const router = useRouter();
   const { cart, cartSubtotal, cartDiscount, cartShipping, cartTax, cartTotal, clearCart, currentUser, setCurrentUser, updateUserAddresses, logout, showToast } = useStore();
 
-  // Mode: 'guest' | 'login' | 'register'
-  const [authMode, setAuthMode] = useState<'guest' | 'login' | 'register'>('guest');
-
-  // Delivery Address State (Completely blank by default for a clean guest checkout)
+  // Delivery Address State
   const [address, setAddress] = useState<Address>({
     fullName: '',
     phone: '',
@@ -49,21 +48,6 @@ export default function CheckoutPage() {
 
   // Validation Errors
   const [errors, setErrors] = useState<Record<string, string>>({});
-
-  // Inline Login state
-  const [loginEmail, setLoginEmail] = useState('');
-  const [loginPassword, setLoginPassword] = useState('');
-  const [showLoginPassword, setShowLoginPassword] = useState(false);
-  const [loginError, setLoginError] = useState('');
-
-  // Inline Register state
-  const [regName, setRegName] = useState('');
-  const [regEmail, setRegEmail] = useState('');
-  const [regPhone, setRegPhone] = useState('');
-  const [regPassword, setRegPassword] = useState('');
-  const [regConfirmPassword, setRegConfirmPassword] = useState('');
-  const [showRegPassword, setShowRegPassword] = useState(false);
-  const [regError, setRegError] = useState('');
 
   // GST & Payment states
   const [wantGstInvoice, setWantGstInvoice] = useState(false);
@@ -124,118 +108,6 @@ export default function CheckoutPage() {
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
-  };
-
-  // Inline Login Handler
-  const handleInlineLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoginError('');
-
-    if (!loginEmail || !loginPassword) {
-      setLoginError('Please enter both email and password.');
-      return;
-    }
-
-    try {
-      const storedUsersRaw = localStorage.getItem('pbh_users');
-      const users: User[] = storedUsersRaw ? JSON.parse(storedUsersRaw) : [];
-      const match = users.find((u) => u.email.toLowerCase() === loginEmail.trim().toLowerCase());
-
-      const userToLogin: User = match || {
-        _id: `usr-${Date.now()}`,
-        name: loginEmail.split('@')[0],
-        email: loginEmail.trim(),
-        role: 'customer',
-        addresses: [],
-        wishlist: [],
-        walletBalance: 100,
-      };
-
-      setCurrentUser(userToLogin);
-      showToast(`Welcome back, ${userToLogin.name}!`, 'success');
-      setAuthMode('guest');
-
-      // Pre-fill delivery details intelligently
-      setAddress((prev) => ({
-        ...prev,
-        fullName: prev.fullName || userToLogin.name,
-        email: userToLogin.email,
-        phone: prev.phone || userToLogin.phone || '',
-        street: prev.street || userToLogin.addresses?.[0]?.street || '',
-        city: prev.city || userToLogin.addresses?.[0]?.city || '',
-        state: prev.state || userToLogin.addresses?.[0]?.state || '',
-        pincode: prev.pincode || userToLogin.addresses?.[0]?.pincode || '',
-      }));
-    } catch (e) {
-      console.error(e);
-      setLoginError('Unable to log in. Please try again.');
-    }
-  };
-
-  // Inline Register Handler
-  const handleInlineRegister = (e: React.FormEvent) => {
-    e.preventDefault();
-    setRegError('');
-
-    if (!regName.trim() || !regEmail.trim() || !regPassword) {
-      setRegError('All fields marked with * are required.');
-      return;
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(regEmail.trim())) {
-      setRegError('Please enter a valid email address.');
-      return;
-    }
-
-    if (regPassword.length < 6) {
-      setRegError('Password must be at least 6 characters.');
-      return;
-    }
-
-    if (regPassword !== regConfirmPassword) {
-      setRegError('Password and Confirm Password do not match.');
-      return;
-    }
-
-    try {
-      const storedUsersRaw = localStorage.getItem('pbh_users');
-      const users: User[] = storedUsersRaw ? JSON.parse(storedUsersRaw) : [];
-
-      const duplicate = users.find((u) => u.email.toLowerCase() === regEmail.trim().toLowerCase());
-      if (duplicate) {
-        setRegError('An account with this email already exists. Please log in instead.');
-        return;
-      }
-
-      const newUser: User = {
-        _id: `usr-${Date.now()}`,
-        name: regName.trim(),
-        email: regEmail.trim(),
-        phone: regPhone.trim(),
-        role: 'customer',
-        addresses: [],
-        wishlist: [],
-        walletBalance: 250,
-      };
-
-      const updatedUsers = [...users, newUser];
-      localStorage.setItem('pbh_users', JSON.stringify(updatedUsers));
-      setCurrentUser(newUser);
-
-      showToast(`Account created! Welcome to PrimeBrew Herbis, ${newUser.name}.`, 'success');
-      setAuthMode('guest');
-
-      setAddress((prev) => ({
-        ...prev,
-        fullName: prev.fullName || newUser.name,
-        email: newUser.email,
-        phone: prev.phone || newUser.phone || '',
-      }));
-    } catch (e) {
-      console.error(e);
-      setRegError('Registration failed. Please try again.');
-    }
   };
 
   const handlePlaceOrder = async () => {
@@ -348,6 +220,55 @@ export default function CheckoutPage() {
     }
   };
 
+  // Check authentication status and redirect if unauthenticated
+  useEffect(() => {
+    if (!currentUser && typeof window !== 'undefined') {
+      const timer = setTimeout(() => {
+        if (!currentUser) {
+          router.push('/login?redirect=/checkout&message=Please login or create an account to place your order.');
+        }
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [currentUser, router]);
+
+  if (!currentUser && !completedOrder) {
+    return (
+      <div className="py-16 bg-brand-cream min-h-[80vh] flex items-center justify-center px-4">
+        <div className="bg-white rounded-card border border-brand-mint/40 shadow-premium p-8 max-w-lg w-full text-center space-y-6">
+          <div className="w-16 h-16 bg-amber-50 text-amber-600 rounded-full flex items-center justify-center mx-auto border border-amber-200">
+            <Lock className="w-8 h-8" />
+          </div>
+          <div className="space-y-2">
+            <span className="bg-amber-100 text-amber-800 text-[10px] font-extrabold uppercase px-3 py-1 rounded-badge">
+              Authentication Required
+            </span>
+            <h2 className="font-heading font-extrabold text-2xl text-brand-darkGreen">
+              Please login or create an account to place your order.
+            </h2>
+            <p className="text-xs text-gray-500 leading-relaxed">
+              PrimeBrew Herbis requires a verified customer account to ensure secure order processing, live shipment tracking, and instant cashback rewards.
+            </p>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-3 pt-2">
+            <Link
+              href="/login?redirect=/checkout&message=Please login or create an account to place your order."
+              className="flex-1 bg-brand-darkGreen hover:bg-brand-green text-white font-extrabold text-xs px-6 py-3.5 rounded-button shadow-soft transition-all text-center"
+            >
+              Log In to Account
+            </Link>
+            <Link
+              href="/register?redirect=/checkout&message=Please login or create an account to place your order."
+              className="flex-1 bg-brand-green hover:bg-brand-darkGreen text-white font-extrabold text-xs px-6 py-3.5 rounded-button shadow-soft transition-all text-center"
+            >
+              Create Account
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (completedOrder) {
     return (
       <div className="py-12 bg-brand-cream min-h-screen">
@@ -360,11 +281,11 @@ export default function CheckoutPage() {
               <span className="text-xs font-bold uppercase tracking-widest text-amber-700 bg-amber-50 border border-amber-200 px-3 py-1 rounded-badge">
                 Order Confirmed (Cash on Delivery)
               </span>
-              <h1 className="font-heading font-extrabold text-2xl text-brand-darkGreen">
-                Thank You for Your Order!
+              <h1 className="font-heading font-extrabold text-2xl sm:text-3xl text-brand-darkGreen">
+                Your order has been placed successfully!
               </h1>
               <p className="text-xs text-gray-500">
-                Order Number: <strong className="text-brand-darkGreen font-mono">{completedOrder.orderNumber}</strong>
+                Order Number: <strong className="text-brand-darkGreen font-mono">{completedOrder.orderNumber}</strong> • Date: <strong className="text-brand-darkGreen">{new Date(completedOrder.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</strong>
               </p>
             </div>
 
@@ -392,20 +313,21 @@ export default function CheckoutPage() {
                 </button>
               </div>
 
-              <div className="grid grid-cols-2 gap-4 text-gray-600">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-gray-600">
                 <div>
-                  <p className="font-bold text-brand-darkGreen">Shipping Address:</p>
-                  <p>{completedOrder.shippingAddress.fullName}</p>
+                  <p className="font-bold text-brand-darkGreen">Customer & Delivery Details:</p>
+                  <p className="font-semibold text-gray-800">{completedOrder.shippingAddress.fullName}</p>
                   <p>{completedOrder.shippingAddress.street}</p>
                   <p>{completedOrder.shippingAddress.city}, {completedOrder.shippingAddress.state} - {completedOrder.shippingAddress.pincode}</p>
-                  <p>Phone: {completedOrder.shippingAddress.phone}</p>
-                  <p>Email: {completedOrder.shippingAddress.email}</p>
+                  <p>Phone: <span className="font-mono text-gray-800">{completedOrder.shippingAddress.phone}</span></p>
+                  <p>Email: <span className="text-gray-800">{completedOrder.shippingAddress.email}</span></p>
                 </div>
                 <div>
                   <p className="font-bold text-brand-darkGreen">Shipment & Payment Info:</p>
-                  <p>Payment: <strong className="text-amber-800 font-bold">Cash on Delivery (COD)</strong></p>
-                  <p>Status: <strong className="text-amber-700 font-bold">Pending Collection on Delivery</strong></p>
-                  <p>Courier: <strong>{completedOrder.courierName}</strong></p>
+                  <p>Order Status: <strong className="text-sky-700 bg-sky-50 px-2 py-0.5 rounded text-[11px] font-bold">{completedOrder.orderStatus}</strong></p>
+                  <p>Payment Method: <strong className="text-amber-800 font-bold">Cash on Delivery (COD)</strong></p>
+                  <p>Payment Status: <strong className="text-amber-700 font-bold">Pending Collection on Delivery</strong></p>
+                  <p>Courier Partner: <strong>{completedOrder.courierName}</strong></p>
                   <p>AWB Number: <strong className="font-mono text-brand-green">{completedOrder.trackingNumber}</strong></p>
                   <p>Est. Delivery: <strong>{completedOrder.estimatedDelivery}</strong></p>
                 </div>
@@ -419,45 +341,41 @@ export default function CheckoutPage() {
               )}
 
               {/* Items List */}
-              <div className="space-y-2 pt-2 border-t border-gray-200">
+              <div className="space-y-3 pt-3 border-t border-gray-200">
+                <p className="font-bold text-brand-darkGreen">Ordered Products ({completedOrder.items.length}):</p>
                 {completedOrder.items.map((item, i) => (
-                  <div key={i} className="flex justify-between items-center text-xs">
-                    <span>{item.quantity}x {item.productName} ({item.weight})</span>
-                    <span className="font-bold text-brand-darkGreen">₹{item.price * item.quantity}</span>
+                  <div key={i} className="flex justify-between items-center text-xs bg-white p-2.5 rounded border border-gray-100">
+                    <div className="flex items-center gap-3">
+                      {item.productImage && (
+                        <div className="w-10 h-10 relative rounded overflow-hidden bg-gray-50 flex-shrink-0">
+                          <Image src={item.productImage} alt={item.productName} fill className="object-cover" />
+                        </div>
+                      )}
+                      <div>
+                        <p className="font-bold text-brand-darkGreen">{item.productName}</p>
+                        <p className="text-gray-500 text-[11px]">Variant: {item.weight} • Qty: {item.quantity}</p>
+                      </div>
+                    </div>
+                    <span className="font-bold text-brand-darkGreen font-mono">₹{item.price * item.quantity}</span>
                   </div>
                 ))}
                 <div className="pt-2 border-t border-gray-200 flex justify-between font-bold text-brand-darkGreen">
-                  <span>Total Payable on Delivery (COD)</span>
-                  <span className="text-brand-green text-sm">₹{completedOrder.total}</span>
+                  <span>Total Amount Payable (Cash on Delivery)</span>
+                  <span className="text-brand-green text-base">₹{completedOrder.total}</span>
                 </div>
               </div>
             </div>
 
-            {!currentUser && (
-              <div className="bg-brand-mint/20 border border-brand-mint/40 p-4 rounded-card text-xs flex flex-col sm:flex-row items-center justify-between gap-3">
-                <div>
-                  <p className="font-bold text-brand-darkGreen">Want to save your details for faster future orders?</p>
-                  <p className="text-gray-600 text-[11px]">Create an account using {completedOrder.shippingAddress.email} to track future shipments easily.</p>
-                </div>
-                <Link
-                  href="/register"
-                  className="bg-brand-green hover:bg-brand-darkGreen text-white font-bold px-4 py-2 rounded-button transition-colors text-center whitespace-nowrap"
-                >
-                  Create Account
-                </Link>
-              </div>
-            )}
-
-            <div className="flex gap-4">
+            <div className="flex flex-col sm:flex-row gap-3">
               <Link
-                href="/dashboard"
-                className="flex-1 bg-brand-green hover:bg-brand-darkGreen text-white font-bold text-xs py-3.5 rounded-button text-center transition-colors"
+                href="/dashboard?tab=orders"
+                className="flex-1 bg-brand-darkGreen hover:bg-brand-green text-white font-bold text-xs py-3.5 rounded-button text-center transition-colors shadow-soft"
               >
-                Track Shipment in Dashboard
+                View My Order
               </Link>
               <Link
                 href="/shop"
-                className="bg-brand-beige text-brand-darkGreen font-semibold text-xs py-3.5 px-6 rounded-button hover:bg-brand-mint/30 text-center"
+                className="flex-1 bg-brand-beige text-brand-darkGreen font-semibold text-xs py-3.5 rounded-button hover:bg-brand-mint/30 text-center border border-brand-mint/30"
               >
                 Continue Shopping
               </Link>
@@ -468,6 +386,7 @@ export default function CheckoutPage() {
     );
   }
 
+
   return (
     <div className="py-12 bg-brand-cream min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
@@ -475,235 +394,31 @@ export default function CheckoutPage() {
           Secure Checkout
         </h1>
 
-        {/* Auth Mode Toggle Banner */}
-        {currentUser ? (
-          <div className="bg-brand-mint/20 border border-brand-mint/40 rounded-card p-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
-            <div className="flex items-center gap-2 text-brand-darkGreen font-semibold">
-              <UserCheck className="w-5 h-5 text-brand-green flex-shrink-0" />
-              <span>Logged in as <strong>{currentUser.name}</strong> ({currentUser.email})</span>
-            </div>
-            <div className="flex items-center gap-2">
-              {currentUser.addresses?.[0] && (
-                <button
-                  type="button"
-                  onClick={useSavedUserAddress}
-                  className="bg-white border border-brand-mint/40 px-3 py-1.5 rounded-button text-brand-darkGreen font-bold hover:bg-brand-beige transition-colors"
-                >
-                  Use Saved Address
-                </button>
-              )}
-              <button
-                type="button"
-                onClick={() => logout()}
-                className="bg-red-50 text-red-600 border border-red-200 px-3 py-1.5 rounded-button font-bold hover:bg-red-100 transition-colors"
-              >
-                Log Out
-              </button>
-            </div>
+        {/* Authenticated Customer Banner */}
+        <div className="bg-brand-mint/20 border border-brand-mint/40 rounded-card p-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+          <div className="flex items-center gap-2 text-brand-darkGreen font-semibold">
+            <UserCheck className="w-5 h-5 text-brand-green flex-shrink-0" />
+            <span>Logged in as <strong>{currentUser?.name}</strong> ({currentUser?.email})</span>
           </div>
-        ) : (
-          <div className="bg-white rounded-card border border-brand-mint/30 shadow-card p-4 space-y-3">
-            <div className="flex justify-between items-center text-xs font-bold text-brand-darkGreen border-b border-gray-100 pb-2">
-              <span>Checkout Options</span>
-              <span className="text-gray-400 font-normal text-[11px]">No account required for guest checkout</span>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+          <div className="flex items-center gap-2">
+            {currentUser?.addresses?.[0] && (
               <button
                 type="button"
-                onClick={() => setAuthMode('guest')}
-                className={`p-3 rounded-button border text-center font-bold flex items-center justify-center gap-2 transition-all ${
-                  authMode === 'guest'
-                    ? 'bg-brand-green text-white border-brand-green shadow-soft'
-                    : 'bg-brand-beige text-brand-darkGreen border-brand-mint/30 hover:bg-brand-mint/20'
-                }`}
+                onClick={useSavedUserAddress}
+                className="bg-white border border-brand-mint/40 px-3 py-1.5 rounded-button text-brand-darkGreen font-bold hover:bg-brand-beige transition-colors"
               >
-                <Truck className="w-4 h-4" />
-                <span>Continue as Guest</span>
+                Use Saved Address
               </button>
-
-              <button
-                type="button"
-                onClick={() => setAuthMode('login')}
-                className={`p-3 rounded-button border text-center font-bold flex items-center justify-center gap-2 transition-all ${
-                  authMode === 'login'
-                    ? 'bg-brand-green text-white border-brand-green shadow-soft'
-                    : 'bg-brand-beige text-brand-darkGreen border-brand-mint/30 hover:bg-brand-mint/20'
-                }`}
-              >
-                <LogIn className="w-4 h-4" />
-                <span>Already Have Account? Log In</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setAuthMode('register')}
-                className={`p-3 rounded-button border text-center font-bold flex items-center justify-center gap-2 transition-all ${
-                  authMode === 'register'
-                    ? 'bg-brand-green text-white border-brand-green shadow-soft'
-                    : 'bg-brand-beige text-brand-darkGreen border-brand-mint/30 hover:bg-brand-mint/20'
-                }`}
-              >
-                <UserPlus className="w-4 h-4" />
-                <span>New? Create Account</span>
-              </button>
-            </div>
-
-            {/* Inline Login */}
-            {authMode === 'login' && (
-              <form onSubmit={handleInlineLogin} className="pt-3 border-t border-gray-100 grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                {loginError && (
-                  <div className="sm:col-span-2 bg-red-50 border border-red-200 text-red-700 p-2.5 rounded-button text-xs flex items-center gap-2">
-                    <AlertCircle className="w-4 h-4 flex-shrink-0" />
-                    <span>{loginError}</span>
-                  </div>
-                )}
-                <div>
-                  <label className="font-bold text-gray-700 block mb-1">Email Address *</label>
-                  <input
-                    type="email"
-                    required
-                    value={loginEmail}
-                    onChange={(e) => setLoginEmail(e.target.value)}
-                    placeholder="Enter your email"
-                    className="w-full p-2.5 rounded-input border border-gray-300 focus:border-brand-green"
-                  />
-                </div>
-                <div>
-                  <div className="flex justify-between items-center mb-1">
-                    <label className="font-bold text-gray-700">Password *</label>
-                    <Link href="/forgot-password" className="text-brand-green font-semibold hover:underline text-[11px]">
-                      Forgot Password?
-                    </Link>
-                  </div>
-                  <div className="relative">
-                    <input
-                      type={showLoginPassword ? 'text' : 'password'}
-                      required
-                      value={loginPassword}
-                      onChange={(e) => setLoginPassword(e.target.value)}
-                      placeholder="••••••••"
-                      className="w-full p-2.5 pr-10 rounded-input border border-gray-300 focus:border-brand-green"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowLoginPassword(!showLoginPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                    >
-                      {showLoginPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                    </button>
-                  </div>
-                </div>
-                <div className="sm:col-span-2 flex justify-end gap-2 pt-1">
-                  <button
-                    type="button"
-                    onClick={() => setAuthMode('guest')}
-                    className="px-4 py-2 rounded-button bg-gray-100 text-gray-700 font-semibold hover:bg-gray-200"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="px-6 py-2 rounded-button bg-brand-darkGreen text-white font-bold hover:bg-brand-green shadow-soft"
-                  >
-                    Log In & Continue Checkout
-                  </button>
-                </div>
-              </form>
             )}
-
-            {/* Inline Register */}
-            {authMode === 'register' && (
-              <form onSubmit={handleInlineRegister} className="pt-3 border-t border-gray-100 grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                {regError && (
-                  <div className="sm:col-span-2 bg-red-50 border border-red-200 text-red-700 p-2.5 rounded-button text-xs flex items-center gap-2">
-                    <AlertCircle className="w-4 h-4 flex-shrink-0" />
-                    <span>{regError}</span>
-                  </div>
-                )}
-                <div>
-                  <label className="font-bold text-gray-700 block mb-1">Full Name *</label>
-                  <input
-                    type="text"
-                    required
-                    value={regName}
-                    onChange={(e) => setRegName(e.target.value)}
-                    placeholder="Enter your full name"
-                    className="w-full p-2.5 rounded-input border border-gray-300 focus:border-brand-green"
-                  />
-                </div>
-                <div>
-                  <label className="font-bold text-gray-700 block mb-1">Email Address *</label>
-                  <input
-                    type="email"
-                    required
-                    value={regEmail}
-                    onChange={(e) => setRegEmail(e.target.value)}
-                    placeholder="Enter your email"
-                    className="w-full p-2.5 rounded-input border border-gray-300 focus:border-brand-green"
-                  />
-                </div>
-                <div>
-                  <label className="font-bold text-gray-700 block mb-1">Mobile Phone</label>
-                  <input
-                    type="tel"
-                    inputMode="numeric"
-                    maxLength={10}
-                    value={regPhone}
-                    onChange={(e) => setRegPhone(e.target.value.replace(/\D/g, ''))}
-                    placeholder="Enter 10-digit mobile number"
-                    className="w-full p-2.5 rounded-input border border-gray-300 focus:border-brand-green"
-                  />
-                </div>
-                <div>
-                  <label className="font-bold text-gray-700 block mb-1">Password * (Min 6 chars)</label>
-                  <div className="relative">
-                    <input
-                      type={showRegPassword ? 'text' : 'password'}
-                      required
-                      value={regPassword}
-                      onChange={(e) => setRegPassword(e.target.value)}
-                      placeholder="••••••••"
-                      className="w-full p-2.5 pr-10 rounded-input border border-gray-300 focus:border-brand-green"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowRegPassword(!showRegPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                    >
-                      {showRegPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                    </button>
-                  </div>
-                </div>
-                <div className="sm:col-span-2">
-                  <label className="font-bold text-gray-700 block mb-1">Confirm Password *</label>
-                  <input
-                    type="password"
-                    required
-                    value={regConfirmPassword}
-                    onChange={(e) => setRegConfirmPassword(e.target.value)}
-                    placeholder="Re-enter your password"
-                    className="w-full p-2.5 rounded-input border border-gray-300 focus:border-brand-green"
-                  />
-                </div>
-                <div className="sm:col-span-2 flex justify-end gap-2 pt-1">
-                  <button
-                    type="button"
-                    onClick={() => setAuthMode('guest')}
-                    className="px-4 py-2 rounded-button bg-gray-100 text-gray-700 font-semibold hover:bg-gray-200"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="px-6 py-2 rounded-button bg-brand-green text-white font-bold hover:bg-brand-darkGreen shadow-soft"
-                  >
-                    Create Account & Continue Checkout
-                  </button>
-                </div>
-              </form>
-            )}
+            <button
+              type="button"
+              onClick={() => logout()}
+              className="bg-red-50 text-red-600 border border-red-200 px-3 py-1.5 rounded-button font-bold hover:bg-red-100 transition-colors"
+            >
+              Log Out
+            </button>
           </div>
-        )}
+        </div>
 
         <form onSubmit={handlePlaceOrder} className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Checkout Form */}

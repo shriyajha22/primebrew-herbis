@@ -65,10 +65,27 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const syncUserCartAndWishlist = (user: User | null) => {
     if (user && user.email) {
       const keyEmail = user.email.toLowerCase();
-      // Load Customer Cart
+      // Load or preserve Customer Cart
       try {
         const savedCart = localStorage.getItem(`pbh_cart_${keyEmail}`);
-        setCart(savedCart ? JSON.parse(savedCart) : []);
+        const guestCart = localStorage.getItem('pbh_cart_guest');
+
+        setCart((prevCart) => {
+          if (prevCart.length > 0) {
+            // User had items in cart before logging in -> preserve them!
+            localStorage.setItem(`pbh_cart_${keyEmail}`, JSON.stringify(prevCart));
+            localStorage.removeItem('pbh_cart_guest');
+            return prevCart;
+          } else if (guestCart) {
+            const parsedGuest = JSON.parse(guestCart);
+            if (Array.isArray(parsedGuest) && parsedGuest.length > 0) {
+              localStorage.setItem(`pbh_cart_${keyEmail}`, JSON.stringify(parsedGuest));
+              localStorage.removeItem('pbh_cart_guest');
+              return parsedGuest;
+            }
+          }
+          return savedCart ? JSON.parse(savedCart) : [];
+        });
       } catch (e) {
         setCart([]);
       }
@@ -82,12 +99,12 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         setWishlist([]);
       }
     } else {
-      // Logout / Unauthenticated reset
-      setCart([]);
-      setWishlist([]);
+      // Logout / Unauthenticated state: preserve guest cart from localStorage if present
       try {
-        localStorage.removeItem('pbh_cart');
-        localStorage.removeItem('pbh_wishlist');
+        const guestCart = localStorage.getItem('pbh_cart_guest');
+        if (guestCart) {
+          setCart(JSON.parse(guestCart));
+        }
       } catch (e) {}
     }
   };
@@ -105,14 +122,22 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         if (data.success && data.user) {
           handleSetCurrentUser(data.user);
         } else {
-          // Ensure guest starts with clean empty state
-          setCart([]);
-          setWishlist([]);
+          // Unauthenticated guest: load guest cart
+          try {
+            const guestCart = localStorage.getItem('pbh_cart_guest');
+            if (guestCart) {
+              setCart(JSON.parse(guestCart));
+            }
+          } catch (e) {}
         }
       })
       .catch((e) => {
-        setCart([]);
-        setWishlist([]);
+        try {
+          const guestCart = localStorage.getItem('pbh_cart_guest');
+          if (guestCart) {
+            setCart(JSON.parse(guestCart));
+          }
+        } catch (e) {}
       });
   }, []);
 
@@ -121,6 +146,10 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     if (currentUser?.email) {
       try {
         localStorage.setItem(`pbh_cart_${currentUser.email.toLowerCase()}`, JSON.stringify(cart));
+      } catch (e) {}
+    } else {
+      try {
+        localStorage.setItem('pbh_cart_guest', JSON.stringify(cart));
       } catch (e) {}
     }
   }, [cart, currentUser]);

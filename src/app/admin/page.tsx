@@ -518,12 +518,31 @@ export default function AdminDashboardPage() {
                     : ord.address || '';
 
                   return (
-                    <div key={ord._id} className="p-4 rounded-card bg-brand-beige border border-brand-mint/30 space-y-3 text-xs">
+                    <div
+                      key={ord._id}
+                      className={`p-4 rounded-card space-y-3 text-xs border ${
+                        ord.orderStatus === 'Cancelled'
+                          ? 'bg-red-50/40 border-red-200 ring-1 ring-red-200'
+                          : 'bg-brand-beige border-brand-mint/30'
+                      }`}
+                    >
                       <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-2 border-b border-gray-200 pb-2">
                         <div>
-                          <span className="font-bold text-brand-darkGreen text-sm font-mono">{ord.orderNumber}</span>
+                          <div className="flex items-center gap-2">
+                            <span className="font-bold text-brand-darkGreen text-sm font-mono">{ord.orderNumber}</span>
+                            {ord.orderStatus === 'Cancelled' && (
+                              <span className="bg-red-100 text-red-700 font-extrabold px-2 py-0.5 rounded text-[10px] border border-red-200">
+                                ❌ CANCELLED ({ord.cancelledBy || 'Customer'})
+                              </span>
+                            )}
+                          </div>
                           <p className="text-gray-500">Customer: <strong>{customerName}</strong> ({customerEmail})</p>
                           <p className="text-[11px] text-gray-400">Placed: {new Date(ord.createdAt).toLocaleString()}</p>
+                          {ord.orderStatus === 'Cancelled' && ord.cancelledAt && (
+                            <p className="text-[11px] text-red-600 font-semibold mt-0.5">
+                              Cancelled on: {new Date(ord.cancelledAt).toLocaleString()} by {ord.cancelledBy || 'Customer'}
+                            </p>
+                          )}
                         </div>
 
                         <div className="flex items-center gap-2">
@@ -531,7 +550,11 @@ export default function AdminDashboardPage() {
                           <select
                             value={ord.orderStatus || 'Processing'}
                             onChange={(e) => handleUpdateOrderStatus(ord._id, e.target.value)}
-                            className="p-1.5 rounded-button border border-gray-300 font-bold bg-white text-brand-darkGreen focus:border-brand-green text-xs"
+                            className={`p-1.5 rounded-button border font-bold text-xs ${
+                              ord.orderStatus === 'Cancelled'
+                                ? 'bg-red-50 border-red-300 text-red-700'
+                                : 'bg-white border-gray-300 text-brand-darkGreen focus:border-brand-green'
+                            }`}
                           >
                             <option value="Pending">⏳ Pending</option>
                             <option value="Confirmed">👍 Confirmed</option>
@@ -685,6 +708,30 @@ export default function AdminDashboardPage() {
                 ✕
               </button>
             </div>
+
+            {selectedOrderDetails.orderStatus === 'Cancelled' && (
+              <div className="bg-red-50 p-3.5 rounded-card border border-red-200 text-red-800 space-y-1">
+                <p className="font-bold text-sm text-red-700 flex items-center gap-1.5">
+                  <span>❌ Order Status:</span>
+                  <span className="uppercase tracking-wider text-xs bg-red-200 text-red-900 px-2 py-0.5 rounded">Cancelled</span>
+                </p>
+                <p>
+                  <strong>Cancelled At:</strong>{' '}
+                  {selectedOrderDetails.cancelledAt
+                    ? new Date(selectedOrderDetails.cancelledAt).toLocaleString()
+                    : new Date(selectedOrderDetails.updatedAt || Date.now()).toLocaleString()}
+                </p>
+                <p>
+                  <strong>Cancelled By:</strong>{' '}
+                  <span className="font-bold text-red-900">{selectedOrderDetails.cancelledBy || 'Customer'}</span>
+                </p>
+                {selectedOrderDetails.previousStatus && (
+                  <p className="text-[11px] text-red-700">
+                    <strong>Original Order Status:</strong> {selectedOrderDetails.previousStatus}
+                  </p>
+                )}
+              </div>
+            )}
 
             <div className="space-y-2 text-gray-700 bg-brand-beige p-3.5 rounded-card border border-brand-mint/30">
               <p>Customer: <strong>{selectedOrderDetails.shippingAddress?.fullName || selectedOrderDetails.customerName}</strong></p>

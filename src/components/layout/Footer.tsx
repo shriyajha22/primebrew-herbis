@@ -61,6 +61,34 @@ export default function Footer() {
               Farm to Cup. Nature in Every Sip. We source artisanal herbal teas directly from our own farms in Karnataka to deliver pure wellness, unmatched aroma, and zero-chemical vitality.
             </p>
 
+            {/* Address & Contact Details */}
+            <div className="space-y-2 text-xs text-brand-mint/90 max-w-sm pt-2 border-t border-white/10">
+              <div className="flex items-start gap-2.5">
+                <MapPin className="w-4 h-4 text-brand-gold flex-shrink-0 mt-0.5" />
+                <p className="leading-relaxed">
+                  <strong className="text-white font-medium">Address:</strong> H-No A 75, Ekta Vihar, Jaitpur Extension Part 1, Badarpur, New Delhi – 110044
+                </p>
+              </div>
+              <div className="flex items-center gap-2.5">
+                <Phone className="w-4 h-4 text-brand-gold flex-shrink-0" />
+                <p>
+                  <strong className="text-white font-medium">Mobile:</strong>{' '}
+                  <a href="tel:+918377074324" className="hover:text-brand-gold transition-colors font-medium">
+                    +91 8377074324
+                  </a>
+                </p>
+              </div>
+              <div className="flex items-center gap-2.5">
+                <Mail className="w-4 h-4 text-brand-gold flex-shrink-0" />
+                <p>
+                  <strong className="text-white font-medium">Email:</strong>{' '}
+                  <a href="mailto:Contact.primebrew@gmail.com" className="hover:text-brand-gold transition-colors">
+                    Contact.primebrew@gmail.com
+                  </a>
+                </p>
+              </div>
+            </div>
+
             <a
               href={process.env.NEXT_PUBLIC_INSTAGRAM_URL || "https://instagram.com/primebrew_herbis"}
               target="_blank"

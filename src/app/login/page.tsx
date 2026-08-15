@@ -1,14 +1,18 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
-import { Mail, Lock, Eye, EyeOff, ArrowRight, User, Sparkles, CheckCircle2 } from 'lucide-react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Mail, Lock, Eye, EyeOff, ArrowRight, User, Sparkles, CheckCircle2, AlertCircle } from 'lucide-react';
 import { useStore } from '@/lib/storeContext';
 
-export default function CustomerLoginPage() {
+function LoginContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectPath = searchParams.get('redirect') || '/dashboard';
+  const noticeMsg = searchParams.get('message') || searchParams.get('notice');
+
   const { setCurrentUser, showToast } = useStore();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -36,7 +40,7 @@ export default function CustomerLoginPage() {
       if (res.ok && data.success && data.user) {
         setCurrentUser(data.user);
         showToast(`Welcome back, ${data.user.name}!`, 'success');
-        router.push('/dashboard');
+        router.push(redirectPath);
       } else {
         setErrorMsg(data.message || 'Invalid email or password');
         showToast(data.message || 'Authentication failed', 'error');
@@ -51,8 +55,19 @@ export default function CustomerLoginPage() {
 
   return (
     <div className="min-h-[85vh] relative flex items-center justify-center py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-brand-beige via-white to-brand-mint/20">
-      <div className="relative w-full max-w-md bg-white/90 backdrop-blur-xl p-8 sm:p-10 rounded-3xl shadow-card border border-brand-mint/50 space-y-8 z-10">
+      <div className="relative w-full max-w-md bg-white/90 backdrop-blur-xl p-8 sm:p-10 rounded-3xl shadow-card border border-brand-mint/50 space-y-6 z-10">
         
+        {/* Redirect Notice Banner */}
+        {noticeMsg && (
+          <div className="bg-amber-50 border border-amber-300 text-amber-900 p-4 rounded-card text-xs flex items-start gap-3 shadow-sm">
+            <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+            <div className="space-y-0.5">
+              <p className="font-bold text-amber-900">{noticeMsg}</p>
+              <p className="text-[11px] text-amber-700">Login or register to complete your herbal tea purchase.</p>
+            </div>
+          </div>
+        )}
+
         {/* Header */}
         <div className="text-center space-y-3">
           <Link href="/" className="inline-block hover:scale-105 transition-transform">
@@ -72,6 +87,13 @@ export default function CustomerLoginPage() {
             Sign in to access your tea wallet, order history, and saved wishlist.
           </p>
         </div>
+
+        {errorMsg && (
+          <div className="bg-red-50 border border-red-200 text-red-700 p-3 rounded-card text-xs flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 flex-shrink-0 text-red-500" />
+            <span>{errorMsg}</span>
+          </div>
+        )}
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4 text-xs">
@@ -130,9 +152,10 @@ export default function CustomerLoginPage() {
 
           <button
             type="submit"
-            className="w-full py-3.5 bg-brand-darkGreen hover:bg-brand-green text-white font-bold text-xs rounded-2xl shadow-soft flex items-center justify-center gap-2 transition-colors mt-2"
+            disabled={loading}
+            className="w-full py-3.5 bg-brand-darkGreen hover:bg-brand-green text-white font-bold text-xs rounded-2xl shadow-soft flex items-center justify-center gap-2 transition-colors mt-2 disabled:opacity-50"
           >
-            <span>Sign In to Customer Account</span>
+            <span>{loading ? 'Authenticating...' : 'Sign In to Customer Account'}</span>
             <ArrowRight className="w-4 h-4 text-brand-gold" />
           </button>
         </form>
@@ -141,7 +164,10 @@ export default function CustomerLoginPage() {
         <div className="pt-4 border-t border-brand-mint/30 text-center text-xs">
           <p className="text-gray-500">
             Don&apos;t have an account yet?{' '}
-            <Link href="/register" className="text-brand-green font-bold hover:underline">
+            <Link
+              href={redirectPath ? `/register?redirect=${encodeURIComponent(redirectPath)}&message=${encodeURIComponent(noticeMsg || '')}` : '/register'}
+              className="text-brand-green font-bold hover:underline"
+            >
               Create Account
             </Link>
           </p>
@@ -150,3 +176,12 @@ export default function CustomerLoginPage() {
     </div>
   );
 }
+
+export default function CustomerLoginPage() {
+  return (
+    <Suspense fallback={<div className="py-20 text-center text-xs font-bold text-brand-darkGreen">Loading Login Page...</div>}>
+      <LoginContent />
+    </Suspense>
+  );
+}
+

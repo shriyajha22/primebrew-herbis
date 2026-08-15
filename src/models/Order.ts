@@ -26,6 +26,7 @@ const AddressSchema = new Schema({
 
 const OrderSchema = new Schema<IOrderDocument>(
   {
+    userId: { type: String, index: true },
     orderNumber: { type: String, required: true, unique: true, index: true },
     createdAt: { type: String, required: true },
     items: [OrderItemSchema],
@@ -49,6 +50,9 @@ const OrderSchema = new Schema<IOrderDocument>(
     tax: { type: Number, default: 0 },
     total: { type: Number, required: true },
     estimatedDelivery: { type: String, default: '3-5 Business Days' },
+    cancelledAt: { type: String },
+    cancelledBy: { type: String },
+    previousStatus: { type: String },
   },
   { timestamps: true }
 );

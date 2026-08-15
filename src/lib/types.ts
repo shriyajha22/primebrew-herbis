@@ -114,6 +114,7 @@ export interface Address {
 
 export interface Order {
   _id: string;
+  userId?: string;
   orderNumber: string;
   createdAt: string;
   items: {
@@ -141,6 +142,9 @@ export interface Order {
   tax: number;
   total: number;
   estimatedDelivery: string;
+  cancelledAt?: string;
+  cancelledBy?: string;
+  previousStatus?: string;
 }
 
 export interface User {

@@ -188,6 +188,39 @@ function DashboardContent() {
     }
   };
 
+  // Order Cancellation State
+  const [cancellingOrder, setCancellingOrder] = useState<any | null>(null);
+  const [isCancelling, setIsCancelling] = useState(false);
+
+  const handleCancelOrder = async () => {
+    if (!cancellingOrder) return;
+    setIsCancelling(true);
+    try {
+      const res = await fetch('/api/orders/cancel', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          orderId: cancellingOrder._id,
+          orderNumber: cancellingOrder.orderNumber,
+        }),
+      });
+      const data = await res.json();
+      if (res.ok && data.success && data.order) {
+        showToast(data.message || `Order #${cancellingOrder.orderNumber} has been cancelled successfully.`, 'success');
+        setCustomerOrders((prev) =>
+          prev.map((o) => (o._id === data.order._id || o.orderNumber === data.order.orderNumber ? data.order : o))
+        );
+        setCancellingOrder(null);
+      } else {
+        showToast(data.message || 'Failed to cancel order', 'error');
+      }
+    } catch (err) {
+      showToast('Error processing order cancellation.', 'error');
+    } finally {
+      setIsCancelling(false);
+    }
+  };
+
   const wishlistedProducts = initialProducts.filter((p) => wishlist.includes(p._id));
 
   const handlePasswordChange = (e: React.FormEvent) => {
@@ -323,47 +356,77 @@ function DashboardContent() {
                     </Link>
                   </div>
                 ) : (
-                  customerOrders.map((ord) => (
-                    <div key={ord._id || ord.orderNumber} className="bg-white rounded-card border border-brand-mint/30 shadow-card p-6 space-y-4">
-                      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-gray-100 pb-3 gap-2">
-                        <div>
-                          <span className="text-[10px] font-bold uppercase tracking-wider text-sky-700 bg-sky-50 px-2.5 py-0.5 rounded-badge">
-                            Status: {ord.orderStatus || 'Processing'} ({ord.paymentMethod})
-                          </span>
-                          <h3 className="font-heading font-bold text-base text-brand-darkGreen mt-1 font-mono">
-                            Order #{ord.orderNumber}
-                          </h3>
-                          <p className="text-xs text-gray-500">
-                            Placed on {new Date(ord.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })} • Total: ₹{ord.total}
-                          </p>
-                        </div>
-                        <Link
-                          href={`/track-order?orderNumber=${ord.orderNumber}`}
-                          className="bg-brand-darkGreen text-white text-xs font-semibold px-4 py-2 rounded-button hover:bg-brand-green transition-colors"
-                        >
-                          Track Shipment Live
-                        </Link>
-                      </div>
+                  customerOrders.map((ord) => {
+                    const rawStatus = ord.orderStatus || 'Processing';
+                    const statusLower = String(rawStatus).trim().toLowerCase();
+                    const isCancellable = ['pending', 'processing', 'confirmed'].includes(statusLower);
 
-                      {/* Items */}
-                      <div className="space-y-2 pt-1">
-                        {(ord.items || []).map((it: any, idx: number) => {
-                          const itemImg = getOrderItemImage(it);
-                          return (
-                            <div key={idx} className="flex items-center gap-3 text-xs">
-                              <div className="w-12 h-12 rounded bg-brand-beige relative overflow-hidden flex-shrink-0 border border-brand-mint/30">
-                                <Image src={itemImg} alt={it.productName || 'Herbal Tea'} fill className="object-cover" />
-                              </div>
-                              <div>
-                                <h4 className="font-bold text-brand-darkGreen">{it.productName}</h4>
-                                <p className="text-gray-500">Quantity: {it.quantity} x {it.weight} • ₹{it.price}</p>
-                              </div>
+                    let statusBadgeClass = 'bg-sky-50 text-sky-800 border-sky-200';
+                    if (statusLower === 'pending') statusBadgeClass = 'bg-amber-50 text-amber-800 border-amber-200';
+                    if (statusLower === 'confirmed') statusBadgeClass = 'bg-blue-50 text-blue-800 border-blue-200';
+                    if (statusLower === 'shipped') statusBadgeClass = 'bg-indigo-50 text-indigo-800 border-indigo-200';
+                    if (statusLower === 'delivered') statusBadgeClass = 'bg-emerald-50 text-emerald-800 border-emerald-200';
+                    if (statusLower === 'cancelled') statusBadgeClass = 'bg-red-50 text-red-800 border-red-200';
+
+                    return (
+                      <div key={ord._id || ord.orderNumber} className="bg-white rounded-card border border-brand-mint/30 shadow-card p-6 space-y-4">
+                        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-gray-100 pb-3 gap-2">
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <span className={`text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-badge border ${statusBadgeClass}`}>
+                                STATUS: {rawStatus.toUpperCase()}
+                              </span>
+                              <span className="text-[10px] text-gray-500 font-semibold bg-gray-50 px-2 py-0.5 rounded border border-gray-200">
+                                {ord.paymentMethod || 'Cash on Delivery'}
+                              </span>
                             </div>
-                          );
-                        })}
+                            <h3 className="font-heading font-bold text-base text-brand-darkGreen mt-1 font-mono">
+                              Order #{ord.orderNumber}
+                            </h3>
+                            <p className="text-xs text-gray-500">
+                              Placed on {new Date(ord.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })} • Total: <strong className="text-brand-darkGreen font-mono">₹{ord.total}</strong>
+                            </p>
+                          </div>
+
+                          <div className="flex items-center gap-2">
+                            {isCancellable && (
+                              <button
+                                type="button"
+                                onClick={() => setCancellingOrder(ord)}
+                                className="bg-red-50 text-red-600 hover:bg-red-100 border border-red-200 text-xs font-bold px-3.5 py-2 rounded-button transition-colors"
+                              >
+                                Cancel Order
+                              </button>
+                            )}
+                            <Link
+                              href={`/track-order?orderNumber=${ord.orderNumber}`}
+                              className="bg-brand-darkGreen text-white text-xs font-semibold px-4 py-2 rounded-button hover:bg-brand-green transition-colors"
+                            >
+                              Track Shipment Live
+                            </Link>
+                          </div>
+                        </div>
+
+                        {/* Items */}
+                        <div className="space-y-2 pt-1">
+                          {(ord.items || []).map((it: any, idx: number) => {
+                            const itemImg = getOrderItemImage(it);
+                            return (
+                              <div key={idx} className="flex items-center gap-3 text-xs">
+                                <div className="w-12 h-12 rounded bg-brand-beige relative overflow-hidden flex-shrink-0 border border-brand-mint/30">
+                                  <Image src={itemImg} alt={it.productName || 'Herbal Tea'} fill className="object-cover" />
+                                </div>
+                                <div>
+                                  <h4 className="font-bold text-brand-darkGreen">{it.productName}</h4>
+                                  <p className="text-gray-500">Quantity: {it.quantity} x {it.weight} • ₹{it.price}</p>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
                       </div>
-                    </div>
-                  ))
+                    );
+                  })
                 )}
               </div>
             )}
@@ -727,6 +790,56 @@ function DashboardContent() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Cancel Order Confirmation Modal Dialog */}
+      {cancellingOrder && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-modal shadow-premium w-full max-w-md p-6 space-y-4 text-xs">
+            <div className="flex items-center gap-3 text-red-600 border-b border-gray-100 pb-3">
+              <div className="w-10 h-10 bg-red-100 text-red-600 rounded-full flex items-center justify-center flex-shrink-0">
+                <AlertCircle className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="font-heading font-extrabold text-lg text-brand-darkGreen">
+                  Cancel Order?
+                </h3>
+                <p className="text-xs text-gray-600 font-medium">
+                  Are you sure you want to cancel Order #{cancellingOrder.orderNumber}?
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-brand-cream/60 p-3 rounded border border-brand-mint/30 text-gray-700 leading-relaxed space-y-1">
+              <p>
+                Once cancelled, this order will not be processed or shipped.
+              </p>
+              <div className="text-[11px] text-gray-500 space-y-0.5 pt-1">
+                <p>Order Total: <strong className="text-brand-darkGreen font-mono">₹{cancellingOrder.total}</strong></p>
+                <p>Payment Method: <strong>{cancellingOrder.paymentMethod || 'Cash on Delivery'}</strong></p>
+              </div>
+            </div>
+
+            <div className="flex gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setCancellingOrder(null)}
+                disabled={isCancelling}
+                className="flex-1 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-button transition-colors"
+              >
+                No, Keep Order
+              </button>
+              <button
+                type="button"
+                onClick={handleCancelOrder}
+                disabled={isCancelling}
+                className="flex-1 px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-button shadow-soft transition-colors disabled:opacity-50"
+              >
+                {isCancelling ? 'Cancelling...' : 'Yes, Cancel Order'}
+              </button>
+            </div>
           </div>
         </div>
       )}

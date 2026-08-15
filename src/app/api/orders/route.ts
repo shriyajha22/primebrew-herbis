@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import { inMemoryStore, connectToDatabase } from '@/lib/db';
 import { OrderModel } from '@/models/Order';
 import { Order } from '@/lib/types';
-import { verifyAdminToken } from '@/lib/auth';
+import { verifyAdminToken, verifyCustomerToken } from '@/lib/auth';
 import { getOrderItemImage } from '@/lib/seedData';
 
 export const dynamic = 'force-dynamic';
@@ -37,7 +37,7 @@ export async function GET(request: Request) {
     await connectToDatabase();
     const { searchParams } = new URL(request.url);
     const orderNumber = searchParams.get('orderNumber');
-    const email = searchParams.get('email');
+    const emailParam = searchParams.get('email');
 
     // 1. Order Tracking by Order Number (Public / Track Order)
     if (orderNumber) {
@@ -57,56 +57,35 @@ export async function GET(request: Request) {
       return NextResponse.json({ success: true, order: normalizeOrder(order) });
     }
 
-    // 2. Customer Order History by Email (Protected with Customer Cross-Account Isolation)
-    if (email) {
-      const cleanEmail = email.trim().toLowerCase();
+    // 2. Customer Order History (Protected with JWT verification & customer cross-account isolation)
+    const customerAuth = verifyCustomerToken(request);
+    if (customerAuth.isAuthorized && customerAuth.user) {
+      const authUser = customerAuth.user;
+      const cleanAuthEmail = authUser.email.toLowerCase();
 
-      // Verify token if present to prevent cross-customer order viewing
-      let token = request.headers.get('cookie')
-        ?.split(';')
-        .find((c) => c.trim().startsWith('pbh_token='))
-        ?.split('=')[1];
-
-      if (!token) {
-        token = request.headers.get('cookie')
-          ?.split(';')
-          .find((c) => c.trim().startsWith('pbh_admin_token='))
-          ?.split('=')[1];
+      // If customer attempts to request another customer's email
+      if (emailParam && emailParam.trim().toLowerCase() !== cleanAuthEmail && authUser.role !== 'admin') {
+        return NextResponse.json(
+          { success: false, message: 'Access Denied: You are not authorized to view orders for another account.' },
+          { status: 403 }
+        );
       }
 
-      if (!token) {
-        const authHeader = request.headers.get('authorization');
-        if (authHeader && authHeader.startsWith('Bearer ')) {
-          token = authHeader.split(' ')[1];
-        }
-      }
-
-      if (token) {
-        try {
-          const decoded = jwt.verify(token, JWT_SECRET) as any;
-          if (decoded && decoded.email) {
-            const tokenEmail = decoded.email.toLowerCase();
-            const isAdmin = decoded.role === 'admin';
-            if (tokenEmail !== cleanEmail && !isAdmin) {
-              return NextResponse.json(
-                { success: false, message: 'Access Denied: You are not authorized to view orders for another account.' },
-                { status: 403 }
-              );
-            }
-          }
-        } catch (err) {
-          // Token invalid or expired
-        }
-      }
+      const targetEmail = authUser.role === 'admin' && emailParam ? emailParam.trim().toLowerCase() : cleanAuthEmail;
 
       let filteredOrders: any[] = [];
       try {
-        filteredOrders = await OrderModel.find({ 'shippingAddress.email': new RegExp(`^${cleanEmail}$`, 'i') }).sort({ createdAt: -1 }).lean();
+        filteredOrders = await OrderModel.find({
+          $or: [
+            { userId: authUser.userId },
+            { 'shippingAddress.email': new RegExp(`^${targetEmail}$`, 'i') },
+          ],
+        }).sort({ createdAt: -1 }).lean();
       } catch (err) {}
 
       if (filteredOrders.length === 0) {
         filteredOrders = inMemoryStore.orders.filter(
-          (o) => o.shippingAddress?.email?.toLowerCase() === cleanEmail
+          (o) => (o.userId && o.userId === authUser.userId) || o.shippingAddress?.email?.toLowerCase() === targetEmail
         );
       }
       return NextResponse.json({ success: true, orders: normalizeOrders(filteredOrders) });
@@ -141,6 +120,12 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
+    // 1. Mandatory Customer Authentication Check
+    const auth = verifyCustomerToken(request);
+    if (!auth.isAuthorized || !auth.user) {
+      return auth.errorResponse!;
+    }
+
     await connectToDatabase();
     const body = await request.json();
 
@@ -177,13 +162,14 @@ export async function POST(request: Request) {
     const trackingNumber = `SR-${Math.floor(100000000 + Math.random() * 900000000)}`;
 
     const orderDocData = {
+      userId: auth.user.userId,
       orderNumber,
       createdAt: new Date().toISOString(),
       items: formattedItems,
       shippingAddress: {
-        fullName: String(body.shippingAddress.fullName || '').trim(),
+        fullName: String(body.shippingAddress.fullName || auth.user.name || '').trim(),
         phone: String(body.shippingAddress.phone || '').trim(),
-        email: String(body.shippingAddress.email || '').trim().toLowerCase(),
+        email: auth.user.email.trim().toLowerCase(),
         street: String(body.shippingAddress.street || '').trim(),
         city: String(body.shippingAddress.city || '').trim(),
         state: String(body.shippingAddress.state || '').trim(),
@@ -207,10 +193,11 @@ export async function POST(request: Request) {
       estimatedDelivery: '3-5 Business Days',
     };
 
-    console.log('Order creation request received at /api/orders', {
+    console.log('Authenticated order creation request received at /api/orders', {
+      userId: auth.user.userId,
+      email: auth.user.email,
       itemCount: formattedItems.length,
       hasShippingAddress: Boolean(body.shippingAddress),
-      hasEmail: Boolean(body.shippingAddress?.email),
       paymentMethod: 'Cash on Delivery',
     });
 
@@ -224,6 +211,7 @@ export async function POST(request: Request) {
         console.log('✅ Order created successfully in MongoDB Atlas primebrew.orders', {
           orderId: createdOrder._id,
           orderNumber: createdOrder.orderNumber,
+          userId: createdOrder.userId,
         });
       }
     } catch (dbErr: any) {
@@ -255,3 +243,4 @@ export async function POST(request: Request) {
     );
   }
 }
+

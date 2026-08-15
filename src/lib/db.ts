@@ -65,6 +65,28 @@ class InMemoryStore {
     }
   ];
 
+  contactQueries: {
+    id: string;
+    name: string;
+    email: string;
+    phone?: string;
+    subject: string;
+    message: string;
+    createdAt: string;
+    status: 'Unread' | 'Replied';
+  }[] = [
+    {
+      id: "q-101",
+      name: "Ananya Roy",
+      email: "ananya.roy@example.com",
+      phone: "+91 9811223344",
+      subject: "Custom Corporate Gift Hampers Inquiry",
+      message: "Hello PrimeBrew Herbis team! We are looking to order 50 custom herbal tea gift boxes for our company anniversary in New Delhi. Could you please share the corporate pricing catalog?",
+      createdAt: new Date(Date.now() - 3600000 * 4).toISOString(),
+      status: "Unread"
+    }
+  ];
+
   activeSessions = new Map<string, {
     email: string;
     name: string;

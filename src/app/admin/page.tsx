@@ -26,18 +26,22 @@ import {
   Radio,
   Pencil,
   Bell,
+  MessageSquare,
+  Mail,
+  Check,
 } from 'lucide-react';
 
 export default function AdminDashboardPage() {
   const { currentUser, loginAsDemoAdmin, showToast } = useStore();
   const [productsList, setProductsList] = useState<Product[]>([...initialProducts]);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-  const [activeTab, setActiveTab] = useState<'overview' | 'activity' | 'orders' | 'customers' | 'products'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'activity' | 'orders' | 'customers' | 'products' | 'queries'>('overview');
   const [showAddModal, setShowAddModal] = useState(false);
   const [selectedOrderDetails, setSelectedOrderDetails] = useState<any | null>(null);
 
   const [adminOrders, setAdminOrders] = useState<any[]>([]);
   const [customersList, setCustomersList] = useState<any[]>([]);
+  const [contactQueries, setContactQueries] = useState<any[]>([]);
   const [activeSessions, setActiveSessions] = useState<any[]>([]);
   const [liveKpis, setLiveKpis] = useState<any>({
     currentlyOnline: 0,
@@ -88,8 +92,50 @@ export default function AdminDashboardPage() {
     } catch (e) {}
   };
 
+  const fetchQueries = async () => {
+    try {
+      const res = await fetch('/api/contact');
+      const data = await res.json();
+      if (res.ok && data.success && Array.isArray(data.queries)) {
+        setContactQueries(data.queries);
+      }
+    } catch (e) {}
+  };
+
+  const handleMarkQueryReplied = async (id: string, currentStatus: string) => {
+    const nextStatus = currentStatus === 'Replied' ? 'Unread' : 'Replied';
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, status: nextStatus }),
+      });
+      const data = await res.json();
+      if (res.ok && data.success && Array.isArray(data.queries)) {
+        setContactQueries(data.queries);
+        showToast(`Query status updated to ${nextStatus}`, 'success');
+      }
+    } catch (e) {
+      showToast('Failed to update query status', 'error');
+    }
+  };
+
+  const handleDeleteQuery = async (id: string) => {
+    try {
+      const res = await fetch(`/api/contact?id=${encodeURIComponent(id)}`, { method: 'DELETE' });
+      const data = await res.json();
+      if (res.ok && data.success && Array.isArray(data.queries)) {
+        setContactQueries(data.queries);
+        showToast('Query deleted successfully', 'info');
+      }
+    } catch (e) {
+      showToast('Failed to delete query', 'error');
+    }
+  };
+
   // Fetch real-time live data from `/api/admin/live`
   const fetchLiveData = async () => {
+    fetchQueries();
     try {
       const res = await fetch('/api/admin/live');
       const data = await res.json();
@@ -518,7 +564,120 @@ export default function AdminDashboardPage() {
           >
             🍵 Product Catalog ({productsList.length})
           </button>
+
+          <button
+            onClick={() => setActiveTab('queries')}
+            className={`px-4 py-2.5 rounded-button transition-colors whitespace-nowrap flex items-center gap-1.5 ${activeTab === 'queries' ? 'bg-brand-green text-white shadow-soft' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
+          >
+            <span>📩 Customer Queries</span>
+            {contactQueries.filter((q) => q.status === 'Unread').length > 0 && (
+              <span className="bg-amber-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
+                {contactQueries.filter((q) => q.status === 'Unread').length} New
+              </span>
+            )}
+          </button>
         </div>
+
+        {/* Customer Support Queries Tab */}
+        {activeTab === 'queries' && (
+          <div className="bg-white rounded-card border border-brand-mint/30 shadow-card p-6 space-y-4">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-gray-100 pb-3 gap-2">
+              <div>
+                <h3 className="font-heading font-bold text-base text-brand-darkGreen flex items-center gap-2">
+                  <MessageSquare className="w-5 h-5 text-brand-green" /> Customer Support Inquiries & Messages
+                </h3>
+                <p className="text-xs text-gray-500">View and respond to queries sent by customers via Contact Us page & email</p>
+              </div>
+              <div className="flex items-center gap-2 text-xs">
+                <span className="bg-amber-50 text-amber-800 border border-amber-200 px-3 py-1 rounded-badge font-bold">
+                  {contactQueries.filter((q) => q.status === 'Unread').length} Unread Messages
+                </span>
+                <span className="bg-emerald-50 text-emerald-800 border border-emerald-200 px-3 py-1 rounded-badge font-bold">
+                  {contactQueries.filter((q) => q.status === 'Replied').length} Replied
+                </span>
+              </div>
+            </div>
+
+            {contactQueries.length === 0 ? (
+              <div className="py-12 text-center text-xs text-gray-500 space-y-2">
+                <MessageSquare className="w-10 h-10 text-gray-300 mx-auto" />
+                <p className="font-bold text-gray-700">No customer support queries received yet.</p>
+                <p className="text-[11px] text-gray-400">Queries submitted on the /contact page will appear here instantly.</p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {contactQueries.map((q) => (
+                  <div
+                    key={q.id}
+                    className={`p-4 rounded-card border transition-all text-xs space-y-2 ${
+                      q.status === 'Unread'
+                        ? 'bg-amber-50/40 border-amber-300/80 shadow-soft'
+                        : 'bg-white border-gray-200'
+                    }`}
+                  >
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-gray-100 pb-2">
+                      <div className="flex items-center gap-2">
+                        <span className={`text-[10px] font-bold uppercase px-2.5 py-0.5 rounded-badge border ${
+                          q.status === 'Unread'
+                            ? 'bg-amber-100 text-amber-900 border-amber-300'
+                            : 'bg-emerald-100 text-emerald-900 border-emerald-300'
+                        }`}>
+                          {q.status === 'Unread' ? '🔔 Unread Query' : '✓ Replied'}
+                        </span>
+                        <h4 className="font-bold text-brand-darkGreen text-sm">{q.subject}</h4>
+                      </div>
+                      <span className="text-[11px] text-gray-400 font-mono">
+                        {new Date(q.createdAt).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-[11px] text-gray-600 bg-gray-50 p-2.5 rounded">
+                      <p>Customer: <strong className="text-gray-900 font-semibold">{q.name}</strong></p>
+                      <p>Email: <a href={`mailto:${q.email}`} className="text-brand-green font-semibold hover:underline">{q.email}</a></p>
+                      {q.phone && <p>Phone: <a href={`tel:${q.phone}`} className="text-brand-darkGreen font-mono font-semibold hover:underline">{q.phone}</a></p>}
+                    </div>
+
+                    <div className="bg-white p-3 rounded border border-gray-200 text-gray-700 font-normal leading-relaxed">
+                      <p className="whitespace-pre-wrap">{q.message}</p>
+                    </div>
+
+                    <div className="flex items-center justify-between pt-1">
+                      <div className="flex items-center gap-2">
+                        <a
+                          href={`mailto:${q.email}?subject=${encodeURIComponent(`Re: ${q.subject} - PrimeBrew Herbis`)}&body=${encodeURIComponent(`Dear ${q.name},\n\nThank you for reaching out to PrimeBrew Herbis!\n\n`)}`}
+                          className="bg-brand-darkGreen hover:bg-brand-green text-white font-bold text-[11px] px-3.5 py-1.5 rounded-button flex items-center gap-1.5 transition-colors"
+                        >
+                          <Mail className="w-3.5 h-3.5 text-brand-gold" />
+                          <span>Reply via Email</span>
+                        </a>
+
+                        <button
+                          onClick={() => handleMarkQueryReplied(q.id, q.status)}
+                          className={`font-bold text-[11px] px-3 py-1.5 rounded-button flex items-center gap-1 border transition-colors ${
+                            q.status === 'Replied'
+                              ? 'bg-gray-100 text-gray-700 border-gray-300 hover:bg-gray-200'
+                              : 'bg-emerald-50 text-emerald-800 border-emerald-300 hover:bg-emerald-100'
+                          }`}
+                        >
+                          <Check className="w-3.5 h-3.5" />
+                          <span>{q.status === 'Replied' ? 'Mark Unread' : 'Mark as Replied'}</span>
+                        </button>
+                      </div>
+
+                      <button
+                        onClick={() => handleDeleteQuery(q.id)}
+                        className="text-red-500 hover:text-red-700 font-semibold text-[11px] flex items-center gap-1 p-1"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                        <span>Delete Query</span>
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Live Customer Activity Tab */}
         {activeTab === 'activity' && (

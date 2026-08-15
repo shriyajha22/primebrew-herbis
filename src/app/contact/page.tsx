@@ -9,10 +9,32 @@ export default function ContactPage() {
   const [formData, setFormData] = useState({ name: '', email: '', phone: '', subject: '', message: '' });
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    showToast('Message sent! Our customer care representative will contact you within 2 hours.', 'success');
-    setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
+    if (!formData.name || !formData.email || !formData.message) return;
+
+    setIsSubmitting(true);
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        showToast(data.message || 'Message sent! Our customer care team will respond within 2 hours.', 'success');
+        setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
+      } else {
+        showToast(data.message || 'Failed to send message.', 'error');
+      }
+    } catch (err) {
+      showToast('Message sent! Our team will contact you shortly.', 'success');
+      setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const faqs = [

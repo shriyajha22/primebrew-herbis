@@ -1,15 +1,22 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useStore } from '@/lib/storeContext';
 
 export default function ActivityTracker() {
   const pathname = usePathname();
+  const router = useRouter();
   const { currentUser } = useStore();
   const prevEmailRef = useRef<string | null>(null);
 
   useEffect(() => {
+    // Client-side Double Enforcement: If an authenticated admin tries to navigate to any customer route, redirect to /admin
+    if (currentUser?.role === 'admin' && pathname && !pathname.startsWith('/admin')) {
+      router.replace('/admin');
+      return;
+    }
+
     if (!currentUser || !currentUser.email || currentUser.role === 'admin') {
       // If user logged out after being logged in
       if (prevEmailRef.current) {

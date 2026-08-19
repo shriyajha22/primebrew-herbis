@@ -13,7 +13,7 @@ export async function sendPasswordResetEmail(email: string, token: string) {
     };
   }
 
-  const fromEmail = process.env.RESEND_FROM_EMAIL || 'PrimeBrew Herbis <onboarding@resend.dev>';
+  const fromEmail = process.env.RESEND_FROM_EMAIL || 'PrimeBrew Herbis <noreply@primebrewherbis.com>';
 
   const htmlContent = `
     <!DOCTYPE html>

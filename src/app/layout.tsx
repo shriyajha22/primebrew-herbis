@@ -1,12 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { StoreProvider } from '@/lib/storeContext';
-import Navbar from '@/components/layout/Navbar';
-import Footer from '@/components/layout/Footer';
-import CartDrawer from '@/components/cart/CartDrawer';
-import ToastContainer from '@/components/layout/ToastContainer';
-import FloatingChat from '@/components/home/FloatingChat';
-import ActivityTracker from '@/components/layout/ActivityTracker';
+import ClientLayoutWrapper from '@/components/layout/ClientLayoutWrapper';
 
 export const metadata: Metadata = {
   title: 'PrimeBrew Herbis | Farm to Cup Herbal Teas',
@@ -80,13 +75,7 @@ export default function RootLayout({
       </head>
       <body className="bg-brand-cream text-brand-charcoal antialiased min-h-screen flex flex-col justify-between selection:bg-brand-mint selection:text-brand-darkGreen">
         <StoreProvider>
-          <ActivityTracker />
-          <Navbar />
-          <CartDrawer />
-          <ToastContainer />
-          <main className="flex-1">{children}</main>
-          <FloatingChat />
-          <Footer />
+          <ClientLayoutWrapper>{children}</ClientLayoutWrapper>
         </StoreProvider>
       </body>
     </html>

@@ -1,7 +1,6 @@
 import mongoose, { Schema, Document, Model } from 'mongoose';
 
 export interface IAdminNotification extends Document {
-  _id: string;
   type: 'new_order' | 'order_cancelled';
   orderId: string;
   orderNumber: string;

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { Product, CartItem, Coupon, User } from './types';
 import { initialCoupons } from './seedData';
 
@@ -119,7 +119,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const handleSetCurrentUser = (user: User | null) => {
+  const handleSetCurrentUser = useCallback((user: User | null) => {
     setCurrentUser(user);
     if (typeof window !== 'undefined') {
       try {
@@ -131,7 +131,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       } catch (e) {}
     }
     syncUserCartAndWishlist(user);
-  };
+  }, []);
 
   // Verify server session from HTTP-only cookie on mount
   useEffect(() => {
@@ -146,7 +146,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         }
       })
       .catch((e) => {});
-  }, []);
+  }, [handleSetCurrentUser]);
 
   // Save cart changes to customer-specific storage
   useEffect(() => {

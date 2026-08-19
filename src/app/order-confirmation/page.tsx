@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, useEffect, useCallback, Suspense } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useSearchParams, useRouter } from 'next/navigation';
@@ -39,14 +39,7 @@ function OrderConfirmationContent() {
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [isCancelling, setIsCancelling] = useState(false);
 
-  useEffect(() => {
-    fetchOrderDetails();
-    try {
-      confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-    } catch (e) {}
-  }, [orderId, orderNumberParam]);
-
-  const fetchOrderDetails = async () => {
+  const fetchOrderDetails = useCallback(async () => {
     setLoading(true);
     setErrorMsg('');
 
@@ -110,7 +103,14 @@ function OrderConfirmationContent() {
     if (!order) {
       setErrorMsg('Order details not found. Please check your order history.');
     }
-  };
+  }, [orderId, orderNumberParam, currentUser?.email, order]);
+
+  useEffect(() => {
+    fetchOrderDetails();
+    try {
+      confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+    } catch (e) {}
+  }, [fetchOrderDetails]);
 
   const handleCancelOrder = async () => {
     if (!order) return;

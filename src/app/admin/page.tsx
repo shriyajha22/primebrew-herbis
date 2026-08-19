@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
@@ -96,7 +96,7 @@ export default function AdminDashboardPage() {
   const prevNotifIdsRef = useRef<Set<string>>(new Set());
 
   // Web Audio Chime Helper
-  const playAlertChime = (type: 'order_placed' | 'order_cancelled') => {
+  const playAlertChime = useCallback((type: 'order_placed' | 'order_cancelled') => {
     try {
       const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
       if (!AudioContext) return;
@@ -122,10 +122,10 @@ export default function AdminDashboardPage() {
         osc.stop(ctx.currentTime + 0.5);
       }
     } catch (e) {}
-  };
+  }, []);
 
   // Fetch Notifications from MongoDB Atlas
-  const fetchNotifications = async () => {
+  const fetchNotifications = useCallback(async () => {
     try {
       const res = await fetch('/api/admin/notifications');
       const data = await res.json();
@@ -149,7 +149,7 @@ export default function AdminDashboardPage() {
         });
       }
     } catch (e) {}
-  };
+  }, [showToast, playAlertChime]);
 
   // Mark single or all notifications as read in MongoDB Atlas
   const handleMarkNotificationRead = async (notificationId?: string, markAllRead = false) => {
@@ -206,7 +206,7 @@ export default function AdminDashboardPage() {
   };
 
   // Fetch Real-Time Live Stream & KPIs
-  const fetchLiveData = async () => {
+  const fetchLiveData = useCallback(async () => {
     fetchQueries();
     fetchNotifications();
 
@@ -255,10 +255,10 @@ export default function AdminDashboardPage() {
     } catch (e) {
       setIsLiveConnected(false);
     }
-  };
+  }, [fetchNotifications, showToast, playAlertChime]);
 
   // Fetch Customers List
-  const fetchCustomers = async () => {
+  const fetchCustomers = useCallback(async () => {
     try {
       const res = await fetch('/api/admin/customers');
       const data = await res.json();
@@ -266,7 +266,7 @@ export default function AdminDashboardPage() {
         setCustomersList(data.customers);
       }
     } catch (e) {}
-  };
+  }, []);
 
   // Mount Effect & Real-Time Setup
   useEffect(() => {
@@ -297,7 +297,7 @@ export default function AdminDashboardPage() {
 
       return () => clearInterval(liveInterval);
     }
-  }, [currentUser]);
+  }, [currentUser, fetchLiveData, fetchCustomers]);
 
   // Order Status Update (saves to MongoDB Atlas & updates customer view)
   const handleUpdateOrderStatus = async (orderId: string, newStatus: string) => {

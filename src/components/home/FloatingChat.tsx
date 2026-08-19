@@ -8,6 +8,11 @@ import { useStore } from '@/lib/storeContext';
 export default function FloatingChat() {
   const pathname = usePathname();
   const { currentUser, showToast } = useStore();
+  const [isOpen, setIsOpen] = useState(false);
+  const [message, setMessage] = useState('');
+  const [messages, setMessages] = useState([
+    { sender: 'bot', text: '👋 Namaste! I am Herbie, your AI Tea Concierge. How can I help you discover your perfect herbal tea blend today?' }
+  ]);
 
   const isWindowAdmin = typeof window !== 'undefined' && window.location.pathname.startsWith('/admin');
   const isAdminPath = pathname?.startsWith('/admin');
@@ -16,11 +21,6 @@ export default function FloatingChat() {
   if (isAdminPath || isWindowAdmin || isAdminUser) {
     return null;
   }
-  const [isOpen, setIsOpen] = useState(false);
-  const [message, setMessage] = useState('');
-  const [messages, setMessages] = useState([
-    { sender: 'bot', text: '👋 Namaste! I am Herbie, your AI Tea Concierge. How can I help you discover your perfect herbal tea blend today?' }
-  ]);
 
   const handleSend = (e: React.FormEvent) => {
     e.preventDefault();

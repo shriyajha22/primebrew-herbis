@@ -53,7 +53,7 @@ export default function ActivityTracker() {
     return () => {
       clearInterval(interval);
     };
-  }, [pathname, currentUser]);
+  }, [pathname, currentUser, router]);
 
   return null;
 }

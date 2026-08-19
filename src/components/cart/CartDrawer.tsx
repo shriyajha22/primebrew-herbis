@@ -9,15 +9,6 @@ import { useStore } from '@/lib/storeContext';
 
 export default function CartDrawer() {
   const pathname = usePathname();
-  const { currentUser } = useStore();
-
-  const isWindowAdmin = typeof window !== 'undefined' && window.location.pathname.startsWith('/admin');
-  const isAdminPath = pathname?.startsWith('/admin');
-  const isAdminUser = currentUser?.role === 'admin';
-
-  if (isAdminPath || isWindowAdmin || isAdminUser) {
-    return null;
-  }
   const {
     cart,
     removeFromCart,
@@ -34,10 +25,19 @@ export default function CartDrawer() {
     removeCoupon,
     giftWrap,
     setGiftWrap,
+    currentUser,
   } = useStore();
 
   const [couponCode, setCouponCode] = useState('');
   const [couponError, setCouponError] = useState('');
+
+  const isWindowAdmin = typeof window !== 'undefined' && window.location.pathname.startsWith('/admin');
+  const isAdminPath = pathname?.startsWith('/admin');
+  const isAdminUser = currentUser?.role === 'admin';
+
+  if (isAdminPath || isWindowAdmin || isAdminUser) {
+    return null;
+  }
 
   if (!isCartOpen) return null;
 

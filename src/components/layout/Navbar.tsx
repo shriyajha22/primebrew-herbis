@@ -16,11 +16,15 @@ export default function Navbar() {
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearchModal, setShowSearchModal] = useState(false);
 
-  const totalCartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+  const isWindowAdmin = typeof window !== 'undefined' && window.location.pathname.startsWith('/admin');
+  const isAdminPath = pathname?.startsWith('/admin');
+  const isAdminUser = currentUser?.role === 'admin';
 
-  if (pathname?.startsWith('/admin')) {
+  if (isAdminPath || isWindowAdmin || isAdminUser) {
     return null;
   }
+
+  const totalCartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   const navLinks = [
     { name: 'Home', href: '/' },

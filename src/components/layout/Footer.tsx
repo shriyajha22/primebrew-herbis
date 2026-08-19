@@ -9,11 +9,15 @@ import { useStore } from '@/lib/storeContext';
 
 export default function Footer() {
   const pathname = usePathname();
-  const { showToast } = useStore();
+  const { currentUser, showToast } = useStore();
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
 
-  if (pathname?.startsWith('/admin')) {
+  const isWindowAdmin = typeof window !== 'undefined' && window.location.pathname.startsWith('/admin');
+  const isAdminPath = pathname?.startsWith('/admin');
+  const isAdminUser = currentUser?.role === 'admin';
+
+  if (isAdminPath || isWindowAdmin || isAdminUser) {
     return null;
   }
 

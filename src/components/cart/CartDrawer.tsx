@@ -9,8 +9,13 @@ import { useStore } from '@/lib/storeContext';
 
 export default function CartDrawer() {
   const pathname = usePathname();
+  const { currentUser } = useStore();
 
-  if (pathname?.startsWith('/admin')) {
+  const isWindowAdmin = typeof window !== 'undefined' && window.location.pathname.startsWith('/admin');
+  const isAdminPath = pathname?.startsWith('/admin');
+  const isAdminUser = currentUser?.role === 'admin';
+
+  if (isAdminPath || isWindowAdmin || isAdminUser) {
     return null;
   }
   const {

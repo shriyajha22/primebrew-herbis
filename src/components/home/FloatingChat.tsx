@@ -7,9 +7,13 @@ import { useStore } from '@/lib/storeContext';
 
 export default function FloatingChat() {
   const pathname = usePathname();
-  const { showToast } = useStore();
+  const { currentUser, showToast } = useStore();
 
-  if (pathname?.startsWith('/admin')) {
+  const isWindowAdmin = typeof window !== 'undefined' && window.location.pathname.startsWith('/admin');
+  const isAdminPath = pathname?.startsWith('/admin');
+  const isAdminUser = currentUser?.role === 'admin';
+
+  if (isAdminPath || isWindowAdmin || isAdminUser) {
     return null;
   }
   const [isOpen, setIsOpen] = useState(false);

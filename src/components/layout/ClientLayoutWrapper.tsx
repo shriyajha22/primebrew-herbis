@@ -8,10 +8,14 @@ import CartDrawer from '@/components/cart/CartDrawer';
 import ToastContainer from '@/components/layout/ToastContainer';
 import FloatingChat from '@/components/home/FloatingChat';
 import ActivityTracker from '@/components/layout/ActivityTracker';
+import { useStore } from '@/lib/storeContext';
 
 export default function ClientLayoutWrapper({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const isAdminRoute = pathname?.startsWith('/admin');
+  const { currentUser } = useStore();
+
+  const isWindowAdmin = typeof window !== 'undefined' && window.location.pathname.startsWith('/admin');
+  const isAdminRoute = pathname?.startsWith('/admin') || isWindowAdmin || currentUser?.role === 'admin';
 
   if (isAdminRoute) {
     return (

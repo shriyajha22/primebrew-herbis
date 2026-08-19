@@ -7,6 +7,8 @@ import { Order } from '@/lib/types';
 import { verifyAdminToken, verifyCustomerToken } from '@/lib/auth';
 import { getOrderItemImage } from '@/lib/seedData';
 
+import { NotificationModel } from '@/models/Notification';
+
 export const dynamic = 'force-dynamic';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'pbh_super_secret_jwt_key_2026_primebrew';
@@ -229,6 +231,22 @@ export async function POST(request: Request) {
       inMemoryStore.orders.unshift(createdOrder);
     } else {
       inMemoryStore.orders.unshift(createdOrder);
+    }
+
+    // Persistent Admin Notification in MongoDB Atlas
+    try {
+      const notifMsg = `Order #${orderNumber} has been placed by ${customerName}. Total: ₹${orderDocData.total}`;
+      await NotificationModel.create({
+        type: 'new_order',
+        orderId: createdOrder._id,
+        orderNumber,
+        customerName,
+        total: orderDocData.total,
+        message: notifMsg,
+        read: false,
+      });
+    } catch (notifErr) {
+      console.warn('Notification creation fallback:', notifErr);
     }
 
     return NextResponse.json({

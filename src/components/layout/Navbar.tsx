@@ -18,6 +18,10 @@ export default function Navbar() {
 
   const totalCartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
+  if (pathname?.startsWith('/admin')) {
+    return null;
+  }
+
   const navLinks = [
     { name: 'Home', href: '/' },
     { name: 'Shop All', href: '/shop' },

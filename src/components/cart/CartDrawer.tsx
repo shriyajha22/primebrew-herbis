@@ -4,9 +4,15 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { X, Trash2, Plus, Minus, ShoppingBag, Gift, ArrowRight, Tag, ShieldCheck } from 'lucide-react';
+import { usePathname } from 'next/navigation';
 import { useStore } from '@/lib/storeContext';
 
 export default function CartDrawer() {
+  const pathname = usePathname();
+
+  if (pathname?.startsWith('/admin')) {
+    return null;
+  }
   const {
     cart,
     removeFromCart,

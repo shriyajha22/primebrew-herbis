@@ -2,10 +2,16 @@
 
 import React, { useState } from 'react';
 import { X, Send, ArrowUp, Bot, Sparkles, RefreshCw } from 'lucide-react';
+import { usePathname } from 'next/navigation';
 import { useStore } from '@/lib/storeContext';
 
 export default function FloatingChat() {
+  const pathname = usePathname();
   const { showToast } = useStore();
+
+  if (pathname?.startsWith('/admin')) {
+    return null;
+  }
   const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([

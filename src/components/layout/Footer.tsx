@@ -4,12 +4,18 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Leaf, Mail, ShieldCheck, Truck, RefreshCw, Award, Instagram, Facebook, Twitter, Phone, MapPin, CheckCircle } from 'lucide-react';
+import { usePathname } from 'next/navigation';
 import { useStore } from '@/lib/storeContext';
 
 export default function Footer() {
+  const pathname = usePathname();
   const { showToast } = useStore();
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
+
+  if (pathname?.startsWith('/admin')) {
+    return null;
+  }
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();

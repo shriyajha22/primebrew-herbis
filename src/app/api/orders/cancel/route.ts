@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import mongoose from 'mongoose';
 import { connectToDatabase, inMemoryStore } from '@/lib/db';
 import { OrderModel } from '@/models/Order';
+import { NotificationModel } from '@/models/Notification';
 import { verifyCustomerToken } from '@/lib/auth';
 import { getOrderItemImage } from '@/lib/seedData';
 
@@ -146,6 +147,23 @@ export async function POST(request: Request) {
 
     if (!updatedOrder) {
       updatedOrder = { ...order, ...updatePayload };
+    }
+
+    // Save Admin Notification for cancellation in MongoDB Atlas
+    try {
+      const customerName = order.shippingAddress?.fullName || order.customerName || auth.user.name || 'Customer';
+      const notifMsg = `Order #${order.orderNumber} has been cancelled by ${customerName}. Total: ₹${order.total}`;
+      await NotificationModel.create({
+        type: 'order_cancelled',
+        orderId: order._id ? order._id.toString() : targetIdentifier,
+        orderNumber: order.orderNumber,
+        customerName,
+        total: order.total || 0,
+        message: notifMsg,
+        read: false,
+      });
+    } catch (notifErr) {
+      console.warn('Cancellation notification fallback:', notifErr);
     }
 
     return NextResponse.json({

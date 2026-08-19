@@ -1,15 +1,19 @@
-import nodemailer from 'nodemailer';
-
 export async function sendPasswordResetEmail(email: string, token: string) {
-  const host = process.env.SMTP_HOST || process.env.EMAIL_HOST;
-  const port = Number(process.env.SMTP_PORT || process.env.EMAIL_PORT || 587);
-  const user = process.env.SMTP_USER || process.env.EMAIL_USER;
-  const pass = process.env.SMTP_PASS || process.env.EMAIL_PASS;
-  const from = process.env.SMTP_FROM || process.env.EMAIL_FROM || '"PrimeBrew Herbis" <Contact.primebrew@gmail.com>';
+  const apiKey = process.env.RESEND_API_KEY;
 
   const rawBaseUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.VERCEL_URL || 'https://primebrew-herbis.vercel.app';
   const baseUrl = rawBaseUrl.startsWith('http') ? rawBaseUrl : `https://${rawBaseUrl}`;
   const resetUrl = `${baseUrl}/reset-password?token=${token}&email=${encodeURIComponent(email)}`;
+
+  if (!apiKey) {
+    console.warn('⚠️ RESEND_API_KEY is missing in environment variables.');
+    return {
+      success: false,
+      message: 'RESEND_API_KEY is not configured in environment variables.',
+    };
+  }
+
+  const fromEmail = process.env.RESEND_FROM_EMAIL || 'PrimeBrew Herbis <onboarding@resend.dev>';
 
   const htmlContent = `
     <!DOCTYPE html>
@@ -59,52 +63,41 @@ export async function sendPasswordResetEmail(email: string, token: string) {
     </html>
   `;
 
-  // Check if SMTP user/pass exist
-  if (!user || !pass) {
-    console.warn('⚠️ SMTP Email credentials missing in environment variables (SMTP_USER / SMTP_PASS).');
-    console.log('📌 Password Reset URL generated:', resetUrl);
-    
-    // Return explicit failure so backend API doesn't falsely claim email sent
-    return {
-      success: false,
-      message: 'SMTP email credentials not configured in environment variables (SMTP_USER / SMTP_PASS).',
-      resetUrl, // Provided for server logging/testing
-    };
-  }
-
   try {
-    const transporter = nodemailer.createTransport({
-      host: host || 'smtp.gmail.com',
-      port: port,
-      secure: port === 465, // true for 465, false for other ports
-      auth: {
-        user: user,
-        pass: pass,
+    const res = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
       },
-      tls: {
-        rejectUnauthorized: false,
-      },
+      body: JSON.stringify({
+        from: fromEmail,
+        to: [email],
+        subject: '🔒 Reset Your PrimeBrew Herbis Password',
+        html: htmlContent,
+      }),
     });
 
-    const info = await transporter.sendMail({
-      from: from,
-      to: email,
-      subject: '🔒 Reset Your PrimeBrew Herbis Password',
-      html: htmlContent,
-    });
+    const data = await res.json();
 
-    console.log('✅ Password reset email dispatched via nodemailer. Message ID:', info.messageId);
+    if (!res.ok) {
+      console.error('❌ Resend API Error status:', res.status, data?.message || data?.name);
+      return {
+        success: false,
+        message: data?.message || 'Failed to dispatch email via Resend API.',
+      };
+    }
+
+    console.log('✅ Password reset email dispatched via Resend API. Email ID:', data.id);
     return {
       success: true,
-      messageId: info.messageId,
-      resetUrl,
+      emailId: data.id,
     };
   } catch (error: any) {
-    console.error('❌ Nodemailer Error sending password reset email:', error);
+    console.error('❌ Resend API Transport Error:', error?.message);
     return {
       success: false,
-      message: error?.message || 'SMTP Transport Error',
-      resetUrl,
+      message: error?.message || 'Error connecting to Resend email service.',
     };
   }
 }

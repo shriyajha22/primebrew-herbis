@@ -69,15 +69,14 @@ export async function POST(request: Request) {
       used: false,
     });
 
-    // Send reset email via mailer service
+    // Send reset email via Resend API
     const mailResult = await sendPasswordResetEmail(cleanEmail, token);
 
     if (!mailResult.success) {
       return NextResponse.json(
         {
           success: false,
-          message: `Unable to dispatch reset email: ${mailResult.message}`,
-          devNotice: mailResult.resetUrl ? `Dev Reset URL: ${mailResult.resetUrl}` : undefined,
+          message: 'Unable to send password reset email. Please try again later or contact support.',
         },
         { status: 500 }
       );
@@ -88,9 +87,9 @@ export async function POST(request: Request) {
       message: `Password reset verification email sent to ${cleanEmail}. Please check your inbox.`,
     });
   } catch (error: any) {
-    console.error('Error handling forgot password request:', error);
+    console.error('Error handling forgot password request:', error?.message);
     return NextResponse.json(
-      { success: false, message: error.message || 'Server error processing password reset request.' },
+      { success: false, message: 'Server error processing password reset request.' },
       { status: 500 }
     );
   }

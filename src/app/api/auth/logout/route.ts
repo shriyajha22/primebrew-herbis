@@ -31,8 +31,15 @@ export async function POST(request: Request) {
       message: 'Logged out successfully',
     });
 
-    // Clear HTTP-only cookie
+    // Clear HTTP-only session cookies for both customer and admin
     response.cookies.set('pbh_token', '', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      expires: new Date(0),
+      path: '/',
+    });
+    response.cookies.set('pbh_admin_token', '', {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',

@@ -3,16 +3,28 @@
 import React, { useState, Suspense } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useStore } from '@/lib/storeContext';
 import { initialProducts, getOrderItemImage } from '@/lib/seedData';
 import { ShoppingBag, Heart, MapPin, Wallet, Shield, Plus, Edit3, Trash2, CheckCircle2, AlertCircle } from 'lucide-react';
 
 function DashboardContent() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const initialTab = (searchParams.get('tab') as any) || 'orders';
 
   const { currentUser, wishlist, toggleWishlist, addToCart, logout, updateUserAddresses, showToast } = useStore();
+
+  React.useEffect(() => {
+    if (!currentUser && typeof window !== 'undefined') {
+      const timer = setTimeout(() => {
+        if (!currentUser) {
+          router.push('/login?redirect=/dashboard&notice=Please+log+in+to+view+your+order+status.');
+        }
+      }, 600);
+      return () => clearTimeout(timer);
+    }
+  }, [currentUser, router]);
   const [activeTab, setActiveTab] = useState<'orders' | 'wishlist' | 'addresses' | 'wallet' | 'settings'>(initialTab);
   const [customerOrders, setCustomerOrders] = useState<any[]>([]);
   const [loadingOrders, setLoadingOrders] = useState(false);

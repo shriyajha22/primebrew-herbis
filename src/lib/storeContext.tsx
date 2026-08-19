@@ -319,16 +319,20 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   };
 
   const logout = async () => {
+    const isCurrentlyAdmin = currentUser?.role === 'admin' || (typeof window !== 'undefined' && window.location.pathname.startsWith('/admin'));
+
     try {
       await fetch('/api/auth/logout', { method: 'POST' });
     } catch (e) {
       console.error('Logout API error:', e);
     }
+
     setCurrentUser(null);
     setCart([]);
     setWishlist([]);
 
     try {
+      localStorage.removeItem('pbh_user_session');
       localStorage.removeItem('pbh_cart');
       localStorage.removeItem('pbh_wishlist');
       localStorage.removeItem('pbh_orders');
@@ -345,7 +349,11 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     showToast("Logged out successfully", "info");
 
     if (typeof window !== 'undefined') {
-      window.location.href = '/';
+      if (isCurrentlyAdmin) {
+        window.location.href = '/admin/login';
+      } else {
+        window.location.href = '/';
+      }
     }
   };
 

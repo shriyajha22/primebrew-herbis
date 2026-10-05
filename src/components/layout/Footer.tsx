@@ -61,7 +61,7 @@ export default function Footer() {
             <div className="inline-block bg-white p-3.5 rounded-card shadow-soft max-w-[240px]">
               <Image
                 src="/images/logo_tagline.png"
-                alt="PrimeBrew Herbis - From our Farms to your Cup"
+                alt="PrimeBrew Herbis - From Farms to your Cup"
                 width={200}
                 height={71}
                 className="w-full h-auto object-contain"
@@ -108,7 +108,7 @@ export default function Footer() {
               <Instagram className="w-4 h-4 text-brand-gold group-hover:text-brand-darkGreen" />
               <span>Follow & Chat @primebrew_herbis on Instagram</span>
             </a>
-            <div className="pt-2">
+            {/* <div className="pt-2">
               <p className="text-xs font-semibold text-white mb-2 uppercase tracking-wider">Join Our Tea Circle & Get 15% OFF</p>
               <form onSubmit={handleSubscribe} className="flex gap-2 max-w-sm">
                 <input
@@ -131,7 +131,7 @@ export default function Footer() {
                   <CheckCircle className="w-3.5 h-3.5" /> Welcome to PrimeBrew Herbis!
                 </p>
               )}
-            </div>
+            </div> */}
           </div>
 
           {/* Categories */}

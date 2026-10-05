@@ -284,16 +284,16 @@ function DashboardContent() {
             </div>
             <div>
               <h1 className="font-heading font-extrabold text-2xl text-white">{currentUser?.name}</h1>
-              <p className="text-xs text-brand-mint">{currentUser?.email} • Customer Account</p>
+              <p className="text-xs text-brand-mint">{currentUser?.email}</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          {/* <div className="flex items-center gap-3">
             <div className="bg-white/10 p-3 rounded-card text-center border border-white/20">
               <span className="text-[10px] text-brand-gold uppercase tracking-wider block font-bold">Tea Wallet</span>
               <span className="font-bold text-sm text-white">₹{currentUser?.walletBalance || 250}</span>
             </div>
-          </div>
+          </div> */}
         </div>
 
         {/* Dashboard Tabs & Content */}
@@ -306,7 +306,8 @@ function DashboardContent() {
                 activeTab === 'orders' ? 'bg-brand-green text-white shadow-soft' : 'text-brand-charcoal hover:bg-brand-beige'
               }`}
             >
-              <ShoppingBag className="w-4 h-4" /> Order History & Tracking
+              {/* <ShoppingBag className="w-4 h-4" /> Order History & Tracking */}
+              <ShoppingBag className="w-4 h-4" /> Order History
             </button>
             <button
               onClick={() => setActiveTab('wishlist')}
@@ -324,14 +325,14 @@ function DashboardContent() {
             >
               <MapPin className="w-4 h-4" /> Saved Delivery Addresses
             </button>
-            <button
+            {/* <button
               onClick={() => setActiveTab('wallet')}
               className={`w-full text-left text-xs font-bold px-4 py-3 rounded-button flex items-center gap-3 transition-colors ${
                 activeTab === 'wallet' ? 'bg-brand-green text-white shadow-soft' : 'text-brand-charcoal hover:bg-brand-beige'
               }`}
             >
               <Wallet className="w-4 h-4" /> Wallet & Rewards
-            </button>
+            </button> */}
             <button
               onClick={() => setActiveTab('settings')}
               className={`w-full text-left text-xs font-bold px-4 py-3 rounded-button flex items-center gap-3 transition-colors ${
@@ -410,12 +411,12 @@ function DashboardContent() {
                                 Cancel Order
                               </button>
                             )}
-                            <Link
+                            {/* <Link
                               href={`/track-order?orderNumber=${ord.orderNumber}`}
                               className="bg-brand-darkGreen text-white text-xs font-semibold px-4 py-2 rounded-button hover:bg-brand-green transition-colors"
                             >
                               Track Shipment Live
-                            </Link>
+                            </Link> */}
                           </div>
                         </div>
 
@@ -453,7 +454,7 @@ function DashboardContent() {
                     {wishlistedProducts.map((p) => (
                       <div key={p._id} className="bg-white p-4 rounded-card border border-brand-mint/30 shadow-card flex gap-3 items-center">
                         <div className="w-16 h-16 rounded bg-brand-beige relative overflow-hidden flex-shrink-0">
-                          <Image src={p.images[0]} alt="" fill className="object-cover" />
+                          <Image src={p.images[0]} alt="Product Image" fill className="object-cover" />
                         </div>
                         <div className="flex-1 min-w-0">
                           <h4 className="font-bold text-xs text-brand-darkGreen truncate">{p.name}</h4>
@@ -684,7 +685,7 @@ function DashboardContent() {
                 <label className="text-gray-700 font-semibold block mb-1">Full Recipient Name *</label>
                 <input
                   type="text"
-                  placeholder="e.g. Priya Sharma"
+                  placeholder="e.g. John Doe"
                   value={addressForm.fullName}
                   onChange={(e) => setAddressForm({ ...addressForm, fullName: e.target.value })}
                   required

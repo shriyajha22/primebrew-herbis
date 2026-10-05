@@ -138,7 +138,7 @@ export default function FloatingChat() {
       )}
 
       {/* Modern Friendly Robot Avatar Launcher Button */}
-      <button
+      {/* <button
         onClick={() => setIsOpen(!isOpen)}
         className="bg-brand-cardWhite border-2 border-brand-green hover:border-brand-darkGreen text-brand-darkGreen p-3.5 rounded-full shadow-premium flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 group relative"
         title="Chat with Herbie (AI Herbal Concierge)"
@@ -149,7 +149,7 @@ export default function FloatingChat() {
           <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-brand-gold rounded-full animate-soft-pulse border border-white" />
         </div>
         <span className="sr-only">Live AI Robot Concierge</span>
-      </button>
+      </button> */}
     </div>
   );
 }

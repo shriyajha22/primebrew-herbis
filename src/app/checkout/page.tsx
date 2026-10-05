@@ -572,7 +572,7 @@ export default function CheckoutPage() {
                     <div key={idx} className="flex justify-between items-center pt-2 first:pt-0">
                       <div className="flex items-center gap-2">
                         <div className="w-10 h-10 rounded overflow-hidden relative bg-brand-beige flex-shrink-0">
-                          <Image src={item.product.images[0]} alt="" fill className="object-cover" />
+                          <Image src={item.product.images[0]} alt="Product Image" fill className="object-cover" />
                         </div>
                         <div>
                           <p className="font-bold text-brand-darkGreen line-clamp-1">{item.product.name}</p>

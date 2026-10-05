@@ -114,7 +114,7 @@ function RegisterContent() {
                 required
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
-                placeholder="Priya Sharma"
+                placeholder="John Doe"
                 className="w-full pl-11 pr-4 py-3 rounded-2xl bg-brand-cream/40 border border-brand-mint/30 focus:bg-white focus:border-brand-green outline-none font-medium"
               />
             </div>
@@ -129,7 +129,7 @@ function RegisterContent() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="priya@example.com"
+                placeholder="john@example.com"
                 className="w-full pl-11 pr-4 py-3 rounded-2xl bg-brand-cream/40 border border-brand-mint/30 focus:bg-white focus:border-brand-green outline-none font-medium"
               />
             </div>

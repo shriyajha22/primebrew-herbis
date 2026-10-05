@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
@@ -20,6 +20,29 @@ export default function Navbar() {
   const isAdminPath = pathname?.startsWith('/admin');
   const isAdminUser = currentUser?.role === 'admin';
 
+  const userDropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!userDropdownOpen) return;
+
+    const handleOutsideClick = (event: PointerEvent) => {
+      if (
+        event.target instanceof Node &&
+        userDropdownRef.current &&
+        !userDropdownRef.current.contains(event.target)
+      ) {
+        setUserDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('pointerdown', handleOutsideClick, true);
+
+    return () => {
+      document.removeEventListener('pointerdown', handleOutsideClick, true);
+    };
+  }, [userDropdownOpen]);
+
+
   if (isAdminPath || isWindowAdmin || isAdminUser) {
     return null;
   }
@@ -33,7 +56,7 @@ export default function Navbar() {
     { name: 'About Us', href: '/about' },
     { name: 'Blogs', href: '/blogs' },
     { name: 'FAQ', href: '/faq' },
-    { name: 'Track Order', href: '/track-order' },
+    // { name: 'Track Order', href: '/track-order' },
     { name: 'Contact', href: '/contact' },
   ];
 
@@ -117,7 +140,7 @@ export default function Navbar() {
               </button>
 
               {/* Account Dropdown */}
-              <div className="relative">
+              <div ref={userDropdownRef} className="relative">
                 <button
                   onClick={() => setUserDropdownOpen(!userDropdownOpen)}
                   className="flex items-center gap-1.5 p-2 rounded-button text-brand-charcoal hover:bg-brand-beige transition-colors"
@@ -135,16 +158,18 @@ export default function Navbar() {
                         <div className="px-4 py-3 border-b border-gray-100">
                           <p className="text-sm font-semibold text-brand-darkGreen">{currentUser.name}</p>
                           <p className="text-xs text-gray-500 truncate">{currentUser.email}</p>
-                          <span className="inline-block mt-1 text-[10px] font-bold px-2 py-0.5 rounded-badge bg-brand-mint/40 text-brand-darkGreen capitalize">
-                            Role: {currentUser.role}
-                          </span>
+                          {currentUser.role === 'admin' && (
+                            <span className="inline-block mt-1 text-[10px] font-bold px-2 py-0.5 rounded-badge bg-brand-mint/40 text-brand-darkGreen capitalize">
+                              Role: {currentUser.role}
+                            </span>
+                          )}
                         </div>
                         <Link
                           href="/dashboard"
                           onClick={() => setUserDropdownOpen(false)}
                           className="block px-4 py-2 text-sm text-brand-charcoal hover:bg-brand-beige"
                         >
-                          Customer Dashboard
+                          My Account
                         </Link>
                         <button
                           onClick={() => {
@@ -163,14 +188,14 @@ export default function Navbar() {
                           onClick={() => setUserDropdownOpen(false)}
                           className="block px-3 py-2 text-xs font-bold text-white bg-brand-green hover:bg-brand-darkGreen rounded-button text-center transition-colors shadow-soft"
                         >
-                          Customer Login
+                          Login
                         </Link>
                         <Link
                           href="/register"
                           onClick={() => setUserDropdownOpen(false)}
                           className="block px-3 py-2 text-xs font-semibold text-brand-darkGreen bg-brand-beige hover:bg-brand-mint/30 rounded-button text-center transition-colors border border-brand-mint/30"
                         >
-                          Create New Account
+                          Sign Up
                         </Link>
                       </div>
                     )}
@@ -220,7 +245,7 @@ export default function Navbar() {
                     onClick={() => setMobileMenuOpen(false)}
                     className="flex-1 py-2.5 bg-brand-green text-white text-xs font-bold rounded-button text-center shadow-soft"
                   >
-                    Customer Login
+                    Login
                   </Link>
                   <Link
                     href="/register"

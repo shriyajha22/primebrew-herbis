@@ -103,7 +103,7 @@ function OrderConfirmationContent() {
     if (!order) {
       setErrorMsg('Order details not found. Please check your order history.');
     }
-  }, [orderId, orderNumberParam, currentUser?.email, order]);
+  }, [orderId, orderNumberParam, currentUser?.email]);
 
   useEffect(() => {
     fetchOrderDetails();
@@ -260,13 +260,13 @@ function OrderConfirmationContent() {
 
           {/* Action Buttons Bar */}
           <div className="pt-4 border-t border-gray-100 flex flex-wrap items-center justify-center gap-3 text-xs">
-            <Link
+            {/* <Link
               href={`/track-order?orderNumber=${encodeURIComponent(order.orderNumber)}`}
               className="bg-brand-darkGreen hover:bg-brand-green text-white font-extrabold px-5 py-2.5 rounded-button shadow-soft flex items-center gap-2 transition-all"
             >
               <Truck className="w-4 h-4 text-brand-gold" />
               <span>Track Order Status Live</span>
-            </Link>
+            </Link> */}
 
             <button
               onClick={handlePrintInvoice}
@@ -338,7 +338,7 @@ function OrderConfirmationContent() {
                 />
               </div>
               <div>
-                <h3 className="font-heading font-extrabold text-lg text-brand-darkGreen">Official Tax Invoice</h3>
+                <h3 className="font-heading font-extrabold text-lg text-brand-darkGreen">Invoice</h3>
                 <p className="text-xs text-gray-500">Farm to Cup. Nature in Every Sip.</p>
               </div>
             </div>
@@ -370,8 +370,8 @@ function OrderConfirmationContent() {
                 Logistics & Dispatch Info
               </h4>
               <p>Order Status: <strong className="text-sky-700 font-bold">{order.orderStatus}</strong></p>
-              <p>Courier Partner: <strong>{order.courierName || 'Shiprocket Express'}</strong></p>
-              <p>AWB Tracking No: <strong className="font-mono text-brand-green">{order.trackingNumber || 'SR-884920194'}</strong></p>
+              {/* <p>Courier Partner: <strong>{order.courierName || 'Shiprocket Express'}</strong></p> */}
+              {/* <p>AWB Tracking No: <strong className="font-mono text-brand-green">{order.trackingNumber || 'SR-884920194'}</strong></p> */}
               <p>Estimated Delivery: <strong>{order.estimatedDelivery || '3-4 Business Days'}</strong></p>
             </div>
           </div>

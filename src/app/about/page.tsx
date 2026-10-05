@@ -16,13 +16,13 @@ export default function AboutPage() {
               Women-Founded Herbal Wellness
             </span>
             <h1 className="font-heading font-extrabold text-3xl sm:text-4xl lg:text-5xl text-brand-darkGreen leading-tight">
-              At Prime Brew Herbis, every cup begins at our farms.
+              At Prime Brew Herbis, every cup begins at farms.
             </h1>
           </div>
 
           <div className="space-y-4 text-xs sm:text-sm text-gray-700 font-light leading-relaxed max-w-4xl">
             <p>
-              We are a women-founded herbal wellness brand dedicated to bringing pure, natural, and thoughtfully crafted herbal teas directly from our farms to your cup. By sourcing directly from our own farms, we ensure freshness, quality, and authenticity in every blend.
+              We are a women-founded herbal wellness brand dedicated to bringing pure, natural, and thoughtfully crafted herbal teas directly from farms to your cup. By sourcing directly from our own farms, we ensure freshness, quality, and authenticity in every blend.
             </p>
             <p>
               Rooted in nature and inspired by traditional wellness, our teas are made from carefully selected herbs and flowers to support a healthier lifestyle—without artificial flavors, colors, or additives.
@@ -36,7 +36,7 @@ export default function AboutPage() {
               <span>Pure Ingredients. Honest Farming. Wellness in Every Sip.</span>
             </div>
             <div className="bg-brand-beige px-4 py-2 rounded-button text-brand-darkGreen border border-brand-mint/40 w-fit">
-              Prime Brew Herbis – From Our Farms to Your Cup.
+              Prime Brew Herbis – From Farms to Your Cup.
             </div>
           </div>
         </div>

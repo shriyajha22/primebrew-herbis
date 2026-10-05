@@ -91,3 +91,4 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 npm run build
 npm run start
 ```
+Updates and bug fixes applied

@@ -188,7 +188,7 @@ export default function Navbar() {
                           onClick={() => setUserDropdownOpen(false)}
                           className="block px-3 py-2 text-xs font-bold text-white bg-brand-green hover:bg-brand-darkGreen rounded-button text-center transition-colors shadow-soft"
                         >
-                          Login
+                          Sign In
                         </Link>
                         <Link
                           href="/register"

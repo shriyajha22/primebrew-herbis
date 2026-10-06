@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Script from 'next/script';
 import './globals.css';
 import { StoreProvider } from '@/lib/storeContext';
 import Navbar from '@/components/layout/Navbar';
@@ -71,23 +72,36 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="en" className="scroll-smooth">
+    <html lang='en' className='scroll-smooth'>
       <head>
         <script
-          type="application/ld+json"
+          type='application/ld+json'
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className="bg-brand-cream text-brand-charcoal antialiased min-h-screen flex flex-col justify-between selection:bg-brand-mint selection:text-brand-darkGreen">
+      <body className='bg-brand-cream text-brand-charcoal antialiased min-h-screen flex flex-col justify-between selection:bg-brand-mint selection:text-brand-darkGreen'>
         <StoreProvider>
           <ActivityTracker />
           <Navbar />
           <CartDrawer />
           <ToastContainer />
-          <main className="flex-1">{children}</main>
+          <main className='flex-1'>{children}</main>
           <FloatingChat />
           <Footer />
         </StoreProvider>
+
+        <Script
+          src='https://www.googletagmanager.com/gtag/js?id=G-HW6XV7VF4T'
+          strategy='afterInteractive'
+        />
+        <Script id='google-analytics' strategy='afterInteractive'>
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-HW6XV7VF4T');
+          `}
+        </Script>
       </body>
     </html>
   );

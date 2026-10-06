@@ -78,7 +78,7 @@ export default function CartDrawer() {
           </div>
 
           {/* Free Shipping Meter */}
-          <div className="bg-brand-beige px-5 py-3 border-b border-brand-mint/20">
+          <div className="bg-brand-beige px-5 py-3 border-b border-brand-mint/20" style={{backgroundColor:'#F0F8FF'}}>
             <div className="flex justify-between items-center text-xs font-medium mb-1.5">
               {amountNeededForFreeShipping > 0 ? (
                 <span className="text-brand-charcoal">
@@ -99,7 +99,7 @@ export default function CartDrawer() {
           </div>
 
           {/* Items List */}
-          <div className="flex-1 overflow-y-auto p-5 space-y-4">
+          <div className="flex-1 overflow-y-auto p-5 space-y-4" style={{backgroundColor:'#F0F8FF'}}>
             {cart.length === 0 ? (
               <div className="py-16 text-center space-y-4">
                 <div className="w-20 h-20 bg-brand-mint/20 rounded-full flex items-center justify-center mx-auto text-brand-green">
@@ -203,7 +203,7 @@ export default function CartDrawer() {
                   <form onSubmit={handleApplyCoupon} className="flex gap-2">
                     <input
                       type="text"
-                      placeholder="Promo Code (e.g. HERBAL15)"
+                      placeholder="Promo Code (e.g. HERBALNEW50)"
                       value={couponCode}
                       onChange={(e) => setCouponCode(e.target.value)}
                       className="flex-1 px-3 py-1.5 text-xs border border-gray-300 rounded-input focus:outline-none focus:border-brand-green"

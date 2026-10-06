@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Leaf, Mail, ShieldCheck, Truck, RefreshCw, Award, Instagram, Facebook, Twitter, Phone, MapPin, CheckCircle } from 'lucide-react';
+import { Leaf, Mail, ShieldCheck, Truck, RefreshCw, Award, Instagram, Facebook, Twitter, Phone, MapPin, CheckCircle, BadgeCheck } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { useStore } from '@/lib/storeContext';
 
@@ -33,21 +33,45 @@ export default function Footer() {
     <footer className="bg-brand-darkGreen text-brand-beige pt-16 pb-12 border-t border-brand-green/30">
       {/* Brand Trust Badges Bar */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 mb-12 border-b border-white/10">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-center">
           <div className="flex flex-col items-center p-4 rounded-card bg-white/5 backdrop-blur-sm border border-white/10">
             <ShieldCheck className="w-8 h-8 text-brand-gold mb-2" />
-            <h4 className="font-heading font-semibold text-white text-sm">100% Organic & Pure</h4>
-            <p className="text-xs text-brand-mint/80 mt-1">Direct farm harvest without synthetic pesticides</p>
+            <h4 className="font-heading font-semibold text-white text-sm">
+              100% Organic & Pure
+            </h4>
+            <p className="text-xs text-brand-mint/80 mt-1">
+              Direct farm harvest without synthetic pesticides
+            </p>
           </div>
+
           <div className="flex flex-col items-center p-4 rounded-card bg-white/5 backdrop-blur-sm border border-white/10">
-            <Truck className="w-8 h-8 text-brand-gold mb-2" />
-            <h4 className="font-heading font-semibold text-white text-sm">Express Pan-India Shipping</h4>
-            <p className="text-xs text-brand-mint/80 mt-1">Free express delivery on orders above ₹799</p>
+            <BadgeCheck className="w-8 h-8 text-brand-gold mb-2" />
+            <h4 className="font-heading font-semibold text-white text-sm">
+              FSSAI Licensed
+            </h4>
+            <p className="text-xs text-brand-mint/80 mt-1">
+              Licensed food business
+            </p>
           </div>
+
           <div className="flex flex-col items-center p-4 rounded-card bg-white/5 backdrop-blur-sm border border-white/10">
             <RefreshCw className="w-8 h-8 text-brand-gold mb-2" />
-            <h4 className="font-heading font-semibold text-white text-sm">Fresh Batch Guarantee</h4>
-            <p className="text-xs text-brand-mint/80 mt-1">Small batch roasted & packed under 7 days</p>
+            <h4 className="font-heading font-semibold text-white text-sm">
+              Fresh Batch Guarantee
+            </h4>
+            <p className="text-xs text-brand-mint/80 mt-1">
+              Small batch roasted & packed under 7 days
+            </p>
+          </div>
+
+          <div className="flex flex-col items-center p-4 rounded-card bg-white/5 backdrop-blur-sm border border-white/10">
+            <Truck className="w-8 h-8 text-brand-gold mb-2" />
+            <h4 className="font-heading font-semibold text-white text-sm">
+              Express Pan-India Shipping
+            </h4>
+            <p className="text-xs text-brand-mint/80 mt-1">
+              Free express delivery on orders above ₹799
+            </p>
           </div>
         </div>
       </div>

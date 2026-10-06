@@ -242,7 +242,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     const cleanCode = code.trim().toUpperCase();
     const found = initialCoupons.find((c) => c.code === cleanCode);
     if (!found) {
-      return { success: false, message: 'Invalid coupon code. Try "HERBAL15" or "FARM2CUP"' };
+      return { success: false, message: 'Invalid coupon code' };
     }
     if (cartSubtotal < found.minOrderAmount) {
       return { success: false, message: `Minimum order amount for ${found.code} is ₹${found.minOrderAmount}` };

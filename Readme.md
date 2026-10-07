@@ -92,3 +92,4 @@ npm run build
 npm run start
 ```
 Updates and bug fixes applied
+Updates

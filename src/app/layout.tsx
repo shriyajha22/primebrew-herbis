@@ -9,14 +9,26 @@ import ToastContainer from '@/components/layout/ToastContainer';
 import FloatingChat from '@/components/home/FloatingChat';
 import ActivityTracker from '@/components/layout/ActivityTracker';
 
+const siteUrl = 'https://www.primebrewherbis.com';
+const siteTitle = 'Caffeine-Free Herbal & Ayurvedic Teas - PrimeBrew Herbis';
+const siteDescription =
+  'Shop pure, caffeine-free herbal and Ayurvedic teas online, delivered across India and New Delhi, hand-picked from our own Karnataka farms for daily wellness.';
+
 export const metadata: Metadata = {
-  title: 'PrimeBrew Herbis | Farm to Cup Herbal Teas',
-  description: 'Discover premium artisanal herbal teas sourced directly from trusted farming networks across Karnataka. 100% organic, pesticide-free, and crafted for pure natural wellness.',
-  keywords: ['herbal tea', 'organic tea', 'detox tea', 'sleep tea', 'immunity tea', 'farm to cup', 'Karnataka herbal tea', 'PrimeBrew Herbis'],
-  metadataBase: new URL('https://primebrew-herbis.vercel.app'),
-  alternates: {
-    canonical: '/',
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: siteTitle,
+    template: '%s | PrimeBrew Herbis',
   },
+  description: siteDescription,
+  keywords: [
+    'buy herbal tea online',
+    'caffeine free herbal tea',
+    'ayurvedic herbal tea',
+    'best herbal tea in India',
+    'best herbal tea in New Delhi',
+  ],
+  // Set each page's canonical in its own metadata, including '/' on the homepage.
   icons: {
     icon: [
       { url: '/favicon.ico', sizes: 'any' },
@@ -32,9 +44,8 @@ export const metadata: Metadata = {
   },
   manifest: '/site.webmanifest',
   openGraph: {
-    title: 'PrimeBrew Herbis | Farm to Cup Herbal Teas',
-    description: 'Farm to Cup. Nature in Every Sip. 100% Organic artisanal herbal teas.',
-    url: 'https://primebrew-herbis.vercel.app',
+    title: siteTitle,
+    description: siteDescription,
     siteName: 'PrimeBrew Herbis',
     images: [
       {
@@ -48,8 +59,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'PrimeBrew Herbis | Farm to Cup Herbal Teas',
-    description: 'Farm to Cup. Nature in Every Sip.',
+    title: siteTitle,
+    description: siteDescription,
     images: ['/images/logo_opaque.png'],
   },
 };
@@ -63,9 +74,9 @@ export default function RootLayout({
     '@context': 'https://schema.org',
     '@type': 'Organization',
     name: 'PrimeBrew Herbis',
-    url: 'https://primebrew-herbis.vercel.app',
-    logo: 'https://primebrew-herbis.vercel.app/images/logo.png',
-    image: 'https://primebrew-herbis.vercel.app/images/logo.png',
+    url: siteUrl,
+    logo: `${siteUrl}/images/logo.png`,
+    image: `${siteUrl}/images/logo.png`,
     description: 'Farm to Cup. Nature in Every Sip. Premium artisanal herbal teas sourced directly from trusted farms in Karnataka.',
     email: 'Contact.primebrew@gmail.com',
     sameAs: ['https://instagram.com/primebrew_herbis'],

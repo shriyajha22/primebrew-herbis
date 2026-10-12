@@ -5,7 +5,6 @@
 PrimeBrew Herbis is a full-stack, production-ready herbal tea e-commerce platform built strictly adhering to the requirements in `Gemini.md` and design tokens specified in `BrandGuidelines.md`.
 
 ---
-
 ## 🌟 Brand Identity & Design System
 
 - **Primary Green**: `#2E7D32`
